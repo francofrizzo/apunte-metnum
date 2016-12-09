@@ -1,0 +1,92 @@
+\documentclass[10.8pt]{article}
+\usepackage[a4paper, margin=2.25cm, headsep=1em]{geometry}
+\usepackage{multicol}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[letterspace=25]{microtype}
+
+\usepackage{amsmath,amssymb}
+% \usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{mleftright}
+\usepackage{cases}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+\usepgfplotslibrary{patchplots}
+
+\usepackage{array}
+\usepackage{xfrac}
+
+\usepackage{enumitem}
+\usepackage{framed}
+\usepackage{fancyhdr}
+
+\usepackage{float}
+\usepackage[center]{caption}
+
+\newcommand\myauthor{Franco Frizzo}
+\newcommand\mytitle{Apunte de Métodos Numéricos}
+\newcommand\mydate{Diciembre de 2016}
+
+\usepackage[pdftex,
+            pdfauthor={\myauthor},
+            pdftitle={\mytitle},
+            hidelinks]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem*{teo}{Teorema}
+\newtheorem*{prop}{Proposición}
+\newtheorem*{coro}{Corolario}
+\newtheorem*{lema}{Lema}
+
+\theoremstyle{definition}
+\newtheorem*{defi}{Definición}
+\newtheorem*{obs}{Observación}
+
+\setlength{\parskip}{.5em}
+\renewcommand{\baselinestretch}{1.05}
+\setlength{\headsep}{1.7em}
+\setlist[enumerate]{itemsep=.1em, topsep=0em}
+\setlist[itemize]{itemsep=.1em, topsep=0em}
+
+\newcommand{\nats}{\ensuremath{\mathbb{N}}}
+\newcommand{\reals}{\ensuremath{\mathbb{R}}}
+\newcommand{\mat}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\trans}{\ensuremath{^{\mathrm{T}}}}
+\newcommand{\ord}[1]{\ensuremath{\mathrm{O}(#1)}}
+\newcommand{\rg}{\ensuremath{\operatorname{rg}}}
+\newcommand{\im}{\ensuremath{\operatorname{Im}}}
+\newcommand{\nul}{\ensuremath{\operatorname{Nul}}}
+\newcommand{\fall}[1]{\ensuremath{\left(\forall\;#1\right)\,}}
+\newcommand{\exst}[1]{\ensuremath{\left(\exists\;#1\right)\,}}
+
+\pagestyle{fancy}
+\rhead{\MakeUppercase{\footnotesize{\textls{\myauthor}}}}
+\lhead{\MakeUppercase{\footnotesize{\textls{\mytitle}}}}
+
+\begin{document}
+\title{\mytitle}
+\author{\myauthor}
+\date{\mydate}
+\maketitle
+
+\tableofcontents
+\newpage
+
+\input{1-sistemas-lineales}
+\input{2-factorizacion-matrices}
+\input{3-metodos-iterativos}
+\input{4-autovalores}
+\input{5-interpolacion}
+\input{6-integracion}
+\input{7-cml}
+\input{8-ceros-funciones}
+
+\end{document}

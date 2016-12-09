@@ -1,0 +1,172 @@
+\section{Resolución directa de sistemas de ecuaciones lineales}
+
+Un \textbf{sistema de ecuaciones lineales} es un conjunto de ecuaciones de la
+forma
+\[ \left\lbrace \begin{matrix}
+    a_{1,1} x_1 &+& a_{1,2} x_2 &+& \cdots &+& a_{1,n} x_n & = & b_1    \\
+    a_{2,1} x_1 &+& a_{2,2} x_2 &+& \cdots &+& a_{2,n} x_n & = & b_2    \\
+    \vdots     &+& \vdots     &+&     &+& \vdots     & = & \vdots \\
+    a_{n,1} x_1 &+& a_{n,2} x_2 &+& \cdots &+& a_{n,n} x_n & = & b_n    \\
+\end{matrix} \right. \]
+donde los $a_{i,j}$ y los $b_i$ son números reales.
+
+Los sistemas de ecuaciones lineales admiten también la representación matricial
+
+\[ \mat{A} \cdot x = b \]
+
+donde $\mat{A} \in \reals ^{n \times n}$, $x, b \in \reals^{n}$. Esta
+representación nos facilitará tanto su comprensión como su tratamiento
+computacional.
+
+Las variables $x_1, \dots, x_n$ se denominan las \textbf{incógnitas} del sistema.
+Una \textbf{solución} de un sistema de ecuaciones lineales es un conjunto de
+valores para las incógnitas que satisfacen simultáneamente todas las ecuaciones.
+
+Un sistema de ecuaciones lineales puede no tener solución, tener solución
+única, o tener infinitas soluciones. Si la matriz asociada al sistema es
+inversible (o, lo que es lo mismo, sus columnas son linealmente independientes)
+la solución será única. Si, por el contrario, la matriz es singular,
+podría pasar que el sistema no tenga solución o que tenga infinitas de ellas.
+
+Un sistema de la forma $\mat{A} \cdot x = 0$ se denomina \textbf{homogéneo}.
+Las soluciones de un sistema homogéneo forman un subespacio vectorial. Además,
+el conjunto de soluciones de cualquier sistema $\mat{A} \cdot x = b$ puede
+obtenerse sumando una solución particular del mismo a las soluciones del
+sistema homogéneo asociado, $\mat{A} \cdot x = 0$.
+
+En esta sección, expondremos dos métodos para obtener computacionalmente la
+solucion de un sistema de ecuaciones lineales, en el caso de que esta exista y
+sea única. La resolución de estos sistemas es un problema importante y
+frecuente en el análisis numérico, ya que estos son útiles a la hora de
+modelar matemáticamente el comportamiento de problemas provenientes de
+diversas disciplinas, como la física y la ingeniería, para ser tratados en
+forma computacional. En muchos de estos modelos aparecen ecuaciones
+que, o bien son lineales, o pueden aproximarse bien mediante ecuaciones
+lineales. Estos sistemas también aparecen en la resolución de ecuaciones
+diferenciales, que son cruciales para muchas disciplinas.
+
+\subsection{Resolución de sistemas sencillos}
+
+Decimos que una matriz $\mat{A} \in \reals^{n \times n}$ es:
+\begin{itemize}[itemsep=0em]
+\item \textbf{diagonal}, si $\fall{1 \leq i,j \leq n} i \neq j \Rightarrow a_{i,j} = 0$;
+    es decir, todos los elementos fuera de la diagonal son nulos.
+\item \textbf{triangular inferior}, si $\fall{1 \leq i,j \leq n} i < j \Rightarrow a_{i,j} = 0$;
+    es decir, todos los elementos por encima de la diagonal son nulos.
+\item \textbf{triangular superior}, si $\fall{1 \leq i,j \leq n} i > j \Rightarrow a_{i,j} = 0$;
+    es decir, todos los elementos por debajo de la diagonal son nulos.
+\end{itemize}
+
+Existen ciertos sistemas de ecuaciones que se pueden resolver algorítmicamente
+de forma sencilla. Por ejemplo, si el sistema tiene asociada una matriz
+diagonal, entonces sus ecuaciones son de la forma
+\[ \left\lbrace \begin{aligned}
+    a_{1,1} x_1 &= b_1 \\
+    a_{2,2} x_2 &= b_2 \\
+    \vdots \\
+    a_{n,n} x_n &= b_n \\
+\end{aligned} \right. \]
+de donde pueden despejarse fácilmente valores para cada $x_i$. Se puede notar
+que existirá una solución única si y solo si $\fall{1 \leq i \leq n} a_{i,i}
+\neq 0$.
+% En dicho caso, la solución del sistema puede encontrarse con un costo
+% lineal en la cantidad de ecuaciones, es decir, $\ord{n}$.
+
+Por otra parte, si la matriz del sistema es triangular superior, puede
+aplicarse un algoritmo llamado \textbf{sustitución hacia atrás}
+(\emph{backward substitution}). El mismo consiste en comenzar a partir de la
+última ecuación, que tiene la forma
+\[ a_{n,n} x_n = b_n \]
+de donde es sencillo depejar un valor para $x_n$. Luego, en la ecuación
+anterior, que tiene la forma
+\[ a_{n-1,n-1} x_{n-1} + a_{n-1,n} x_n = b_{n-1} \]
+puede reemplazarse el valor hallado para $x_n$, obteniendo así un valor para
+$x_{n-1}$. Este procedimiento se repite con las ecuaciones superiores,
+hasta haber despejado todas las incógnitas del sistema. Al igual que en el
+caso anterior, esto será posible si y solo si todos los elementos de la
+diagonal son no nulos; en caso contrario, el sistema no tiene solución única.
+
+Así, la solución hallada mediante el algoritmo de sustitución hacia atrás
+puede describirse mediante las siguientes ecuaciones:
+\[ \left\lbrace \begin{aligned}
+    x_{n} &= \frac{b_{n}}{a_{n,n}} \\
+    x_{n-1} &= \frac{b_{n-1} - a_{n-1,n}x_{n}}{a_{n-1,n-1}} \\
+    \vdots \\
+    x_{1} &= \frac{b_{1} - a_{1,2}x_{2} - \dots - a_{1,n}x_{n}}{a_{1,1}} \\
+\end{aligned} \right. \]
+
+Si la matriz del sistema es triangular inferior, se puede modificar el
+algoritmo para comenzar despejando en la primera ecuación. A este
+procedimiento se lo conoce como \textbf{sustitución hacia adelante}
+(\emph{forward substitution}).
+
+\subsection{Eliminación gaussiana}
+
+Decimos que dos sistemas de ecuaciones son \textbf{equivalentes} si tienen el
+mismo conjunto de soluciones. El algoritmo de \textbf{eliminación gaussiana}
+consiste en transformar un sistema de ecuaciones cualquiera en otro
+equivalente, pero que se encuentre en forma triangular superior. De esta forma,
+puede aplicarse el procedimiento de sustitución hacia atrás para encontrar
+las soluciones del sistema original.
+
+Para transformar un sistema en otro equivalente, se aplica una serie de
+operaciones sobre las ecuaciones del mismo, que no modifican su conjunto
+de soluciones. Estas operaciones son las siguientes:
+\begin{enumerate}[label=(\arabic*),itemsep=0em]
+\item Intercambiar el orden de dos ecuaciones.
+\item Multiplicar una ecuación por una constante $\lambda \in \reals$ no nula.
+\item Sumar a una ecuación el resultado de multiplicar otra por una constante
+$\lambda \in \reals$.
+\end{enumerate}
+
+Con el sistema en forma matricial, dichas operaciones entre ecuaciones se
+traducen a operaciones entre filas de la matriz, y pueden representarse como
+el producto por ciertas matrices particulares, llamadas \textbf{matrices
+elementales}. Una matriz elemental es cualquiera de las siguientes:
+\begin{enumerate}[label=(\arabic*)]
+\item Una matriz $\mat{P}$, obtenida de permutar filas o columnas de la
+    identidad; a esta matriz se la llama \textbf{matriz de permutación}.
+    Si $\mat{A}$ es una matriz cualquiera, entonces $\mat{P}\cdot\mat{A}$ es
+    una permutación de las filas de $\mat{A}$, y $\mat{A}\cdot\mat{P}$ es una
+    permutación de las columnas de $\mat{A}$.
+\item Una matriz $\mat{E_1} = \begin{bmatrix}
+    1      & \cdots & 0       & \cdots & 0      \\
+    \vdots & \ddots & \vdots  &        & \vdots \\
+    0      & \cdots & \lambda & \cdots & 0      \\
+    \vdots &        & \vdots  & \ddots & \vdots \\
+    0      & \cdots & 0       & \cdots & 1      \\
+\end{bmatrix}$, obtenida de cambiar el 1 de la $i$-ésima fila de la
+identidad por un valor $\lambda$ cualquiera. Si $\mat{A}$ es una matriz
+cualquiera, multiplicar a izquierda (a derecha) por $\mat{E_1}$ multiplica por
+$\lambda$ la $i$-ésima fila (columna) de $\mat{A}$.
+\item Una matriz $\mat{E_2} = \begin{bmatrix}
+    1      & \cdots  & 0      & \cdots & 0      \\
+    \vdots & \ddots  & \vdots &        & \vdots \\
+    0      & \cdots  & 1      & \cdots & 0      \\
+    \vdots & \lambda & \vdots & \ddots & \vdots \\
+    0      & \cdots  & 0      & \cdots & 1      \\
+\end{bmatrix}$, obtenida de cambiar un 0 de la identidad, ubicado
+en la posición $i,j$, por un valor $\lambda$ cualquiera. Si $\mat{A}$ es una
+matriz cualquiera, multiplicar a izquierda (a derecha) por $\mat{E_2}$
+la suma $\lambda$ veces la fila $j$-ésima (la columna $i$-ésima) a la
+fila $i$-ésima (la columna $j$-ésima) de $\mat{A}$.
+\end{enumerate}
+
+Las matrices elementales son inversibles, y el producto por la inversa de una
+matriz elemental revierte la operación que esta realiza sobre las filas de una
+matriz cualquiera.
+
+El algoritmo de eliminación gaussiana opera sobre la \textbf{matriz extendida}
+del sistema, que es la matriz
+\[ \mleft[ \begin{array}{cccc|c}
+    a_{1,1} & a_{1,2} & \dots  & a_{1,n} & b_{1} \\
+    a_{2,1} & a_{2,2} & \dots  & a_{2,n} & b_{2} \\
+    \vdots  & \vdots  & \ddots & \vdots  & \vdots \\
+    a_{n,1} & a_{n,2} & \dots  & a_{n,n} & b_{n} \\
+\end{array} \mright] \]
+aplicando operaciones de filas en forma consecutiva hasta llevarla a una forma
+triangular superior. Para esto, el algoritmo itera sobre las columnas de la
+matriz, buscando en cada paso colocar ceros en los lugares que se encuentran
+debajo de la diagonal, sumando un múltiplo apropiado de 
+
+\subsection{Factorización LU}

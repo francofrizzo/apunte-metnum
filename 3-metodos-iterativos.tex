@@ -1,0 +1,30 @@
+\section{Resolución iterativa de sistemas de ecuaciones lineales}
+\subsection{Métodos iterativos}
+Un \textbf{método iterativo} es un procedimiento para la resolución de un
+problema que se basa en construir una sucesión de elementos $\lbrace x_k
+\rbrace_{k \in \nats}$ tal que $\lim_{k\to\infty} x_k = x^\ast$, donde $x^\ast$
+es una solución del problema que se quiere resolver.
+Esto permite construir un algoritmo que se aproxime progresivamente a una
+solución calculando, en cada paso, el $k+1$-ésimo término de la sucesión a
+partir del $k$-ésimo. De esta forma, mediante sucesivas iteraciones, puede
+obtenerse una aproximación cada vez mejor a una solución del problema.
+
+En el caso de la resolución de un sistema de ecuaciones lineales $\mat{A}
+\cdot x = b$, se busca una sucesión de vectores $\lbrace x_k \rbrace_{k \in
+\nats}$ que converja a una solución del sistema, es decir, a un valor $x^\ast$
+tal que $\mat{A} \cdot x^\ast = b$.
+
+Es necesario contar con un criterio que permita decidir cuándo la aproximación
+ya es lo suficientemente buena, para así detener la ejecución del algoritmo.
+Esto se conoce como \textbf{criterio de parada}. Algunos de los criterios
+más comúnmente utilizados son:
+\begin{enumerate}[label=(\roman*)]
+\item Establecer una cantidad fija de iteraciones.
+\item Fijar un valor $\varepsilon > 0$ y parar cuando $||x_{k+1} - x_k||
+    < \varepsilon$, es decir, cuando el ritmo de convergencia sea lo
+    suficientemente lento.
+\end{enumerate}
+
+\subsection{Análisis de convergencia}
+\subsection{Método de Jacobi}
+\subsection{Método de Gauss-Seidel}

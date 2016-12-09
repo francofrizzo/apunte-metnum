@@ -1,0 +1,279 @@
+\section{Factorización de matrices}
+\subsection{Factorización de Cholesky}
+
+Sea $\mat{A} \in \reals^{n \times n}$. Decimos que $\mat{A}$ es
+\textbf{simétrica} si $\mat{A} = \mat{A}\trans$. Además, si $\mat{A}$ es
+simétrica, decimos que es \textbf{definida positiva} si
+$\fall{x \in \reals^{n}} x \neq 0 \Rightarrow x\trans \cdot \mat{A} \cdot x > 0$.
+
+Equivalentemente, las matrices simétricas y definidas positivas (s.d.p.)
+pueden caracterizarse como aquellas matrices cuyos \textbf{menores
+principales} son todos positivos. Los menores principales de una matriz
+$\mat{A}$ son los determinantes de las submatrices cuadradas de $\mat{A}$ que
+contienen su esquina superior izquierda.
+
+Dada una matriz $\mat{A}$, llamamos \textbf{factorización de Cholesky} a su
+escritura en la forma
+\[ \mat{A} = \mat{L} \cdot \mat{L}\trans \]
+donde $\mat{L}$ es una matriz triangular inferior con elementos positivos
+en la diagonal. Podemos demostrar que una matriz tiene factorización de
+Cholesky si y solo si es simétrica y definida positiva.
+
+\subsection{Factorización QR}
+
+Dos vectores $x, y \in \reals^{n}$ se dicen \textbf{ortogonales} ($x \bot y$)
+si su producto interno $\langle x,y \rangle = 0$. Un conjunto de vectores es
+\textbf{ortogonal} si sus elementos son ortogonales dos a dos. Un conjunto de
+vectores es \textbf{ortonormal} si es ortogonal y la norma de todos sus
+elementos es $1$. Los elementos de un conjunto ortonormal siempre son
+linealmente independientes.
+
+Decimos que una matriz $\mat{Q} \in \reals^{n \times n}$ es \textbf{ortogonal}
+si sus columnas forman un conjunto ortonormal. Se puede demostrar, además, que
+una matriz es ortogonal si y solo si es inversible y su transpuesta es igual a
+su inversa, es decir, $\mat{Q}\trans = \mat{Q}^{-1}$. El producto de matrices
+ortogonales es también ortogonal, es decir, si $\mat{Q_1}$ y $\mat{Q_2}$ son
+ortogonales, $\mat{Q_1} \cdot \mat{Q_2}$ es ortogonal.
+
+Las matrices ortogonales poseen la importante propiedad de estar asociadas a las
+transformaciones lineales que \emph{preservan norma 2}. En otras palabras, una
+matriz $\mat{Q} \in \reals^{n \times n}$ es ortogonal si y solo si, para todo
+$x \in \reals^n$, $\lVert \mat{Q} \cdot x \rVert_2 = \lVert x \rVert_2$.
+De esto se desprende también que el número de condición de una matriz
+ortogonal (con respecto a la norma 2) es $\kappa(\mat{Q}) = 1$. Todo esto nos
+indica que las matrices ortogonales son muy estables numéricamente, lo cual
+las vuelve muy atractivas a la hora de resolver problemas en forma
+computacional.
+
+Dada una matriz $\mat{A} \in \reals^{n \times n}$, existen $\mat{Q} \in
+\reals^{n \times n}$ ortogonal y $\mat{R} \in \reals^{n \times n}$ triangular
+superior tales que
+\[ \mat{A} = \mat{Q} \cdot \mat{R} \]
+Esta forma se conoce como \textbf{factorización QR} de $\mat{A}$.
+
+Una de las aplicaciones clave de esta factorización es la resolución
+de sistemas de ecuaciones lineales. Si se tiene el sistema $\mat{A} \cdot x =
+b$, utilizando la factorización QR, se lo puede reescribir como
+\[\mat{Q} \cdot \mat{R} \cdot x = b\]
+Al ser $\mat{Q}$ ortogonal, se puede multiplicar
+a ambos lados por $\mat{Q}\trans$ y se tiene
+\[\mat{Q}\trans \mat{Q} \cdot \mat{R} \cdot x = \mat{Q}\trans b\]
+o lo que es lo mismo,
+\[\mat{R} \cdot x = \mat{Q}\trans \cdot b\]
+Como $\mat{R}$ es triangular superior, este sistema se puede resolver de forma
+eficiente con sustitución hacia atrás, con la importante ventaja de que
+$\mat{Q}\trans$ es sumamente estable, evitando la introducción de errores
+numéricos al calcular el producto con $b$.
+
+Otra aplicación importante de la factorización QR es en la resolución del
+problema de cuadrados mínimos lineales, que será estudiado más adelante.
+
+\subsubsection{Método de Householder (Reflexiones)}
+\subsubsection{Método de Givens (Rotaciones)}
+\subsection{Descomposición en valores singulares}
+
+Sea $\mat{A} \in \reals^{m \times n}$ una matriz cualquiera, con $\rg(A) = r$.
+Entonces, existen
+\begin{itemize}
+\item una base ortonormal $\lbrace v_1, v_2, \dots, v_n \rbrace$ de $\reals^n$, y
+\item una base ortonormal $\lbrace u_1, u_2, \dots, u_m \rbrace$ de $\reals^m$
+\end{itemize}
+tales que
+\[ \mat{U}\trans \cdot \mat{A} \cdot \mat{V} = \mat{\Sigma} = \begin{bmatrix}
+\sigma_1 & 0        & \cdots   &    &          &          &          \\
+0        & \sigma_2 &          &          &          &          &          \\
+\vdots   &          & \ddots   &          &          &          &          \\
+         &          &          & \sigma_r &          &          &          \\
+         &          &          &          & 0        &          &          \\
+         &          &          &          &          & \ddots   &          \\
+         &          &          &          &          &          & 0
+\end{bmatrix} \]
+donde
+\begin{itemize}
+\item $\mat{V} = \begin{bmatrix}
+            &     &        &     \\
+        v_1 & v_2 & \dots  & v_n \\
+            &     &        &     \\
+    \end{bmatrix} \in \reals^{n \times n}$ y
+    $\mat{U} = \begin{bmatrix}
+            &     &        &     \\
+        u_1 & u_2 & \dots  & u_m \\
+            &     &        &     \\
+    \end{bmatrix} \in \reals^{m \times m}$ son ortogonales, y
+\item $\mat{\Sigma} \in \reals^{m \times n}$ es una matriz diagonal,
+    con $\sigma_i > 0 \fall{i = 1, \dots, r}$.
+\end{itemize}
+
+Los valores $\sigma_i$ se denominan los \textbf{valores singulares} de \mat{A}.
+
+\subsubsection{Demostración de la existencia}
+
+Queremos hallar $\mat{U}$, $\mat{V}$, $\mat{\Sigma}$ que cumplan la igualdad
+enunciada:
+\[ \mat{U}\trans \cdot \mat{A} \cdot \mat{V} = \mat{\Sigma} \]
+o, equivalentemente (usando la ortogonalidad de $\mat{U}$ y $\mat{V}$),
+\begin{multicols}{2}\noindent
+\[ \begin{aligned} \mat{A} \cdot \mat{V} &= \mat{U} \cdot \mat{\Sigma} \\
+    & \Updownarrow \\
+    \mat{A} \cdot \begin{bmatrix}
+            &     &        &     \\
+        v_1 & v_2 & \dots  & v_n \\
+            &     &        &     \\
+    \end{bmatrix} &= \begin{bmatrix}
+            &     &        &     \\
+        u_1 & u_2 & \dots  & u_m \\
+            &     &        &     \\
+    \end{bmatrix} \cdot \mat{\Sigma} \\
+    & \Updownarrow
+\end{aligned}
+\]
+\begin{numcases}{}
+    \mat{A} \cdot v_i = \sigma_i \cdot u_i & para $i = 1,\dots,r$
+        \label{eq:svd:caso1} \\
+    \mat{A} \cdot v_i = 0                  & para $i = r+1,\dots,n$
+        \label{eq:svd:caso2}
+\end{numcases}
+
+\columnbreak \noindent
+\[\begin{aligned} \mat{A}\trans \cdot \mat{U} &= \mat{V} \cdot \mat{\Sigma} \\
+    & \Updownarrow \\
+    \mat{A}\trans \cdot \begin{bmatrix}
+            &     &        &     \\
+        u_1 & u_2 & \dots  & u_m \\
+            &     &        &     \\
+    \end{bmatrix} &= \begin{bmatrix}
+            &     &        &     \\
+        v_1 & v_2 & \dots  & v_n \\
+            &     &        &     \\
+    \end{bmatrix} \cdot \mat{\Sigma} \\
+    & \Updownarrow
+\end{aligned}
+\]
+\begin{numcases}{}
+    \mat{A}\trans \cdot u_i = \sigma_i \cdot v_i & para $i = 1,\dots,r$
+        \label{eq:svd:caso3} \\
+    \mat{A}\trans \cdot u_i = 0                  & para $i = r+1,\dots,m$
+        \label{eq:svd:caso4}
+\end{numcases}
+
+\end{multicols}
+
+Buscaremos definir
+\begin{itemize}
+\item $v_1, \dots, v_n \in \reals^n$ ortonormales,
+\item $u_1, \dots, u_m \in \reals^m$ ortonormales, y
+\item $\sigma_1, \dots, \sigma_r > 0$
+\end{itemize}
+que cumplan las ecuaciones (\ref{eq:svd:caso1}), (\ref{eq:svd:caso2}),
+(\ref{eq:svd:caso3}) y (\ref{eq:svd:caso4}).
+
+En primer lugar, vemos que:
+\begin{enumerate}[label=(\roman*)]
+\item Para $i = 1, \dots, r$,
+\[ \begin{aligned}
+    \mat{A}\trans \cdot \mat{A} \cdot v_i &= \sigma_i \cdot \mat{A}\trans \cdot u_i \\
+    \mat{A}\trans \cdot \mat{A} \cdot v_i &= \sigma_i^2 \cdot v_i \\
+    \end{aligned} \]
+es decir, los $v_i$ deberán ser autovectores de $\mat{A}\trans \cdot \mat{A}$,
+con autovalor $\sigma_i^2$.
+\item Para $i = r+1, \dots, n$,
+\[ \mat{A}\trans \cdot \mat{A} \cdot v_i = \mat{A}\trans \cdot 0 = 0 \]
+es decir, los $v_i$ deberán ser autovectores de $\mat{A}\trans \cdot \mat{A}$,
+con autovalor $0$.
+\end{enumerate}
+
+Como $\mat{A}\trans \cdot \mat{A}$ es simétrica, existe una base ortonormal de
+$\reals^n$ compuesta por autovectores de $\mat{A}\trans \cdot \mat{A}$.
+Además, por ser semidefinida positiva, todos sus autovalores son no negativos.
+
+Por otra parte, tenemos que
+\[ \fall{x \in \reals^n} \mat{A} \cdot x = 0 \Leftrightarrow
+    \mat{A}\trans \cdot \mat{A} \cdot x \]
+dado que, trivialmente, $\mat{A} \cdot x = 0 \Rightarrow
+\mat{A}\trans \cdot \mat{A} \cdot x = 0$, mientras que
+$ \mat{A}\trans \cdot \mat{A} \cdot x = 0
+    \Rightarrow x\trans \cdot \mat{A}\trans \cdot \mat{A} \cdot x = 0
+    \Rightarrow \lVert \mat{A} \cdot x \rVert = 0
+    \Rightarrow \mat{A} \cdot x = 0$.
+Así, $\rg(\mat{A}\trans \cdot \mat{A}) = \rg(\mat{A}) = 0$, lo cual significa
+que $\mat{A}\trans \cdot \mat{A}$ tiene exactamente $n - r$ autovectores
+asociados al autovalor $0$.
+
+Definimos entonces $\lbrace v_1, \dots, v_n \rbrace$ como una base ortonormal
+de autovectores de $\mat{A}\trans \cdot \mat{A}$, ordenados de modo que los
+últimos $n-r$ son los asociados al autovalor $0$. Veamos que estos $v_i$
+cumplen con las condiciones necesarias.
+
+\begin{enumerate}[label=(\roman*)]
+\item Para $i = 1, \dots, r$, sea $\lambda_i$ el autovalor de $\mat{A}\trans
+    \cdot \mat{A}$ asociado al autovector $v_i$. Sabemos que $\lambda_i > 0$.
+    Definimos entonces:
+    \begin{itemize}
+    \item $\sigma_i = \sqrt{\lambda_i} > 0$.
+    \item $\displaystyle u_i = \frac{\mat{A} \cdot v_i}{\sigma_i}$.
+        Trivialmente, puede verse que satisfacen la ecuación
+        (\ref{eq:svd:caso1}).
+    \end{itemize}
+
+    Veamos que $u_1, \dots, u_r$ son ortonormales:
+    \begin{itemize}
+    \item $\displaystyle \lVert u_i \rVert_2^2
+        = \left( \frac{\mat{A} \cdot v_i}{\sigma_i} \right)\trans \cdot
+          \left( \frac{\mat{A} \cdot v_i}{\sigma_i} \right)
+        = \frac{1}{\sigma_i^2} (v_i\trans \cdot \mat{A}\trans
+          \cdot \mat{A} \cdot v_i)
+        = \frac{1}{\sigma_i^2} (v_i\trans \cdot \sigma_i^2 \cdot v_i)
+        = v_i\trans \cdot v_i
+        = \lVert v_i \rVert_2^2
+        = 1$.
+    \item $\displaystyle i \neq j \Rightarrow u_i\trans \cdot u_j
+        = \left( \frac{\mat{A} \cdot v_i}{\sigma_i} \right)\trans \cdot
+          \left( \frac{\mat{A} \cdot v_j}{\sigma_j} \right)
+        = \frac{v_i\trans \cdot \mat{A}\trans \cdot \mat{A} \cdot v_j}
+          {\sigma_i \cdot \sigma_j}
+        = \frac{v_i\trans \cdot \sigma_j^2 \cdot v_j}
+          {\sigma_i \cdot \sigma_j}
+        = \frac{\sigma_j}{\sigma_i} \cdot v_i\trans \cdot v_j
+        = 0$.
+    \end{itemize}
+
+    Verifiquemos, también, que cumplan la ecuación (\ref{eq:svd:caso3}):
+    \[ \mat{A}\trans \cdot u_i
+        = \frac{\mat{A}\trans \cdot \mat{A} \cdot v_i}{\sigma_i}
+        = \frac{\sigma_i^2 \cdot v_i}{\sigma_i}
+        = \sigma_i \cdot v_i \]
+
+\item Para $i = r+1, \dots, n$, ya vimos que, como $\mat{A}\trans \cdot
+    \mat{A} \cdot v_i = 0$, también $\mat{A} \cdot v_i = 0$, por lo que
+    se satisface la ecuación (\ref{eq:svd:caso2}).
+
+    Aún no definimos $u_{r+1}, \dots, u_m$. Lo hacemos de modo que sean una
+    base ortonormal de $\nul(\mat{A}\trans)$. Así, satisfacen la ecuación
+    (\ref{eq:svd:caso4}): $\mat{A}\trans \cdot u_i = 0$.
+
+    Solo falta ver que $\lbrace u_1, \dots, u_m \rbrace$ es una base
+    ortonormal de $\reals^m$. Ahora bien:
+    \begin{itemize}
+    \item es una base, dado que $\lbrace u_1, \dots, u_r \rbrace$ es una base de
+        $\im(\mat{A})$, $\lbrace u_{r+1},\dots,u_m \rbrace$ es una base de
+        $\nul(\mat{A}\trans)$, y $\im(\mat{A}) \oplus \nul(\mat{A}\trans) =
+        \reals^m$.
+    \item ya vimos que tanto $\lbrace u_1, \dots, u_r \rbrace$ como
+        $\im(\mat{A})$, $\lbrace u_{r+1},\dots,u_m \rbrace$ son conjuntos
+        ortonormales. Basta ver, entonces, que tomando $i = 1,\dots,r$ y
+        $j = r+1,\dots,m$, se cumple $u_i\trans \cdot u_j = 0$. En efecto,
+        $\displaystyle u_i\trans \cdot u_j
+            = \left( \frac{\mat{A} \cdot v_i}{\sigma_i} \right)\trans \cdot u_j
+            = \frac{1}{\sigma_i} \cdot v_i\trans \cdot \mat{A}\trans \cdot u_j
+            = \frac{1}{\sigma_i} \cdot v_i\trans \cdot 0
+            = 0$.
+
+    \end{itemize}
+
+\end{enumerate}
+
+
+
+
+\subsubsection{Forma de Hessenberg}
+
