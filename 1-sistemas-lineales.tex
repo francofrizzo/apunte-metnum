@@ -70,9 +70,8 @@ diagonal, entonces sus ecuaciones son de la forma
 \end{aligned} \right. \]
 de donde pueden despejarse fácilmente valores para cada $x_i$. Se puede notar
 que existirá una solución única si y solo si $\fall{1 \leq i \leq n} a_{i,i}
-\neq 0$.
-% En dicho caso, la solución del sistema puede encontrarse con un costo
-% lineal en la cantidad de ecuaciones, es decir, $\ord{n}$.
+\neq 0$. En tal caso, el costo de hallarla será lineal en la cantidad de
+ecuaciones, es decir, $\ord{n}$.
 
 Por otra parte, si la matriz del sistema es triangular superior, puede
 aplicarse un algoritmo llamado \textbf{sustitución hacia atrás}
@@ -101,6 +100,10 @@ Si la matriz del sistema es triangular inferior, se puede modificar el
 algoritmo para comenzar despejando en la primera ecuación. A este
 procedimiento se lo conoce como \textbf{sustitución hacia adelante}
 (\emph{forward substitution}).
+
+Tanto el algoritmo de sustitución hacia adelante como el algoritmo de
+sustitución hacia atrás tienen un costo cuadrático en la cantidad de
+ecuaciones del sistema ($\ord{n^2}$).
 
 \subsection{Eliminación gaussiana}
 
@@ -160,15 +163,34 @@ matriz cualquiera.
 
 El algoritmo de eliminación gaussiana opera sobre la \textbf{matriz extendida}
 del sistema, que es la matriz
-\[ \mleft[ \begin{array}{cccc|c}
+\[ \mat{\tilde A} = \mleft[ \begin{array}{cccc|c}
     a_{1,1} & a_{1,2} & \dots  & a_{1,n} & b_{1} \\
     a_{2,1} & a_{2,2} & \dots  & a_{2,n} & b_{2} \\
     \vdots  & \vdots  & \ddots & \vdots  & \vdots \\
     a_{n,1} & a_{n,2} & \dots  & a_{n,n} & b_{n} \\
 \end{array} \mright] \]
-aplicando operaciones de filas en forma consecutiva hasta llevarla a una forma
-triangular superior. Para esto, el algoritmo itera sobre las columnas de la
-matriz, buscando en cada paso colocar ceros en los lugares que se encuentran
-debajo de la diagonal, sumando un múltiplo apropiado de 
+Como cada iteración efectúa cambios sobre la matriz $\mat{\tilde A}$,
+utilizaremos la notación $\mat{\tilde A}^{(k)}$ para referirnos al resultado
+luego de la $k$-ésima iteración del proceso, mientras que con $a^{(k)}_{i,j}$
+y $b^{(k)}_i$ haremos referencia a cada uno de sus elementos.
+
+La idea del algoritmo es aplicar operaciones de filas en forma consecutiva
+hasta llevar $\mat{\tilde A}$ a una forma triangular superior. El método itera
+sobre las columnas de la matriz, buscando en cada paso colocar ceros en los
+lugares que se encuentran debajo de la diagonal. Es decir, el invariante del
+algoritmo es que, en la $k$-ésima iteración, todas las columnas hasta la $k -
+1$ tienen ceros debajo de la diagonal, asegurando que, tras $k$ iteraciones,
+la matriz quedará en forma triangular superior.
+
+Más precisamente, en la $k$-ésima iteración, se resta a todas las filas a
+partir de la $k + 1$ un múltiplo de la fila $k$-ésima, con un factor
+$\lambda^{(k)}_i$ elegido convenientemente para cada fila $i$. Como, para todo
+$i = k+1,\dots,n$, los coeficientes de la fila $i$-ésima quedarán
+\[ a^{(k)}_{i,j} = a^{(k-1)}_{i,j} - \lambda^{(k)}_i \cdot a^{(k-1)}_{k,j} \]
+y se quiere dejar un $0$ en la columna $k$-ésima, es decir, $a^{(k)}_{i,k} =
+0$, debe tomarse, para cada fila $i$, el multiplicador
+\[ \lambda^{(k)}_i = \frac{a^{(k-1)}_{i,k}}{a^{(k-1)}_{k,k}} \]
+
+
 
 \subsection{Factorización LU}
