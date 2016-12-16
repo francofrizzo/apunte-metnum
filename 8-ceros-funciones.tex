@@ -1,5 +1,297 @@
-\section{Resolución de ecuaciones no lineales en una variable}
+% -*- root: apunte-metodos.tex -*-
+
+\section{Ceros de funciones}
+
+Como ya hemos visto, a la hora de resolver sistemas de ecuaciones lineales,
+existe una gran variedad de métodos entre los cuales elegir. No obstante, si
+bien las ecuaciones lineales permiten modelar, o al menos aproximar, una
+inmensa cantidad de problemas, en muchas ocasiones se vuelve necesario
+resolver ecuaciones que no son lineales. Si bien para algunos casos
+particulares existen resoluciones analíticas, esto no es cierto en el caso
+general, haciendo que se trate de un problema complejo, que depende en gran
+medida de características particulares de la ecuación que se busca resolver.
+
+En general, una \textbf{ecuación} no (necesariamente) lineal \textbf{en una
+variable real} es una expresión de la forma $f(x) = g(x)$, donde la variable
+$x$ representa un valor desconocido. Para resolver la ecuación, se busca
+para esta variable un valor $x^\ast \in \reals$ que satisfaga la igualdad.
+
+Si definimos $h(x) = f(x) - g(x)$, lo que buscamos ahora es un valor $x^\ast$
+satisfaga $h(x^\ast) = 0$, es decir, un \textbf{cero} de la función $h$.
+A continuación, estudiaremos algunos métodos iterativos que permiten hallar
+ceros de funciones en el caso general. Es decir, dada una función $f$,
+buscaremos definir una sucesión
+$\lbrace x_k \rbrace_{k \in \nats} \in \reals^\nats$ de modo que
+$\lim_{k \to \infty} x_k = x^\ast$, con $f(x^\ast) = 0$.
+
+\subsection{Orden de convergencia}
+
+Sea $\lbrace x_k \rbrace_{k \in \nats}$ una sucesión tal que
+$\lim_{k \to \infty} x_k = x^\ast$. Decimos que
+$\lbrace x_k \rbrace_{k \in \nats}$ tiene \textbf{orden de convergencia} $p$
+si
+\[ \lim_{k \to \infty} \frac{\lvert x_{k+1} - x^\ast \rvert}
+    {\left( \lvert x_k - x^\ast \rvert \right)^p} = c > 0 \]
+z
+Informalmente, esto se puede interpretar de la siguiente forma: tomando
+valores suficientemente grandes de $k$, se cumple que
+$\lvert x_{k+1} - x^\ast \rvert \approx c \cdot \left(\lvert x_k - x^\ast \rvert\right)^p$
+para algún $c > 0$.
+
+\begin{itemize}
+\item Si $p = 1$, decimos que la convergencia es \textbf{lineal}.
+\item Si $p = 2$, decimos que la convergencia es \textbf{cuadrática}.
+\item Si $1 < p < 2$, decimos que la convergencia es \textbf{superlineal}.
+\end{itemize}
+
+El orden de convergencia nos permite estimar la velocidad con la que las
+aproximaciones arrojadas por el método analizado convergen al valor buscado.
+Un orden de convergencia más alto indica una convergencia más rápida.
+
+% \begin{tikzpicture}
+%     \begin{axis} [
+%         grid=both,
+%         samples=11,
+%         width=12 cm,
+%         height=8 cm,
+%         % restrict y to domain=0.0000000000001:1,
+%     ]
+%         \addplot[smooth, only marks, mark=*, domain=0:10, color=violet] {(1/2)^x};
+%         \addplot[smooth, only marks, mark=*, domain=0:10, color=teal] {(1/2)^(2^x-1)};
+%     \end{axis}
+% \end{tikzpicture}
+
+Contamos además con el siguiente criterio para comparar el orden de
+convergencia de dos sucesiones: sean $\lbrace \alpha_k \rbrace_{k \in \nats}$,
+$\lbrace \beta_k \rbrace_{k \in \nats}$ dos sucesiones tales que
+$\alpha_k \xrightarrow{k \to \infty} \alpha$ y
+$\beta_k \xrightarrow{k \to \infty} 0$.
+Si existe algún $k_0 \in \nats$ tal que, para todo $k \geq k_0$,
+$\lvert \alpha_k - \alpha \rvert \leq \lvert \beta_k \rvert$,
+entonces $\alpha_k$ se acerca a $\alpha$ al menos tan rápidamente como $\beta_k$
+se acerca a $0$. En tal caso, si $\lbrace \beta_k \rbrace_{k \in \nats}$ tiene
+orden de convergencia $p$, decimos que $\lbrace \alpha_k \rbrace_{k \in
+\nats}$ tiene orden de convergencia al menos $p$.
+
+\subsection{Criterios de parada}
+
+Es necesario contar con un criterio que permita decidir cuándo la aproximación
+ya es lo suficientemente buena, para así detener la ejecución del algoritmo.
+Esto se conoce como \textbf{criterio de parada}. Algunos de los criterios más
+comúnmente utilizados en algoritmos para la búsqueda de ceros de funciones
+son:
+\begin{enumerate}[label=(\roman*)]
+\item Establecer una cantidad fija de iteraciones. Es el criterio más sencillo,
+    pero es insensible a las características del método usado y no permite
+    decidir \emph{a priori} la precisión de los resultados a obtener.
+\item Fijar un valor $\varepsilon > 0$ y parar cuando
+    $\lvert x_{k+1} - x_k \rvert < \varepsilon$, es decir, cuando el ritmo de
+    convergencia sea lo suficientemente lento. Si bien es un criterio más
+    sofisticado, puede dar resultados erróneos. Por ejemplo, considerando la
+    sucesión $x_k = \sum_{i=0}^k \frac{1}{k} = 1 + \frac{1}{2} + \dots +
+    \frac{1}{k}$, se tiene que $\lvert x_{k+1} - x_k \rvert = \frac{1}{k+1}
+    \xrightarrow{k \to \infty} 0$. Luego, para cualquier valor de
+    $\varepsilon$, el criterio terminará y arrojará un resultado
+    supuestamente cercano al límite de la sucesión, que en realidad es
+    divergente.
+\item Fijar un valor $\varepsilon > 0$ y parar cuando
+    $\frac{\lvert x_{k+1} - x_k \rvert}{\lvert x_k \rvert} < \varepsilon$. La
+    idea, en este caso, es testear el error relativo de la aproximación.
+    Sufre de problemas similares al criterio anterior, pero es un buen
+    candidato a utilizar en la ausencia de información adicional.
+\item Fijar un valor $\varepsilon > 0$ y parar cuando $f(x_k) < \varepsilon$.
+    También puede dar falsos positivos, ya que $f$ puede tomar valores
+    arbitrariamente cercanos a $0$ sin que esto indique la cercanía de una
+    raíz.
+\item Fijar un valor $\varepsilon > 0$ y parar cuando $\lvert f(x_{k+1}) -
+    f(x_k) \rvert < \varepsilon$.
+\item Fijar un valor $\varepsilon > 0$ y parar cuando $\frac{\lvert f(x_{k+1})
+    - f(x_k) \rvert}{\lvert f(x_k)\rvert} < \varepsilon$.
+\end{enumerate}
+
+Como puede verse, todos estos criterios tienen casos patológicos en los que
+arrojan resultados falsos. Por este motivo, la elección del criterio de parada
+debe hacerse teniendo en cuenta las características del problema a resolver.
+Además, es posible emplearlos de forma combinada; por ejemplo, es común
+establecer un límite fijo de iteraciones incluso aunque se use un criterio de
+parada distinto, para evitar la posibilidad de caer en un \emph{loop} infinito
+si la sucesión diverge.
+
 \subsection{Método de la bisección}
+
+Consideremos una función continua $f : [a,b] \to \reals$ tal que $f(a) \cdot
+f(b) < 0$; es decir, cuyos valores en los extremos tienen signos opuestos.
+Entonces, por el teorema de Bolzano, la función tiene algún cero en el
+intervalo $(a,b)$, es decir, existe $x^\ast \in (a,b)$ tal que $f(x^\ast) = 0$.
+
+El \textbf{algoritmo de la bisección} permite, bajo dichas condiciones,
+encontrar este valor $x^\ast$. La idea es similar a la búsqueda binaria: se
+comienza por dividir el intervalo $(a,b)$ en dos mitades. Necesariamente
+el valor $x^\ast$ buscado estará en una de estas mitades; se identifica de cuál
+de las dos se trata, y se repite el procedimiento en el nuevo intervalo.
+De esta forma, con cada iteración, se obtiene un intervalo de menor longitud
+que contiene a la raíz buscada, lo cual permite aproximarla con precisión
+arbitraria.
+
+El pseudocódigo del algoritmo es el siguiente (debe ser completado con algún
+criterio de parada, por ejemplo, cualquiera de los estudiados en la sección
+anterior).
+
+\begin{algorithm}[H]
+\caption{Algoritmo de la bisección}
+\label{algo:biseccion}
+
+\Input{$a, b \in \reals$, y $f : [a,b] \to \reals$ tal que
+    $f(a) \cdot f(b) < 0$}
+\Output{una aproximación de una raíz $x^\ast \in (a,b)$ de $f$}
+
+$a_0 \gets a$ \;
+$b_0 \gets b$ \;
+
+\For {$k = 0,1,2,\dots$} {
+    $c_k \gets \frac{a_k + b_k}{2}$ \;
+    \If {$f(c_k) = 0$} {
+        \Return $c_k$ \;
+    }
+    \eIf {$f(c_k) \cdot f(a_k) < 0$} {
+        $a_{k+1} \gets a_k$ \;
+        $b_{k+1} \gets c_k$ \;
+    }
+    {
+        $a_{k+1} \gets c_k$ \;
+        $b_{k+1} \gets b_k$ \;
+    }
+}
+
+\end{algorithm}
+
+Es claro que, en el método de la bisección, $c_k \xrightarrow{k \to \infty}
+x^\ast$ con $f(x^\ast) = 0$. Más aún, para todo $k \in \nats$, tanto $x^\ast$
+como $c_k$ pertenecen al intervalo $[a_{k+1}, b_{k+1}]$, y como la longitud de
+estos intervalos se reduce a la mitad en cada iteración, tenemos que
+\[ \lvert c_k - x^\ast \rvert \leq \lvert b_{k+1} - a_{k+1} \rvert =
+    \left\lvert \frac{b - a}{2^{k+1}} \right\rvert \]
+es decir, el método de la bisección converge a $x^\ast$ al menos tan
+rápidamente como la sucesión $\left\lbrace \frac{b - a}{2^{k+1}}
+\right\rbrace_{k \in \nats}$ converge a $0$. Esta última tiene un
+orden de convergencia lineal, lo cual nos permite afirmar que el método de la
+bisección se aproxima al menos linealmente a una raíz de $f$.
+
+% \begin{tikzpicture}
+%     \begin{axis} [
+%         grid = both,
+%     ]
+%         \addplot[smooth, no marks] {x^2};
+%     \end{axis}
+% \end{tikzpicture}
+
+\subsection{Algoritmos de punto fijo}
+
+Dada una función $g : [a,b] \to \reals$, se llama \textbf{punto fijo} de $g$ a
+un valor $p \in [a,b]$ tal que $g(p) = p$.
+
+El problema de encontrar ceros de funciones está fuertemente relacionado con
+la búsqueda de puntos fijos. En efecto, dada una función $f$, existen diversas
+formas de definir una función $g$ de modo tal que las raíces de $f$ sean los
+puntos fijos de $g$. Por ejemplo, para $\lambda \neq 0$, se puede definir la
+función $g(x) = x + \lambda \cdot f(x)$. Así, para cualquier valor $x^\ast$,
+\[ g(x^\ast) = \lambda \cdot f(x^\ast) + x^\ast = x^\ast
+    \qquad \text{sii} \qquad f(x^\ast) = 0 \]
+por lo que $x^\ast$ será un punto fijo de $g$ si y solo si es una raíz de $f$.
+
+La ventaja de transformar el problema de esta manera radica en que existe una
+idea sumamente sencilla que puede aplicarse para buscar los puntos fijos de
+una función a través de un método iterativo. Considerando una función $g :
+[a,b] \to \reals$ cualquiera y fijando algún punto inicial $x_0 \in [a,b]$, se
+puede definir la sucesión $\lbrace x_k \rbrace_{k \in \nats}$ con
+\[ x_{k+1} = g(x_k) \]
+Si existe $\lim_{k \to \infty} x_k = x^\ast$, tomando límite de ambos lados en
+la ecuación anterior, resulta que
+\[ x^\ast = \lim_{k \to \infty} x_{k+1} = \lim_{k \to \infty} g(x_k) = g(x^\ast) \]
+por lo que $x^\ast$ deberá ser un punto fijo de $g$.
+
+Queda por determinar bajo qué condiciones es posible asegurar que este método
+converge, y que lo hace en forma eficiente; a continuación se enuncian algunos
+resultados que resultan útiles en este sentido. Sea una función $g: [a,b] \to
+[a,b]$. Se cumplen:
+
+\begin{enumerate}[label=(\roman*)]
+\item Si $g$ es continua, entonces $g$ tiene al menos un punto fijo en $[a,b]$.
+
+    % \emph{Demostración:}
+    % Si $g(a) = a$ o $g(b) = b$, la afirmación es trivialmente verdadera. En
+    % caso contrario, debe ser $g(a) > a$ y $g(b) < b$. Considerando
+    % entonces la función continua $h(x) = g(x) - x$, tenemos que $h(a) > 0$ y
+    % $h(b) < 0$. Aplicando el teorema de Bolzano, existe $p \in (a,b)$ tal que
+    % $h(p) = 0$, y por lo tanto, $g(p) = p$.
+\item Si, además, $g$ es derivable en $(a,b)$ y existe alguna constante $c$,
+    con $0 < c < 1$, tal que
+    $\fall{x \in (a,b)} \lvert g'(x) \rvert \leq c$,
+    entonces el punto fijo es único.
+
+    % \emph{Demostración:}
+    % Sean $p_1, p_2 \in [a,b]$ puntos fijos de $g$. Supongamos $p_1 \neq
+    % p_2$. Por el Teorema del Valor Medio, existe $\xi \in (a,b)$ tal que
+    % $\lvert g'(\xi) \rvert
+    % = \left\lvert \frac{g(p_1) - g(p_2)}{p_1 - p_2} \right\rvert
+    % = \left\lvert \frac{p_1 - p_2}{p_1 - p_2} \right\rvert = 1$, lo cual
+    % es absurdo, ya que $\fall{x \in (a,b)} \lvert g'(x) \rvert \leq k < 1$.
+    % Debe ser, entonces, que $p_1 = p_2$.
+\item Bajo estas condiciones, para cualquier $x_0 \in [a,b]$, la sucesión dada
+    por $x_{k+1} = g(x_k)$ converge al único punto fijo de $g$ en $[a,b]$.
+
+    % \emph{Demostración:}
+    % Sabemos, por el Teorema del Valor Medio, que para todo $k \in \nats_{>0}$
+    % existe un valor $\xi_k \in (a,b)$ tal que
+    % \[ \lvert x_k - x^\ast \rvert = \lvert g(x_{k-1}) - g(x^\ast) \rvert =
+    %     \lvert g'(\xi_k) \rvert \cdot \lvert x_{k-1} - x^\ast \rvert \leq
+    %     c \cdot \lvert x_{k-1} - x^\ast \rvert \]
+    % Aplicando sucesivas veces esta desigualdad, vemos que
+    % \[ 0 \leq \lvert x_k - x^\ast \rvert
+    %     \leq c \cdot \lvert x_{k-1} - x^\ast \rvert
+    %     \leq c^2 \cdot \lvert x_{k-2} - x^\ast \rvert \leq \dots
+    %     \leq c^k \cdot \lvert x_{0} - x^\ast \rvert \]
+    % Como $0 < c < 1$, $c^k \xrightarrow{k \to \infty} 0$, y tomando límite,
+    % obtenemos
+    % \[ 0 \leq \lim_{k \to \infty} \lvert x_k - x^\ast \rvert
+    %     \leq \lim_{k \to \infty} c^k \cdot \lvert x_{0} - x^\ast \rvert = 0 \]
+    % de donde se sigue que $\lim_{k \to \infty} \lvert x_k - x^\ast \rvert = 0$,
+    % es decir, $\lim_{k \to \infty} x_k = x^\ast$.
+    \label{punto-fijo:cond-convergencia}
+\end{enumerate}
+
+En cuanto a la velocidad de convergencia, podemos afirmar que:
+
+\begin{enumerate}[label=(\roman*),resume]
+\item Bajo las hipótesis del punto \ref{punto-fijo:cond-convergencia}
+    anterior (es decir, $g:[a,b] \to [a,b]$ continua, derivable en $(a,b)$,
+    con $\lvert g'(x) \rvert \leq c < 1$ para algún valor $c$), pueden
+    extraerse cotas que relacionan el error de aproximación cometido por el
+    algoritmo en la iteración $k$-ésima con el valor de $c^k$. Esto permite
+    deducir que, cuanto menor sea la cota que pueda imponerse a la derivada de
+    la función $g$, más rápida será la convergencia garantizada por el
+    algoritmo.
+
+\item Si se tiene una función $g \in \mathcal{C}^r([a,b])$ (es decir, $g$ es
+    $r$ veces derivable en $(a,b)$ con derivada continua) y un valor de $x_0$
+    tales que la iteración $x_{k+1} = g(x_k)$ converge a un punto fijo $x^\ast
+    \in (a,b)$, y se cumple que
+    \begin{itemize}
+    \item $g'(x^\ast) = g''(x^\ast) = \dots = g^{(r-1)}(x^\ast) = 0$, y
+    \item $g^{(r)}(x^\ast) \neq 0$,
+    \end{itemize}
+    entonces el orden de convergencia de $\lbrace x_k \rbrace_{k \in \nats}$
+    es $r$.
+\end{enumerate}
+
+A continuación, veremos cómo pueden aprovecharse estos resultados para
+convertir el problema de hallar ceros de una función en un problema de punto
+fijo, asegurando que la sucesión obtenida converge y que lo hace de manera
+rápida.
+
 \subsection{Método de Newton}
+
+
+
 \subsection{Método de la secante}
 \subsection{Método \emph{regula falsi}}

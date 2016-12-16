@@ -3,6 +3,7 @@
 \usepackage{multicol}
 
 \usepackage[spanish]{babel}
+\spanishlcroman
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -31,12 +32,20 @@
 \usepackage{float}
 \usepackage[center]{caption}
 
+\usepackage[onelanguage, spanish]{algorithm2e}
+    \NoCaptionOfAlgo
+    \LinesNumbered\RestyleAlgo{ruled}\IncMargin{1em}\DontPrintSemicolon
+    \SetArgSty{}\SetCommentSty{textsf}\SetFuncSty{textsf}
+    \SetKwInput{Input}{Entrada}
+    \SetKwInput{Output}{Salida}
+    \SetKwProg{For}{para}{ hacer}{fin}
+    \SetKwProg{Fn}{función}{:}{fin}
+
 \newcommand\myauthor{Franco Frizzo}
 \newcommand\mytitle{Apunte de Métodos Numéricos}
 \newcommand\mydate{Diciembre de 2016}
 
-\usepackage[pdftex,
-            pdfauthor={\myauthor},
+\usepackage[pdfauthor={\myauthor},
             pdftitle={\mytitle},
             hidelinks]{hyperref}
 
