@@ -1,6 +1,87 @@
 % -*- root: apunte-metodos.tex -*-
 
 \section{Integración numérica}
+
+El cálculo de \textbf{integrales} es un problema matemático muy común, que
+tiene multitud de aplicaciones en diversos campos de la ciencia y de la
+ingeniería: cálculo de áreas y volúmenes, obtención de ciertas magnitudes
+físicas a partir de otras (desplazamiento a partir de la velocidad, por
+ejemplo), etc. La forma clásica de calcular integrales es analítica: se busca
+una primitiva de la función a integrar, que luego se evalúa en sus dos
+extremos. Sin embargo, esta solución no siempre es factible. Por ejemplo,
+existen funciones cuya integral analítica es una expresión complicada de
+obtener o de evaluar computacionalmente, o incluso algunas para las que no
+existe una expresión analítica conocida. Peor aún, a veces es necesario
+integrar funciones de las que se conocen únicamente algunos valores (por
+ejemplo, muestras obtenidos empíricamente), volviendo imposible la integración
+analítica.
+
+En estos casos, es útil contar con métodos que permitan aproximar el valor de
+una integral de manera numérical; esto en general se hace computando una suma
+finita de valores, que pueden ser integrales de funciones más sencillas, por
+medio de lo que se conoce como \textbf{fórmula de cuadratura}. Una opción muy
+utilizada es construir fórmulas de cuadratura a partir de polinomios
+interpoladores, ya que constituyen una buena aproximación de la función a
+integrar, sus integrales son sencillas de calcular analíticamente y pueden
+ser evaluadas en forma eficiente, y permiten calcular una cota para el
+error cometido en la aproximación.
+
 \subsection{Regla del trapecio}
+
+Consideremos una función $f \in \mathcal{C}^2([a,b])$, para la cual queremos
+calcular
+\[ \int_a^b f(x) \,dx \]
+para la que queremos derivar una fórmula de cuadratura a partir del polinomio
+interpolador de Lagrange en los puntos $x_0 = a$ y $x_1 = b$. Escribimos $f(x)
+= P(x) + E(x)$, donde $P(x)$ es este polinomio y $E(x)$ representa el error de
+aproximación para cada punto. Así,
+\[ P(x) =  f(x_0) \cdot \frac{x - x_1}{x_0 - x_1}
+    + f(x_1) \cdot \frac{x - x_0}{x_1 - x_0}
+    \qquad \text{y} \qquad
+    E(x) = \frac{f''(\xi_x)}{2} \cdot (x-x_0) \cdot (x-x_1) \]
+
+Por un lado,
+\[ \begin{aligned} \int_{x_0}^{x_1} P(x) \,dx
+    &= \int_{x_0}^{x_1} f(x_0) \cdot \frac{x - x_1}{x_0 - x_1}
+        + f(x_1) \cdot \frac{x - x_0}{x_1 - x_0} \,dx \\
+    &= \left. \left[ f(x_0) \cdot \frac{(x - x_1)^2}{2 \cdot (x_0 - x_1)} + f(x_1) \cdot
+        \frac{(x - x_0)^2}{2 \cdot (x_1 - x_0)} \right] \right\rvert_{x_0}^{x_1} \\
+    &= \frac{x_1 - x_0}{2} \cdot \left[ f(x_1) + f(x_0) \right]
+    \end{aligned} \]
+
+Por otra parte,
+\[ \begin{aligned} \int_{x_0}^{x_1} E(x) \,dx
+    &= \int_{x_0}^{x_1} \frac{f''(\xi_x)}{2} \cdot (x-x_0) \cdot (x-x_1) \,dx
+        && \text{para algún $\xi_x \in (x_0,x_1)$} \\
+    &= \frac{f''(\xi)}{2} \cdot \int_{x_0}^{x_1} (x-x_0) \cdot (x-x_1) \,dx
+        && \text{para algún $\xi \in (x_0,x_1)$} \\
+    &= \frac{f''(\xi)}{2} \cdot \left. \left[ \frac{x^3}{3} - \frac{x_1 + x_0}{2}
+        \cdot x^2 + x_0 \cdot x_1 \cdot x \right] \right\rvert_{x_0}^{x_1} \\
+    &= - \frac{(x_1 - x_0)^3}{12} \cdot f''(\xi)
+    \end{aligned} \]
+
+Entonces, llamando $h = x_1 - x_0$, tenemos
+
+\[ \begin{aligned} \int_a^b f(x) \,dx
+    &= \int_{x_0}^{x_1} P(x) \,dx + \int_{x_0}^{x_1} E(x) \,dx \\
+    &= \frac{h}{2} \cdot \left[ f(x_1) + f(x_0) \right] - \frac{h^3}{12} \cdot f''(\xi)
+    \end{aligned} \]
+
+Esta formulación de la integral de $f$ recibe la denominación de \textbf{regla del
+trapecio} debido a que, cuando los valores de $f(x_0)$ y $f(x_1)$ tienen igual
+signo, se la puede interpretar gráficamente como el cálculo del área del
+trapecio que queda bajo la recta que los une, como puede verse en la
+Figura (fig).
+
+(GRÁFICO DE LA REGLA DEL TRAPECIO)
+
+Podemos notar que el término del error está multiplicado por la segunda
+derivada de $f$. Por este motivo, si $f$ es tal que $f''(x)$ se anula en todo
+punto, es decir, si se trata de un polinomio de grado menor o igual que $1$,
+el término del error es idénticamente $0$ y la aproximación obtenida para la
+integral es exacta.
+
 \subsection{Regla de Simpson}
+
+
 \subsection{Métodos adaptativos}
