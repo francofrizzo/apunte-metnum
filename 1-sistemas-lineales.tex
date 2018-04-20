@@ -12,21 +12,23 @@ forma
 \end{matrix} \right. \]
 donde los $a_{i,j}$ y los $b_i$ son números reales.
 
-Los sistemas de ecuaciones lineales admiten también la representación matricial
-
+Los sistemas de ecuaciones lineales admiten también la representación
+matricial
 \[ \mat{A} \cdot x = b \]
-
 donde $\mat{A} \in \reals ^{n \times n}$, $x, b \in \reals^{n}$. Esta
 representación nos facilitará tanto su comprensión como su tratamiento
 computacional.
 
-Las variables $x_1, \dots, x_n$ se denominan las \textbf{incógnitas} del sistema.
+Las variables $x_1, \dots, x_n$ se denominan las \textbf{incógnitas} del
+sistema.
 Una \textbf{solución} de un sistema de ecuaciones lineales es un conjunto de
-valores para las incógnitas que satisfacen simultáneamente todas las ecuaciones.
+valores para las incógnitas que satisfacen simultáneamente todas las
+ecuaciones.
 
 Un sistema de ecuaciones lineales puede no tener solución, tener solución
 única, o tener infinitas soluciones. Si la matriz asociada al sistema es
-inversible (o, lo que es lo mismo, sus columnas son linealmente independientes)
+inversible (o, lo que es lo mismo, sus columnas son linealmente
+independientes)
 la solución será única. Si, por el contrario, la matriz es singular,
 podría pasar que el sistema no tenga solución o que tenga infinitas de ellas.
 
@@ -66,21 +68,22 @@ diagonal, entonces sus ecuaciones son de la forma
     a_{1,1} x_1 &= b_1 \\
     a_{2,2} x_2 &= b_2 \\
     \vdots \\
-    a_{n,n} x_n &= b_n \\
+    a_{n,n} x_n &= b_n, \\
 \end{aligned} \right. \]
 de donde pueden despejarse fácilmente valores para cada $x_i$. Se puede notar
 que existirá una solución única si y solo si $\fall{1 \leq i \leq n} a_{i,i}
-\neq 0$. En tal caso, el costo de hallarla será lineal en la cantidad de
-ecuaciones, es decir, $\ord{n}$.
+\neq 0$, condición que equivale a que la matriz sea inversible. En tal caso,
+el costo de hallarla será lineal en la cantidad de ecuaciones, es decir,
+$\ord{n}$.
 
 Por otra parte, si la matriz del sistema es triangular superior, puede
 aplicarse un algoritmo llamado \textbf{sustitución hacia atrás}
 (\emph{backward substitution}). El mismo consiste en comenzar a partir de la
 última ecuación, que tiene la forma
-\[ a_{n,n} x_n = b_n \]
-de donde es sencillo depejar un valor para $x_n$. Luego, en la ecuación
+\[ a_{n,n} x_n = b_n, \]
+de donde es sencillo despejar un valor para $x_n$. Luego, en la ecuación
 anterior, que tiene la forma
-\[ a_{n-1,n-1} x_{n-1} + a_{n-1,n} x_n = b_{n-1} \]
+\[ a_{n-1,n-1} x_{n-1} + a_{n-1,n} x_n = b_{n-1}, \]
 puede reemplazarse el valor hallado para $x_n$, obteniendo así un valor para
 $x_{n-1}$. Este procedimiento se repite con las ecuaciones superiores,
 hasta haber despejado todas las incógnitas del sistema. Al igual que en el
@@ -91,9 +94,9 @@ Así, la solución hallada mediante el algoritmo de sustitución hacia atrás
 puede describirse mediante las siguientes ecuaciones:
 \[ \left\lbrace \begin{aligned}
     x_{n} &= \frac{b_{n}}{a_{n,n}} \\
-    x_{n-1} &= \frac{b_{n-1} - a_{n-1,n}x_{n}}{a_{n-1,n-1}} \\
+    x_{n-1} &= \frac{b_{n-1} - a_{n-1,n}\cdot x_{n}}{a_{n-1,n-1}} \\
     \vdots \\
-    x_{1} &= \frac{b_{1} - a_{1,2}x_{2} - \dots - a_{1,n}x_{n}}{a_{1,1}} \\
+    x_{1} &= \frac{b_{1} - a_{1,2}\cdot x_{2} - \dots - a_{1,n}\cdot x_{n}}{a_{1,1}} \\
 \end{aligned} \right. \]
 
 Si la matriz del sistema es triangular inferior, se puede modificar el
@@ -110,7 +113,8 @@ ecuaciones del sistema ($\ord{n^2}$).
 Decimos que dos sistemas de ecuaciones son \textbf{equivalentes} si tienen el
 mismo conjunto de soluciones. El algoritmo de \textbf{eliminación gaussiana}
 consiste en transformar un sistema de ecuaciones cualquiera en otro
-equivalente, pero que se encuentre en forma triangular superior. De esta forma,
+equivalente, pero que se encuentre en forma triangular superior. De esta
+forma,
 puede aplicarse el procedimiento de sustitución hacia atrás para encontrar
 las soluciones del sistema original.
 
@@ -126,8 +130,9 @@ $\lambda \in \reals$.
 
 Con el sistema en forma matricial, dichas operaciones entre ecuaciones se
 traducen a operaciones entre filas de la matriz, y pueden representarse como
-el producto por ciertas matrices particulares, llamadas \textbf{matrices
-elementales}. Una matriz elemental es cualquiera de las siguientes:
+el producto a izquierda por ciertas matrices particulares, llamadas
+\textbf{matrices elementales}. Una matriz elemental es cualquiera de las
+siguientes:
 \begin{enumerate}[label=(\arabic*)]
 \item Una matriz $\mat{P}$, obtenida de permutar filas o columnas de la
     identidad; a esta matriz se la llama \textbf{matriz de permutación}.
@@ -168,7 +173,7 @@ del sistema, que es la matriz
     a_{2,1} & a_{2,2} & \dots  & a_{2,n} & b_{2} \\
     \vdots  & \vdots  & \ddots & \vdots  & \vdots \\
     a_{n,1} & a_{n,2} & \dots  & a_{n,n} & b_{n} \\
-\end{array} \mright] \]
+\end{array} \mright]. \]
 Como cada iteración efectúa cambios sobre la matriz $\mat{\tilde A}$,
 utilizaremos la notación $\mat{\tilde A}^{(k)}$ para referirnos al resultado
 luego de la $k$-ésima iteración del proceso, mientras que con $a^{(k)}_{i,j}$
@@ -184,13 +189,249 @@ la matriz quedará en forma triangular superior.
 
 Más precisamente, en la $k$-ésima iteración, se resta a todas las filas a
 partir de la $k + 1$ un múltiplo de la fila $k$-ésima, con un factor
-$\lambda^{(k)}_i$ elegido convenientemente para cada fila $i$. Como, para todo
-$i = k+1,\dots,n$, los coeficientes de la fila $i$-ésima quedarán
-\[ a^{(k)}_{i,j} = a^{(k-1)}_{i,j} - \lambda^{(k)}_i \cdot a^{(k-1)}_{k,j} \]
-y se quiere dejar un $0$ en la columna $k$-ésima, es decir, $a^{(k)}_{i,k} =
-0$, debe tomarse, para cada fila $i$, el multiplicador
-\[ \lambda^{(k)}_i = \frac{a^{(k-1)}_{i,k}}{a^{(k-1)}_{k,k}} \]
+$m^{(k)}_i$ elegido convenientemente para cada fila $i$. Esto significa que,
+para todo $i = k+1,\dots,n$, los coeficientes de la fila $i$-ésima quedarán
+\[ a^{(k)}_{i,j} = a^{(k-1)}_{i,j} - m^{(k)}_i \cdot a^{(k-1)}_{k,j}, \]
+y como se quiere dejar un $0$ en la columna $k$-ésima, es decir,
+$a^{(k)}_{i,k} = 0$, debe tomarse, para cada fila $i$, el multiplicador
+\[ m_{i,k} = \frac{a^{(k-1)}_{i,k}}{a^{(k-1)}_{k,k}}. \]
 
+Es importante notar que solo es posible efectuar el $k$-ésimo paso del
+algoritmo si $a^{(k-1)}_{k,k} = a_{k,k} \neq 0$, es decir, si el $k$-ésimo
+elemento de la diagonal no es nulo. Se puede relajar ligeramente esta
+hipótesis, admitiendo $a^{(k-1)}_{k,k} = 0$, si todos los demás elementos
+de esa columna debajo de la diagonal también son nulos; en ese caso
+directamente se puede omitir la $k$-ésima iteración. En cualquier otro caso,
+el algoritmo falla.
 
+Como cada paso del algoritmo coloca ceros debajo de la diagonal en la columna
+$k$-ésima, y no modifica los ceros que fueron ubicados en otras columnas por
+los pasos previos, la matriz $\mat{\tilde A}^{(n-1)}$ que se obtiene tras
+$n-1$ iteraciones del proceso es triangular superior.
+
+A continuación se presenta el algoritmo en forma de pseudocódigo. Analizando
+el mismo, se puede ver que su complejidad es de orden cúbico ($\ord{n^3}$).
+
+\begin{algorithm}[H]
+\caption{Algoritmo de eliminación gaussiana}
+\label{algo:eliminacion-gauss}
+
+\Input{$\mat{A} \in \reals^{n \times n}$ (con filas $F_1,\dots,F_n$) y $b \in \reals^n$.}
+\Output{$x \in \reals^n$ tal que $\mat{A} \cdot x = b$.}
+\For {$k = 1,\dots,n-1$} {
+    \eIf {$a_{k,k} \neq 0$} {
+        \For {$i = k+1,\dots,n$} {
+            $m_{i,k} \gets \dfrac{a_{i,k}}{a_{k,k}}$ \;
+            $F_i \gets F_i - m_{i,k} \cdot F_k$ \;
+        }
+    }
+    {
+        \If {$a_{i,k} \neq 0$ para algún $i \in {k+1,...,n}$} {
+            \Error
+        }
+    }
+}
+\end{algorithm}
+
+\subsubsection{Pivoteo}
+
+En cada paso del algoritmo de eliminación gaussiana, llamamos \textbf{pivote}
+al elemento de la diagonal sobre el cual estamos trabajando (en el paso
+$k$-ésimo, el pivote es $a^{(k-1)}_{k,k}$). La técnica de \textbf{pivoteo}
+consiste en realizar operaciones sobre la matriz, intercambiando sus filas
+(o sus columnas) para modificar el pivote sin alterar las soluciones
+del sistema asociado. Esto puede ser deseable por dos razones:
+
+\begin{enumerate}
+\item Como se vio anteriormente, si en algún paso del algoritmo el pivote
+    es cero pero hay un elemento no nulo debajo de él, el procedimiento
+    falla. Gracias al pivoteo, puede cambiarse el pivote por un elemento no
+    nulo y proseguir con el algoritmo. Se puede demostrar que
+    toda matriz admite eliminación gaussiana con pivoteo, incluso aquellas
+    para las cuales falla la versión sin pivoteo.
+\item Debido a que la computadora trabaja con arimética finita (una
+    aproximación discreta de los números reales), durante las operaciones se
+    suele perder precisión en los resultados. Es deseable que los algoritmos
+    eviten que estos errores se amplifiquen durante iteraciones posteriores,
+    propiedad que se conoce como \emph{estabilidad numérica}. En el caso de
+    la eliminación gaussiana, la estabilidad numérica mejora cuando el
+    pivote tiene un valor absoluto grande, por lo que se puede utilizar
+    pivoteo para intercambiarlo por uno de mayor valor absoluto y así mejorar
+    la precisión de los resultados obtenidos.
+\end{enumerate}
+
+Si se quiere aplicar eliminación gaussiana con pivoteo, es necesario
+determinar un criterio para elegir el pivote en cada iteración. Existen
+principalmente dos formas de hacerlo.
+\begin{itemize}
+\item El \textbf{pivoteo parcial} consiste en intercambiar el pivote por un
+    elemento de la misma columna, considerando el propio pivote y los
+    elementos que se encuentran por debajo de él, y eligiendo el de mayor
+    valor absoluto. Por lo tanto, se lleva a cabo intercambiando dos filas de
+    la matriz. Esta técnica solo requiere considerar, a lo sumo, $n$
+    posibles valores para el pivote. Garantiza que se elegirá un pivote no
+    nulo (a menos que el elemento de la diagonal y todos los que estén debajo
+    sean nulos), y permite mejorar la estabilidad numérica.
+\item El \textbf{pivoteo completo} considera toda la submatriz que falta
+    reducir, eligiendo como pivote al elemento de mayor valor absoluto. Se
+    lleva a cabo intercambiando dos filas y dos columnas de la matriz
+    (intercambiar columnas equivale a alterar el orden de las variables del
+    sistema, por lo que los intercambios de columnas deberán ser revertidos
+    en la solución que se obtenga).
+    Esta técnica permite mejorar aún más la estabilidad numérica, pero
+    es poco utilizada por resultar considerablemente menos eficiente, ya que
+    la búsqueda del pivote tiene una complejidad cuadrática.
+\end{itemize}
 
 \subsection{Factorización LU}
+
+Dada una matriz $\mat{A} \in \reals^{n \times n}$, una factorización LU para
+$\mat{A}$ es una escritura:
+\[ \mat{A} = \mat{L} \cdot \mat{U} \]
+donde $\mat{L} \in \reals^{n \times n}$ es triangular inferior con unos en
+la diagonal y $\mat{U} \in \reals^{n \times n}$ es triangular superior.
+
+Dada la factorización LU de una matriz $\mat{A}$, resolver un sistema de
+ecuaciones $\mat{A} \cdot x = b$ asociado resulta sencillo. En primer lugar,
+se puede notar que $\mat{L}$ es inversible, ya que es triangular inferior
+sin ceros en la diagonal. Entonces,
+\[ \begin{aligned}
+    \mat{A} \cdot x &= b &\text{sii} \\
+    \mat{L} \cdot \mat{U} \cdot x &= b &\text{sii} \\
+    \mat{U} \cdot x &= \mat{L}^{-1} \cdot b &\text{sii} \\
+    \mat{U} \cdot x &= y \\
+\end{aligned} \]
+donde $y = \mat{L}^{-1} \cdot b$ o, lo que es lo mismo, $y$ es la única
+solución del sistema de ecuaciones $\mat{L} \cdot y = b$. Por lo tanto,
+basta con resolver consecutivamente dos sistemas de ecuaciones:
+\begin{itemize}
+\item $\mat{L} \cdot y = b$,
+\item $\mat{U} \cdot x = y$.
+\end{itemize}
+Como ambas matrices son triangulares, los sistemas se pueden resolver con
+un costo $\ord{n^2}$, usando los algoritmos de sustitución hacia adelante y
+hacia atrás, respectivamente.
+
+Hallar la factorización LU, por su parte, tiene una complejidad de
+$\ord{n^3}$ (como se verá luego con más detalle).
+Por lo tanto, si se la quiere utilizar para resolver un sistema
+desde cero, el costo es el mismo que el de aplicar eliminación gaussiana.
+La ventaja de la factorización LU aparece si se quieren resolver varios
+sistemas de ecuaciones que comparten la matriz asociada; es decir, si se
+tiene una matriz $\mat{A}$ y una familia de vectores $b_1, \dots, b_k$, y se
+quieren hallar soluciones para todos los sistemas $\mat{A} \cdot x = b_i$ con
+$i \in \{1, \dots, k\}$.
+En este caso, usando eliminación gaussiana, habría que pagar un costo
+$\ord{n^3}$ para resolver cada sistema. Es mucho más eficiente calcular
+primero la factorización LU de $\mat{A}$, pagando el costo $\ord{n^3}$
+solo una vez, y luego resolver cada sistema con un costo $\ord{n^2}$.
+
+La factorización LU está intrínsecamente relacionada al algoritmo de
+eliminación gaussiana.
+Esto se debe a que la matriz $\mat{U}$ puede interpretarse como el resultado
+de aplicar eliminación gaussiana (sin pivoteo) sobre $\mat{A}$, mientras
+que $\mat{L}$ es el producto de las matrices elementales que representan a
+las operaciones involucradas en el proceso.
+
+Para demostrar este resultado, recordemos lo que sucede en el paso $k$-ésimo
+del algoritmo de eliminación gaussiana: para cada $i \in \{k+1,\dots,n\}$,
+se calcula un multiplicador $m_{i,k}$ y se realiza la operación de filas
+$F_i \gets F_i - m_{i,k} \cdot F_k$.\footnote{En el caso en que para cierta
+columna $k$, el elemento de la diagonal y todos los que están debajo de él
+sean nulos, el algoritmo no hace nada; en ese caso puede considerarse
+que todos los $m_{i,k}$ valen $0$.}
+Esta operación se puede representar como
+el producto a izquierda por una matriz elemental $\mat{M}_{i,k}$, que es
+similar a la identidad, pero tiene el valor $-m_{i,k}$ en la posición $i,k$.
+Por lo tanto, considerando todas las operaciones de filas, podemos sintetizar
+el $k$-ésimo paso de la siguiente manera (por simplicidad trabajaremos con la
+matriz $\mat{A}$, en lugar de usar la matriz extendida $\mat{\tilde A}$):
+\[ \begin{aligned}
+    \mat{A}^{(k)}
+    &= \mat{M}_{n,k} \cdot \, \dots \, \cdot \mat{M}_{k+1,k} \cdot \mat{A}^{(k-1)} \\
+    &= \mat{M}_{k} \cdot \mat{A}^{(k-1)}.
+\end{aligned} \]
+La matriz $\mat{M}_{k}$, que es el producto de las matrices elementales
+de cada operación de filas, es similar a la identidad pero en la $k$-ésima
+columna tiene, debajo de la diagonal, los valores
+$-m_{k+1,k}, \dots, -m_{n,k}$. Además, $\mat{M}_{k}$ es inversible; su inversa
+es muy parecida, pero los $m_{i,k}$ no están cambiados de signo.
+
+De forma similar, podemos sintetizar todo el algoritmo de eliminación
+gaussiana como
+\[ \begin{aligned}
+    \mat{A}^{(n-1)}
+    &= \mat{M}_{n-1} \cdot \, \dots \, \cdot \mat{M}_{1} \cdot \mat{A}^{(0)} \\
+    &= \mat{M} \cdot \mat{A}^{(0)} \\
+    &= \mat{M} \cdot \mat{A}.
+\end{aligned} \]
+
+Llamaremos $\mat{U}$ a la matriz $\mat{A}^{(n-1)}$, que es triangular superior
+por ser el resultado del algoritmo de eliminación gaussiana. Por su parte,
+la matriz $\mat{M}$ es triangular inferior, con unos en la diagonal, y
+cada posición $i,k$ debajo de la diagonal contiene el valor $-m_{i,k}$. Se
+trata de una matriz inversible; su inversa es similar, pero los $m_{i,k}$
+no aparecen cambiados de signo. Como
+\[ \mat{U} = \mat{M} \cdot \mat{A}, \]
+si llamamos $\mat{L} = \mat{M}^{-1}$, tenemos que
+\[ \mat{L} \cdot \mat{U} = \mat{A}, \]
+con $\mat{L}$ triangular inferior con unos en la diagonal. Se trata, por lo
+tanto, de una factorización LU para $\mat{A}$.
+
+De lo anterior se puede concluir que si una matriz admite el algoritmo de
+eliminación gaussiana sin pivoteo, entonces tiene factorización LU:
+si se puede ejecutar el algoritmo,
+la factorización se obtiene considerando como $\mat{U}$ a la matriz
+triangulada y construyendo $\mat{L}$ a partir de los multiplicadores
+calculados en el proceso. De allí que la complejidad de obtener la
+factorización también sea de orden cúbico.
+
+% TODO: ¡NO ME QUEDA CLARO QUE VALGA LA VUELTA!
+
+No todas las matrices admiten factorización LU. A modo de ejemplo,
+consideremos una matriz $\mat{A} \in \reals^{n \times n}$. Si tiene
+factorización LU, entonces existen $a, b, c, d \in \nats$ tales que
+\[ \mat{A} = \mat{L} \cdot \mat{U} = \begin{bmatrix}
+        1 & 0 \\
+        a & 1
+    \end{bmatrix} \cdot \begin{bmatrix}
+        b & c \\
+        0 & d
+    \end{bmatrix} = \begin{bmatrix}
+        b  & c    \\
+        ab & ac+d
+    \end{bmatrix}. \]
+La matriz $\begin{bmatrix} 0 & 0 \\ 1 & 0 \end{bmatrix}$ no cumple esta
+propiedad, por lo que no puede tener factorización LU.
+
+Sin embargo, teniendo en cuenta que toda matriz admite eliminación gaussiana
+con pivoteo, puede considerarse la matriz inversible $\mat{P}$ que resulta de
+multiplicar todas las matrices elementales que representan las operaciones
+del pivoteo.
+Así $\mat{P} \cdot \mat{A} = \mat{A'}$, donde $\mat{A'}$ admite eliminación
+gaussiana sin pivoteo, y por lo tanto, tiene factorización LU.
+Luego, podemos escribir
+\[ \begin{aligned}
+    \mat{A}
+    &= \mat{P}^{-1} \cdot \mat{A'} \\
+    &= \mat{P}^{-1} \cdot \mat{L} \cdot \mat{U}.
+\end{aligned} \]
+Esta escritura, que siempre existe, se conoce como factorización PLU
+de $\mat{A}$.
+
+Con respecto a la unicidad de la factorización LU, no siempre es posible
+garantizarla (por ejemplo, la matriz nula tiene infinitas factorizaciones
+LU distintas). Sin embargo, si $\mat{A}$ es inversible y tiene factorización
+LU, entonces esta es única. % TODO: Demostrar esto.
+
+Los siguientes dos resultados, que se enuncian sin demostración, hacen
+referencia a la existencia de factorización LU para ciertos tipos particulares
+de matrices:
+\begin{itemize}
+\item Las matrices estrictamente diagonal-dominantes por filas, es decir,
+    aquellas que cumplen que $\vert a_{i,i} \vert > \sum_{j=1, j \neq i}
+    \vert a_{i,j}\vert$ para todo $i \in \{1,\dots,n\}$, siempre admiten
+    factorización LU.
+\item Las matrices inversibles admiten factorización LU si y solo si todos
+    sus menores principales son no nulos.
+\end{itemize}
