@@ -1,0 +1,53 @@
+PR ✓ 1. Resolución directa de sistemas de ecuaciones lineales
+PR ✓ 1.1. Resolución de sistemas sencillos
+JU ✓ 1.2. Eliminación gaussiana 
+JU ✓ 1.2.1. Pivoteo 
+JU ✓ 1.3. Factorización LU 
+  
+PR ✓ 2. Factorización de matrices
+SA . 2.1. Factorización de Cholesky
+SA ✓ 2.2. Factorización QR 
+SA   2.2.1. Método de Householder (Reflexiones)
+SA   2.2.2. Método de Givens (Rotaciones)
+SA . 2.3. Descomposición en valores singulares 
+SA ✓ 2.3.1. Demostración de la existencia 
+SA   2.3.2. Forma de Hessenberg
+  
+DO . 3. Resolución iterativa de sistemas de ecuaciones lineales
+DO   3.1. Métodos iterativos 
+DO   3.2. Análisis de convergencia 
+DO   3.3. Método de Jacobi 
+DO   3.4. Método de Gauss-Seidel 
+  
+LU   4. Cálculo de autovalores
+LU   4.1. Método de la potencia
+LU   4.2. Método de la potencia inversa 
+  
+PR ✓ 5. Interpolación polinómica
+PR ✓ 5.1. Interpolación con polinomio único
+PR ✓ 5.1.1. Polinomio interpolador de Lagrange
+PR ✓ 5.1.2. Diferencias divididas 
+PR ✓ 5.1.3. Método de Neville 
+PR ✓ 5.2. Interpolación fragmentaria 
+PR ✓ 5.2.1. Interpolación fragmentaria lineal 
+PR ✓ 5.2.2. Interpolación fragmentaria cuadrática
+PR ✓ 5.2.3. Splines cúbicos
+  
+VI ✓ 6. Integración numérica
+VI . 6.1. Regla del trapecio 
+VI   6.2. Regla de Simpson 
+VI   6.3. Métodos adaptativos
+  
+SA   7. Cuadrados mínimos lineales
+SA   7.1. Ecuaciones normales
+SA   7.2. Resolución con factorización QR 
+SA   7.3. Resolución con factorización SVD
+  
+PR ✓ 8. Ceros de funciones
+PR ✓ 8.1. Orden de convergencia
+PR ✓ 8.2. Criterios de parada 
+PR ✓ 8.3. Método de la bisección
+PR ✓ 8.4. Algoritmos de punto fijo
+PR   8.5. Método de Newton 
+PR   8.6. Método de la secante
+PR   8.7. Método regula falsi 

@@ -1,6 +1,66 @@
 % -*- root: apunte-metodos.tex -*-
 
 \section{Cuadrados mínimos lineales}
+Un problema muy frecuente en distintos ámbitos consiste en, dados
+un conjunto de puntos del plano $(x_1,y_1), \dots, (x_m,y_m)$ y una familia
+de funciones $\mathcal{F}$ determinadas por ciertos parámetros, hallar
+cuál de estas funciones cuyo gráfico se ajusta mejor (es decir, ``pasa más
+cerca'') a dichos puntos. Esto permite, por ejemplo, considerar los resultados
+de un experimento y predecir los valores que se obtendrían para distintos
+valores de una variable involucrada.
+
+Las familias de funciones que tendremos en cuenta serán siempre de la forma
+\[ \mathcal{F} = \{ a_i \cdot \varphi_1 + \dots + a_n \cdot \varphi_n
+    : a_1, \dots, a_n \in \reals \} \]
+donde $\varphi_1, \dots, \varphi_n$ son funciones reales fijas. Por ejemplo,
+podemos considerar la familia de funciones lineales (en cuyo caso tendremos
+dos parámetros), de funciones cuadráticas (donde habrá tres parámetros), etc.
+
+Existen varios criterios para cuantificar cómo se ajusta una función $f$ a un
+determinado conjunto de puntos. Por ejemplo, tres de ellos son:
+\begin{itemize}
+\item Minimizar el \emph{máximo error} (\emph{minimax}) entre cada uno de los
+    puntos y el gráfico de la función, es decir, considerar como métrica
+    \[ \max_{1\leq i \leq n} \left\vert f(x_i) - x_i \right\vert. \]
+    Este criterio tiene la desventaja ser muy susceptible a la presencia
+    de \emph{outliers}.
+\item Minimizar el \emph{error absoluto} entre los puntos y el gráfico de la
+    función:
+    \[ \sum_{i = 1}^{n} \left\vert f(x_i) - x_i \right\vert. \]
+    Este método es mucho más estable ante \emph{outliers}, pero tiene la
+    complicación de que se busca minimizar una función que no es
+    diferenciable en el origen.
+\item Minimizar el \emph{error cuadrático}:
+    \[ \sum_{i = 1}^{n} \left( f(x_i) - x_i \right)^2, \]
+    que es el criterio que vamos a utilizar. Se trata de un método que da
+    un mayor peso relativo a los \emph{outliers}, pero sin permitir que
+    dominen la métrica; además, tiene la ventaja de ser diferenciable en todo
+    punto.
+\end{itemize}
+
+Entonces, queremos hallar valores para los parámetros $a_1, \dots, a_k$ que
+realicen el mínimo
+\[ \min  \sum_{i=1}^{n} \big( a_i \cdot \varphi_1(x_i)
+    + \dots + a_i \cdot \varphi_k(x_i) - y_i \big)^2 \]
+o, considerando,
+\[ \mat{A} = \begin{bmatrix}
+    \varphi_1(x_1) & \varphi_1(x_2) & \cdots & \varphi_1(x_n) \\
+    \varphi_2(x_1) & \varphi_2(x_2) & \cdots & \varphi_2(x_n) \\
+    \vdots         & \vdots         & \ddots & \vdots \\
+    \varphi_k(x_1) & \varphi_k(x_2) & \cdots & \varphi_k(x_n) 
+\end{bmatrix} \qquad
+x = \begin{bmatrix}
+    a_1 \\ a_2 \\ \vdots \\ a_k
+\end{bmatrix} \qquad
+b = \begin{bmatrix}
+    y_1 \\ y_2 \\ \vdots \\ y_n
+\end{bmatrix} \qquad \]
+buscamos hallar $x \in \reals^k$ que realice el mínimo
+\[ \min \left(\Vert \mat{A} \cdot x - b \Vert_2\right)^2. \]
+
+A este último problema, el de hallar, dadas $\mat{A} \in \reals^{m \times n}$.
+
 \subsection{Ecuaciones normales}
+
 \subsection{Resolución con factorización QR}
 \subsection{Resolución con factorización SVD}
