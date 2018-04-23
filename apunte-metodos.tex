@@ -71,6 +71,7 @@
 \newcommand{\fall}[1]{\ensuremath{\left(\forall\;#1\right)\,}}
 \newcommand{\exst}[1]{\ensuremath{\left(\exists\;#1\right)\,}}
 \newcommand{\mat}[1]{\ensuremath{\mathbf{#1}}}
+\renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}}
 \newcommand{\trans}{\ensuremath{^{\mathrm{T}}}}
 \newcommand{\ord}[1]{\ensuremath{\mathrm{O}(#1)}}
 \newcommand{\rg}{\ensuremath{\operatorname{rg}}}
@@ -78,6 +79,13 @@
 \newcommand{\nul}{\ensuremath{\operatorname{Nul}}}
 \newcommand{\fil}{\ensuremath{\operatorname{fil}}}
 \newcommand{\col}{\ensuremath{\operatorname{col}}}
+\newcommand{\proy}{\ensuremath{\operatorname{proy}}}
+\newcommand{\vvecbox}[2]{\raisebox{-0.1cm}[#1][#1]{\ensuremath{#2}}}
+\newcommand{\matbox}[3]{\raisebox{-0.1cm}[#1][#1]{\makebox[#2]{\ensuremath{#3}}}}
+\newenvironment{sbmatrix}[1]
+    {\def\sbmatrixspace{#1}%
+    \left[ \hspace{\sbmatrixspace} \begin{matrix}}
+    {\end{matrix} \hspace{\sbmatrixspace} \right]}
 
 \pagestyle{fancy}
 \rhead{\MakeUppercase{\footnotesize{\textls{\myauthor}}}}

@@ -2,6 +2,7 @@
 
 \section{Cuadrados mínimos lineales}
 \label{section:cml}
+% TODO: ¿lineales vs. no lineales?
 
 Un problema muy frecuente en distintos ámbitos consiste en, dados
 un conjunto de puntos del plano $(x_1,y_1), \dots, (x_m,y_m)$ y una familia
@@ -12,57 +13,381 @@ de un experimento y predecir los valores que se obtendrían para distintos
 valores de una variable involucrada.
 
 Las familias de funciones que tendremos en cuenta serán siempre de la forma
-\[ \mathcal{F} = \{ a_i \cdot \varphi_1 + \dots + a_n \cdot \varphi_n
+\[ \mathcal{F} = \{ a_1 \cdot \varphi_1 + \dots + a_n \cdot \varphi_n
     : a_1, \dots, a_n \in \reals \} \]
-donde $\varphi_1, \dots, \varphi_n$ son funciones reales fijas. Por ejemplo,
-podemos considerar la familia de funciones lineales (en cuyo caso tendremos
-dos parámetros), de funciones cuadráticas (donde habrá tres parámetros), etc.
+donde $\varphi_1, \dots, \varphi_n$ son funciones reales fijas. A modo de
+ejemplo, podemos considerar la familia de funciones lineales (en cuyo caso
+tendremos dos parámetros), de funciones cuadráticas (donde habrá tres
+parámetros), etc.
 
 Existen varios criterios para cuantificar cómo se ajusta una función $f$ a un
 determinado conjunto de puntos. Por ejemplo, tres de ellos son:
 \begin{itemize}
 \item Minimizar el \emph{máximo error} (\emph{minimax}) entre cada uno de los
     puntos y el gráfico de la función, es decir, considerar como métrica
-    \[ \max_{1\leq i \leq n} \left\vert f(x_i) - x_i \right\vert. \]
+    \[ \max_{1\leq i \leq m} \left\vert f(x_i) - x_i \right\vert. \]
     Este criterio tiene la desventaja ser muy susceptible a la presencia
     de \emph{outliers}.
 \item Minimizar el \emph{error absoluto} entre los puntos y el gráfico de la
     función:
-    \[ \sum_{i = 1}^{n} \left\vert f(x_i) - x_i \right\vert. \]
+    \[ \sum_{i = 1}^{m} \left\vert f(x_i) - x_i \right\vert. \]
     Este método es mucho más estable ante \emph{outliers}, pero tiene la
     complicación de que se busca minimizar una función que no es
     diferenciable en el origen.
 \item Minimizar el \emph{error cuadrático}:
-    \[ \sum_{i = 1}^{n} \left( f(x_i) - x_i \right)^2, \]
+    \[ \sum_{i = 1}^{m} \left( f(x_i) - x_i \right)^2, \]
     que es el criterio que vamos a utilizar. Se trata de un método que da
     un mayor peso relativo a los \emph{outliers}, pero sin permitir que
     dominen la métrica; además, tiene la ventaja de ser diferenciable en todo
     punto.
 \end{itemize}
 
-Entonces, queremos hallar valores para los parámetros $a_1, \dots, a_k$ que
+Entonces, queremos hallar valores para los parámetros $a_1, \dots, a_n$ que
 realicen el mínimo
-\[ \min  \sum_{i=1}^{n} \big( a_i \cdot \varphi_1(x_i)
-    + \dots + a_i \cdot \varphi_k(x_i) - y_i \big)^2 \]
+\[ \min_{a_1,\dots,a_n} \sum_{i=1}^{m} \big( a_1 \cdot \varphi_1(x_i)
+    + \dots + a_n \cdot \varphi_n(x_i) - y_i \big)^2 \]
 o, considerando,
 \[ \mat{A} = \begin{bmatrix}
-    \varphi_1(x_1) & \varphi_1(x_2) & \cdots & \varphi_1(x_n) \\
-    \varphi_2(x_1) & \varphi_2(x_2) & \cdots & \varphi_2(x_n) \\
+    \varphi_1(x_1) & \varphi_1(x_2) & \cdots & \varphi_1(x_m) \\
+    \varphi_2(x_1) & \varphi_2(x_2) & \cdots & \varphi_2(x_m) \\
     \vdots         & \vdots         & \ddots & \vdots \\
-    \varphi_k(x_1) & \varphi_k(x_2) & \cdots & \varphi_k(x_n) 
+    \varphi_n(x_1) & \varphi_n(x_2) & \cdots & \varphi_n(x_m) 
 \end{bmatrix} \qquad
-x = \begin{bmatrix}
-    a_1 \\ a_2 \\ \vdots \\ a_k
+\vec{x} = \begin{bmatrix}
+    a_1 \\ a_2 \\ \vdots \\ a_n
 \end{bmatrix} \qquad
-b = \begin{bmatrix}
-    y_1 \\ y_2 \\ \vdots \\ y_n
+\vec{b} = \begin{bmatrix}
+    y_1 \\ y_2 \\ \vdots \\ y_m
 \end{bmatrix} \qquad \]
-buscamos hallar $x \in \reals^k$ que realice el mínimo
-\[ \min \left(\Vert \mat{A} \cdot x - b \Vert_2\right)^2. \]
+buscamos hallar $\vec{x} \in \reals^m$ que realice el mínimo
+\[ \min_{\vec{x}} \left\Vert \mat{A} \cdot \vec{x} - \vec{b} \right\Vert_2^2. \]
 
-A este último problema, el de hallar, dadas $\mat{A} \in \reals^{m \times n}$.
+A este último problema se lo conoce como el problema de \textbf{cuadrados
+mínimos}: hallar, dadas $\mat{A} \in \reals^{m \times n}$ y $\vec{b} \in \reals^m$,
+un vector $\vec{x} \in \reals^n$ que minimice la distancia entre $\mat{A}
+\cdot \vec{x}$ y $\vec{b}$.
+
+Desde el punto de vista geométrico, existe una interpretación intuitiva para
+este problema. Para todo $\vec{x} \in \reals^n$, el producto $\mat{A}
+\cdot \vec{x}$ describe una combinación lineal de las columnas de $\mat{A}$;
+en otras palabras, $\vec{x} \in \im(\mat{A})$, el subespacio generado por las
+columnas de $\mat{A}$. De todos los elementos de este subespacio, buscamos
+aquel que se encuentre a distancia mínima de $\vec{b}$. Este elemento siempre
+existe y es único: se trata de la proyección ortogonal de $\vec{b}$ sobre el
+subespacio $\im(\mat{A})$, es decir, $\proy_{\im(\mat{A})}(\vec{b})$.
+
+Más formalmente, recordemos que siempre es posible escribir $\vec{b}$ como
+$\vec{b} = \vec{b_1} + \vec{b_2}$, con
+\begin{itemize}
+\item $\vec{b_1} = \proy_{\im(\mat{A})}(\vec{b}) \in \im(\mat{A})$, y
+\item $\vec{b_2} = \proy_{\im(\mat{A})^{\bot}}(\vec{b}) \in
+    \im(\mat{A})^{\bot}$, el complemento ortogonal de la imagen de $\mat{A}$.
+\end{itemize}
+Entonces, es posible demostrar que $\vec{x}$ realiza el mínimo buscado,
+y por lo tanto es solución del problema de cuadrados mínimos,
+si y solo si $\mat{A} \cdot \vec{x} = \vec{b_1}$.
+
+Del razonamiento anterior pueden extraerse tres conclusiones:
+\begin{enumerate}[label=(\roman*)]
+\item Dado que $\vec{b_1} \in \im(\mat{A})$, seguro existe $\vec{x}$ tal que
+    $\mat{A} \cdot \vec{x} = \vec{b_1}$. Por lo tanto, el problema de
+    cuadrados mínimos siempre tiene solución.
+\item Como $\vec{b_1}$ es único, la solución es única si y solo si hay
+    una única forma de escribir a $\vec{b_1}$ como combinación lineal de las
+    columnas de $\mat{A}$. Esto equivale a pedir que las columnas de $\mat{A}$
+    sean linealmente independientes, o que $\mat{A}$ sea de rango columna
+    completo ($\rg(\mat{A}) = n$).
+\item Si el sistema $\mat{A} \cdot \vec{x} = \vec{b}$ tiene alguna solución
+    $\vec{x^\ast}$, entonces $\vec{b} \in \im(\mat{A})$, por lo que
+    $\vec{b_1} = \vec{b}$, y por lo tanto
+    $\vec{x^\ast}$ también será solución del problema de cuadrados mínimos.
+    Sin embargo, lo interesante de este problema es que tiene solución
+    \emph{incluso} cuando el sistema $\mat{A} \cdot \vec{x} = \vec{b}$ no
+    la tiene, es decir, cuando está \emph{sobredeterminado} (tiene ecuaciones
+    que ``se contradicen''). En estos casos, obviamente, el resultado
+    hallado no será una solución de $\mat{A} \cdot \vec{x} = \vec{b}$,
+    pero sí será la mejor aproximación posible según el criterio de
+    minimizar el error cuadrático.
+\end{enumerate}
 
 \subsection{Ecuaciones normales}
+Una de las formas de encontrar la solución de un problema de cuadrados
+mínimos es resolviendo el siguiente sistema de ecuaciones, que recibe el
+nombre de \textbf{ecuaciones normales}:
+\[ \mat{A}\trans \cdot \mat{A} \cdot \vec{x} = \mat{A}\trans \cdot \vec{b}. \]
+
+Para verificar que estas ecuaciones resuelven el problema, es necesario tener
+en cuenta en primer lugar que
+$\nul(\mat{A}\trans) = \im(\mat{A})^{\bot}$; es decir, multiplicar a izquierda
+por $\mat{A}\trans$ anula cualquier elemento que sea ortogonal a
+$\im(\mat{A})$. Para comprender esto, basta notar que al tomar un
+vector $\vec{v}$ y multiplicarlo a izquierda por $\mat{A}\trans$, se está
+computando la suma de los productos internos entre $\vec{v}$ y cada una de
+las filas de $\mat{A}\trans$, que son las columnas de $\mat{A}$; si $\vec{v}$
+es ortogonal a $\im(\mat{A})$, entonces todos estos productos serán nulos.
+
+Si, con este hecho en mente, observamos el lado izquierdo de la ecuación
+anterior, y escribimos $\vec{b} = \vec{b_1} + \vec{b_2}$
+como antes, tenemos que 
+\[ \mat{A}\trans \cdot \vec{b}
+    = \mat{A}\trans \cdot (\vec{b_1} + \vec{b_2})
+    = \mat{A}\trans \cdot \vec{b_1} + \mat{A}\trans \cdot \vec{b_2}
+    = \mat{A}\trans \cdot \vec{b_1}. \]
+Por lo tanto, las ecuaciones normales equivalen a 
+\[ \mat{A}\trans \cdot \mat{A} \cdot \vec{x} = \mat{A}\trans \cdot \vec{b_1}. \]
+
+Esto quiere decir que cualquier solución de cuadrados mínimos, que debe
+satisfacer $\mat{A} \cdot \vec{x} = \vec{b_1}$, también será solución de las
+ecuaciones normales. Para ver que cualquier solución de las
+ecuaciones normales es una solución de cuadrados mínimos, consideremos
+$\vec{x}$ tal que $\mat{A}\trans \cdot \mat{A} \cdot \vec{x} = \mat{A}\trans \cdot \vec{b_1}$; en tal caso $\mat{A}\trans \cdot (\mat{A} \cdot \vec{x} -
+\vec{b_1}) = 0$, por lo que
+\[ \mat{A} \cdot \vec{x} - \vec{b_1} \in \nul(\mat{A}\trans) =
+    \im(\mat{A})^{\bot}. \]
+Por otra parte, como $\mat{A} \cdot \vec{x} \in \im(\mat{A})$ y
+$\vec{b_1} \in \im(\mat{A})$, necesariamente
+\[ \mat{A} \cdot \vec{x} - \vec{b_1} \in \im(\mat{A}). \]
+El único vector que está simultaneamente en $\im(\mat{A})$ y en
+$\im(\mat{A})^{\bot}$ es $0$. Luego $\mat{A} \cdot \vec{x} - \vec{b_1} = 0$,
+por lo que $\mat{A} \cdot \vec{x} = \vec{b_1}$ y entonces $\vec{x}$ es una
+solución de cuadrados mínimos.
+
+A modo de curiosidad, las ecuaciones normales son exactamente las que se
+obtienen si se calculan las derivadas parciales de la expresión del error
+cuadrático en función de cada una de las componentes de $\vec{x}$ y se las
+iguala a cero.
+
+El sistema de ecuaciones que se obtiene al formular las ecuaciones normales
+tiene la buena propiedad de que su matriz, $\mat{A}\trans \cdot \mat{A}$,
+es semi-definida positiva, con lo cual puede usarse la factorización de
+Cholesky para resolverlo de forma eficiente.
+% TODO: Ver lo de semi-definida positiva. ¿Por qué es bueno usar Cholesky?
+
+No obstante, las ecuaciones normales también presentan un inconveniente: no garantizan la estabilidad numérica.
+El número de condición de la matriz $\mat{A}$, que ya de por sí puede no ser
+bueno, se eleva al cuadrado al computar $\mat{A}\trans \cdot \mat{A}$.
+% TODO: ¿Es realmente así?
+Esto motiva la utilización de otros métodos más estables, que aprovechan
+algunas de las factorizaciones matriciales estudiadas anteriormente.
 
 \subsection{Resolución con factorización QR}
-\subsection{Resolución con factorización SVD}
+Un método para resolver el problema de cuadrados mínimos es utilizar la
+factorización QR. Recordemos que toda matriz admite una factorización QR.
+Si escribimos $\mat{A} = \mat{Q} \cdot \mat{R}$, la expresión que buscamos
+minimizar se puede reescribir como
+\[ \left\Vert \mat{A} \cdot \vec{x} - \vec{b} \right\Vert_2^2
+    = \left\Vert \mat{Q} \cdot \mat{R} \cdot \vec{x} -
+        \vec{b} \right\Vert_2^2. \]
+Pero como $\mat{Q}$ es una matriz ortogonal,
+multiplicar por $\mat{Q}\trans$ no altera la norma 2, por lo que resulta que
+\[ \left\Vert \mat{A} \cdot \vec{x} - \vec{b} \right\Vert_2^2
+    = \left\Vert \mat{Q}\trans \cdot \left( \mat{Q} \cdot \mat{R}
+        \cdot \vec{x} - \vec{b} \right) \right\Vert_2^2.
+    = \left\Vert \mat{R} \cdot \vec{x} - \mat{Q}\trans \cdot \vec{b}
+        \right\Vert_2^2. \]
+
+En definitiva, nuestro problema se convierte en hallar $\vec{x}$ que realice
+el mínimo
+\[ \min_{\vec{x}} \left\Vert \mat{R} \cdot \vec{x}
+    - \mat{Q}\trans \cdot \vec{b} \right\Vert_2^2. \]
+
+Para hallar este mínimo hay que proceder de una forma ligeramente distinta
+en base a dos casos, que dependen de $k = \rg(\mat{A})$. En ambos casos
+es necesario tener en cuenta que, como $\mat{Q}$ es inversible,
+entonces $\rg(\mat{R}) = \rg(\mat{A}) = k$.
+
+\begin{enumerate}[label=(\roman*)]
+\item Si $\mat{A}$ es de rango columna completo, podemos escribir:
+    \[ \mat{R} = \begin{sbmatrix}{.2cm}
+        \matbox{.95cm}{1.5cm}{\mat{R_1}} \\ \hline
+        \matbox{.55cm}{1.5cm}{\mat{0}}
+    \end{sbmatrix} \hspace{2.5cm}
+    \mat{Q}\trans \cdot \vec{b} = \begin{sbmatrix}{.2cm}
+        \vvecbox{.95cm}{\vec{c}} \\ \hline
+        \vvecbox{.55cm}{\vec{d}}
+    \end{sbmatrix} \]
+    donde $\mat{R_1} \in \reals^{n \times n}$ es triangular superior,
+    $\vec{c} \in \reals^n$ y $\vec{d} \in \reals^{m-n}$.
+
+    Entonces, resulta que:
+    \[ \begin{aligned} \min_{\vec{x}} \left\Vert \mat{R} \cdot \vec{x}
+            - \mat{Q}\trans \cdot \vec{b} \right\Vert_2^2
+        &= \min_{\vec{x}} \left\Vert \begin{sbmatrix}{.2cm}
+                \vvecbox{.95cm}{\mat{R_1} \cdot \vec{x}} \\ \hline
+                \vvecbox{.55cm}{\mat{0}}
+            \end{sbmatrix} - \begin{sbmatrix}{.2cm}
+                \vvecbox{.95cm}{\vec{c}} \\ \hline
+                \vvecbox{.55cm}{\vec{d}}
+            \end{sbmatrix} \right\Vert_2^2
+        = \min_{\vec{x}} \left\Vert \begin{sbmatrix}{.2cm}
+                \vvecbox{.95cm}{\mat{R_1} \cdot \vec{x} - \vec{c}} \\ \hline
+                \vvecbox{.55cm}{\vec{-d}}
+            \end{sbmatrix} \right\Vert_2^2 \\[.4cm]
+        &= \min_{\vec{x}} \left\Vert \mat{R_1} \cdot \vec{x}
+            - \vec{c} \right\Vert_2^2 + \left\Vert \vec{d} \right\Vert_2^2
+    \end{aligned} \]
+
+    Basta con minimizar el primer término de la expresión, ya que es el único
+    que depende de $\vec{x}$. En efecto, el mínimo se alcanza si dicho término
+    se anula, es decir, si $\vec{x}$ es solución del sistema
+    \[ \mat{R_1} \cdot \vec{x} = \vec{c}, \]
+    que siempre tiene solución única por ser $\mat{R_1}$ cuadrada y de rango
+    completo.
+
+\item Si $\mat{A}$ no es de rango columna completo, es decir,
+    $k < n$, necesitaremos que la
+    factorización QR haya sido obtenida con \emph{pivoteo de columnas}; esto
+    quiere decir, que haya sido construida de forma tal que las columnas
+    incompletas de $\mat{R}$ se encuentren todas al final. En general, se permutan las columnas de $\mat{R}$ de forma tal que
+    $\vert r_{1,1} \vert \geq \vert r_{2,2} \vert \geq \dots \geq
+    \vert r_{n,n} \vert$. Así,
+    \[ \mat{A} = \mat{Q} \cdot \mat{R} \cdot \mat{P}, \]
+    donde $\mat{P}$ es la matriz de permutación correspondiente al pivoteo.
+    Por lo tanto, el mínimo buscado será
+    \[ \min_{\vec{x}} \left\Vert \mat{R} \cdot \mat{P} \cdot \vec{x}
+            - \mat{Q}\trans \cdot \vec{b} \right\Vert_2^2
+        = \min_{\vec{x}} \left\Vert \mat{R} \cdot \vec{\tilde x}
+            - \mat{Q}\trans \cdot \vec{b} \right\Vert_2^2 \]
+    donde $\vec{\tilde x} = \mat{P} \cdot \vec{x}$. Resolveremos el
+    sistema para $\vec{\tilde x}$; terminado el proceso, deberemos tener
+    en cuenta que las soluciones halladas tendrán permutadas sus componentes.
+
+    Podemos escribir, entonces:
+    \[ \mat{R} = \begin{sbmatrix}{.2cm}
+        \matbox{.85cm}{1.2cm}{\mat{R_1}} & \matbox{.85cm}{.6cm}{\mat{R_2}} \\ \hline
+        \matbox{.65cm}{1.2cm}{\mat{0}} & \matbox{.65cm}{.6cm}{\mat{0}} \\
+    \end{sbmatrix} \hspace{1.5cm}
+    \mat{Q}\trans\vec{b} = \begin{sbmatrix}{.2cm}
+        \vvecbox{.85cm}{\vec{c}} \\ \hline
+        \vvecbox{.65cm}{\vec{d}}
+    \end{sbmatrix} \hspace{1.5cm}
+    \vec{\tilde x} = \begin{sbmatrix}{.2cm}
+        \vvecbox{.85cm}{\vec{x_1}} \\ \hline
+        \vvecbox{.65cm}{\vec{x_2}}
+    \end{sbmatrix} \]
+    donde $\mat{R_1} \in \reals^{k \times k}$ es triangular superior,
+    $\mat{R_2} \in \reals^{k \times n-k}$,
+    $\vec{c}, \vec{x_1} \in \reals^{k}$ y
+    $\vec{d}, \vec{x_2} \in \reals^{n-k}$.
+
+    De lo anterior,
+    \[ \begin{aligned} \min_{\vec{x}} \left\Vert \mat{R} \cdot \vec{x}
+            - \mat{Q}\trans \cdot \vec{b} \right\Vert_2^2
+        &= \min_{\vec{x}} \left\Vert \begin{sbmatrix}{.2cm}
+                \vvecbox{.85cm}{\mat{R_1} \cdot \vec{x_1} + \mat{R_2} \cdot \vec{x_2} - \vec{c}} \\ \hline
+                \vvecbox{.65cm}{\vec{-d}}
+            \end{sbmatrix} \right\Vert_2^2 \\[.4cm]
+        &= \min_{\vec{x}} \left\Vert \mat{R_1} \cdot \vec{x_1}
+            + \mat{R_2} \cdot \vec{x_2}
+            - \vec{c} \right\Vert_2^2 + \left\Vert \vec{d} \right\Vert_2^2
+    \end{aligned} \]
+    \end{enumerate}
+
+    De nuevo, esta expresión alcanza el mínimo cuando el primer término es
+    nulo. Las soluciones son infinitas: $\vec{x_2}$ puede fijarse libremente
+    en cualquier $\vec{x_2^\ast}$, y luego se determina $\vec{x_1}$ como la
+    única solución del sistema
+    \[ \mat{R_1} \cdot \vec{x_1} = \vec{c} - \mat{R_2} \cdot \vec{x_2^\ast}. \]
+% TODO: Hablar de ventajas y desventajas.
+
+\subsection{Resolución con descomposición en valores singulares}
+
+Otra posibilidad para resolver el problema de cuadrados mínimos es utilizar
+la descomposición en valores singulares de $\mat{A} = \mat{U} \cdot
+\mat{\Sigma} \cdot \mat{V}\trans$.
+En este caso, como $\mat{U}$ es ortogonal, multiplicar por
+$\mat{U}\trans$ no modifica la norma 2, y tenemos que:
+\[ \left\Vert \mat{A} \cdot \vec{x} - \vec{b} \right\Vert_2^2
+    = \left\Vert \mat{U} \cdot \mat{\Sigma} \cdot \mat{V}\trans \cdot \vec{x}
+        - \vec{b} \right\Vert_2^2
+    = \left\Vert \mat{\Sigma} \cdot \mat{V}\trans \cdot \vec{x}
+        - \mat{U}\trans \cdot \vec{b} \right\Vert_2^2. \]
+
+Si llamamos $\mat{V}\trans \cdot \vec{x} = \vec{y}$, como $\mat{V}\trans$ es
+inversible, tenemos un sistema de ecuaciones determinado: si encontramos un
+valor que nos sirva para $\vec{y}$, podemos determinar cuál debe ser el valor
+de $\vec{x}$. Entonces, sustituyendo, obtenemos que
+\[ \left\Vert \mat{A} \cdot \vec{x} - \vec{b} \right\Vert_2^2
+    = \left\Vert \mat{\Sigma} \cdot \vec{y}
+        - \mat{U}\trans \cdot \vec{b} \right\Vert_2^2, \]
+y, por lo tanto, el problema de minimización a resolver es
+\[ \min_{\vec{x}} \left\Vert \mat{\Sigma} \cdot \vec{y}
+        - \mat{U}\trans \cdot \vec{b} \right\Vert_2^2. \]
+
+Volvemos a separar en dos casos según $k = \rg(\mat{A}) = \rg(\mat{\Sigma})$.
+
+\begin{enumerate}[label=(\roman*)]
+\item Si $\mat{A}$ es de rango columna completo, podemos escribir:
+    \[ \mat{\Sigma} = \begin{sbmatrix}{.2cm}
+        \sigma_1 &        &          \\
+                 & \ddots &          \\
+                 &        & \sigma_n \\ \hline
+                 & \vvecbox{.55cm}{\mat{0}}
+    \end{sbmatrix} \hspace{2.5cm}
+    \mat{U}\trans \cdot \vec{b} = \begin{sbmatrix}{.2cm}
+        \vvecbox{.95cm}{\vec{c}} \\ \hline
+        \vvecbox{.55cm}{\vec{d}}
+    \end{sbmatrix} \]
+    donde $\vec{c} \in \reals^n$ y $\vec{d} \in \reals^{m-n}$.
+    Así,
+    \[ \begin{aligned}
+        \min_{\vec{y}} \left\Vert \mat{\Sigma} \cdot \vec{y}
+            - \mat{U}\trans \cdot \vec{b} \right\Vert_2^2
+        &= \min_{\vec{y}} \left\Vert \begin{sbmatrix}{.2cm}
+                \sigma_1 \cdot y_1 \\
+                \vdots             \\
+                \sigma_n \cdot y_n \\ \hline
+                \vvecbox{.55cm}{\mat{0}}
+            \end{sbmatrix} - \begin{sbmatrix}{.2cm}
+                \vvecbox{.95cm}{\vec{c}} \\ \hline
+                \vvecbox{.55cm}{\vec{d}}
+            \end{sbmatrix} \right\Vert_2^2 \\
+        &= \min_{\vec{y}} \left\Vert \begin{bmatrix}
+                \sigma_1 \cdot y_1 - c_1 \\
+                \vdots             \\
+                \sigma_n \cdot y_n - c_n
+            \end{bmatrix} \right\Vert_2^2
+            + \left\Vert \vec{d} \right\Vert_2^2
+    \end{aligned} \]
+
+    Para alcanzar el mínimo basta con anular el primer término, lo
+    cual sucede si y solo si se toma $\vec{y}
+    = \left( \frac{c_1}{\sigma_1}, \dots, \frac{c_n}{\sigma_n} \right)$.
+
+\item Si $\mat{A}$ no es de rango columna completo ($k < n$), solo las
+    primeras $k$ entradas de la diagonal de $\mat{\Sigma}$ son no nulas.
+    Escribimos entonces:
+    \[ \mat{U}\trans \cdot \vec{b} = \begin{sbmatrix}{.2cm}
+        \vvecbox{.85cm}{\vec{c}} \\ \hline
+        \vvecbox{.65cm}{\vec{d}}
+    \end{sbmatrix} \]
+    con $\vec{c} \in \reals^k$ y $\vec{d} \in \reals^{m-k}$.
+    Ahora,
+    \[ \begin{aligned}
+        \min_{\vec{y}} \left\Vert \mat{\Sigma} \cdot \vec{y}
+            - \mat{U}\trans \cdot \vec{b} \right\Vert_2^2
+        &= \min_{\vec{y}} \left\Vert \begin{sbmatrix}{.2cm}
+                \sigma_1 \cdot y_1 \\
+                \vdots             \\
+                \sigma_k \cdot y_k \\ \hline
+                \vvecbox{.55cm}{\mat{0}}
+            \end{sbmatrix} - \begin{sbmatrix}{.2cm}
+                \vvecbox{.95cm}{\vec{c}} \\ \hline
+                \vvecbox{.55cm}{\vec{d}}
+            \end{sbmatrix} \right\Vert_2^2 \\
+        &= \min_{\vec{y}} \left\Vert \begin{bmatrix}
+                \sigma_1 \cdot y_1 - c_1 \\
+                \vdots             \\
+                \sigma_k \cdot y_k - c_k
+            \end{bmatrix} \right\Vert_2^2
+            + \left\Vert \vec{d} \right\Vert_2^2
+    \end{aligned} \]
+
+    De nuevo, para alcanzar el mínimo, debe anularse el primer término.
+    Existen infinitas soluciones, las cuales se logran tomando $\vec{y}
+    = \left( \frac{c_1}{\sigma_1}, \dots, \frac{c_k}{\sigma_k},
+        y_{k+1}, \dots, y_{n} \right)$, con
+    $y_{k+1}, \dots, y_{n} \in \reals$ cualesquiera.
+% TODO: Aclarar que ahora se resuelve el sistema Vtx=y
+% TODO: Comparar estabilidad numérica y eficiencia con QR.
+\end{enumerate}

@@ -37,7 +37,7 @@ serlo también, de donde % TODO: Terminar esta demostración.
 
 
 Por otro lado, decimos que una matriz $\mat{A} \in \reals^{n \times n}$
-es \textbf{simétrica y definida positiva} (s.d.p.) si es
+es (simétrica y) \textbf{definida positiva} (s.d.p.) si es
 simétrica\footnote{Algunos autores definen la noción de matriz definida
 positiva independientemente de la matriz simétrica, mientras que otros
 requieren la simetría como una condición para que una matriz sea definida
@@ -60,11 +60,11 @@ Dada una matriz $\mat{A}$, llamamos \textbf{factorización de Cholesky} a su
 escritura en la forma
 \[ \mat{A} = \mat{L} \cdot \mat{L}\trans \]
 donde $\mat{L}$ es una matriz triangular inferior con elementos positivos
-en la diagonal. A continuación demostraremos que una matriz es simétrica y
+en la diagonal. A continuación demostraremos que una matriz es
 definida positiva si y solo si tiene factorización de Cholesky.
 
 \begin{itemize}
-\item[$(\Rightarrow)$] Consideremos una matriz s.d.p. $\mat{A} \in
+\item[$(\Rightarrow)$] Consideremos una matriz definida positiva $\mat{A} \in
     \reals^{n \times n}$. Como enunciamos anteriormente, dicha matriz debe
     admitir una factorización LDL,
     $\mat{A} = \mat{L} \cdot \mat{D} \cdot \mat{L}\trans$.
@@ -153,7 +153,8 @@ los valores que corresponden en cada posición.
 Si los pasos se siguen en orden, en cada uno de ellos solo se utilizan
 elementos de $\mat{L}$ que ya fueron calculados previamente. Por lo tanto,
 tenemos un algoritmo bien definido para obtener la factorización de Cholesky
-de cualquier matriz s.d.p. Además, el algoritmo determina $\mat{L}$ de forma
+de cualquier matriz definida positiva.
+Además, el algoritmo determina $\mat{L}$ de forma
 unívoca partiendo de una ecuación que debe ser satisfecha por toda
 factorización de Cholesky de $\mat{A}$; esto demuestra que la factorización
 de Cholesky es única.
@@ -164,7 +165,7 @@ A continuación, se presenta el algoritmo escrito en forma de pseudocódigo.
 \caption{Factorización de Cholesky}
 \label{algo:cholesky}
 
-\Input{$\mat{A} \in \reals^{n \times n}$ simétrica y definida positiva.}
+\Input{$\mat{A} \in \reals^{n \times n}$ definida positiva.}
 \Output{$\mat{L}$ triangular superior, con elementos positivos en la
     diagonal, tal que $\mat{A} = \mat{L} \cdot \mat{L}\trans$.}
 
