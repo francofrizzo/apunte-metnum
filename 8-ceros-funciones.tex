@@ -8,8 +8,11 @@ bien las ecuaciones lineales permiten modelar, o al menos aproximar, una
 inmensa cantidad de problemas, en muchas ocasiones se vuelve necesario
 resolver ecuaciones que no son lineales. Si bien para algunos casos
 particulares existen resoluciones analíticas, esto no es cierto en el caso
-general, haciendo que se trate de un problema complejo, que depende en gran
-medida de características particulares de la ecuación que se busca resolver.
+general; a modo de ejemplo, para los polinomios de grado cinco o superior,
+es posible demostrar que no existen fórmulas algebraicas cerradas que permitan
+obtener sus raíces. Esto hace que se trate de un problema complejo, y que
+depende en gran medida de características particulares de la ecuación que se
+busca resolver.
 
 En general, una \textbf{ecuación} no (necesariamente) lineal \textbf{en una
 variable real} es una expresión de la forma $f(x) = g(x)$, donde la variable
@@ -31,8 +34,7 @@ $\lim_{k \to \infty} x_k = x^\ast$. Decimos que
 $\lbrace x_k \rbrace_{k \in \nats}$ tiene \textbf{orden de convergencia} $p$
 si
 \[ \lim_{k \to \infty} \frac{\lvert x_{k+1} - x^\ast \rvert}
-    {\left( \lvert x_k - x^\ast \rvert \right)^p} = c > 0 \]
-z
+    {\left( \lvert x_k - x^\ast \rvert \right)^p} = c > 0. \]
 Informalmente, esto se puede interpretar de la siguiente forma: tomando
 valores suficientemente grandes de $k$, se cumple que
 $\lvert x_{k+1} - x^\ast \rvert \approx c \cdot \left(\lvert x_k - x^\ast \rvert\right)^p$
@@ -83,7 +85,7 @@ son:
 \begin{enumerate}[label=(\roman*)]
 \item Establecer una cantidad fija de iteraciones. Es el criterio más sencillo,
     pero es insensible a las características del método usado y no permite
-    decidir \emph{a priori} la precisión de los resultados a obtener.
+    decidir \emph{a priori} la precisión de los resultados.
 \item Fijar un valor $\varepsilon > 0$ y parar cuando
     $\lvert x_{k+1} - x_k \rvert < \varepsilon$, es decir, cuando el ritmo de
     convergencia sea lo suficientemente lento. Si bien es un criterio más
@@ -134,8 +136,7 @@ que contiene a la raíz buscada, lo cual permite aproximarla con precisión
 arbitraria.
 
 El pseudocódigo del algoritmo es el siguiente (debe ser completado con algún
-criterio de parada, por ejemplo, cualquiera de los estudiados en la sección
-anterior).
+criterio de parada).
 
 \begin{algorithm}[H]
 \caption{Algoritmo de la bisección}
@@ -292,11 +293,109 @@ rápida.
 \subsection{Método de Newton}
 
 El \textbf{método de Newton} es un algoritmo para la búsqueda de raíces de
-funciones; se basa en plantear una iteración de punto fijo que, bajo ciertas
+funciones, se basa en plantear una iteración de punto fijo que, bajo ciertas
 hipótesis, converge con orden al menos cuadrático.
 
+El método requiere que se considere una función $f \in \mathcal{C}^2([a,b])$, y que
+podamos calcular los valores de $f$ y de su derivada. Se comienza con un valor
+$x_0 \in ([a,b])$ y, en cada iteración, se utiliza la derivada de $f$ para aproximar el
+comportamiento de $f$ en un entorno del valor actual y, de esa forma,
+ir acercándose de manera iterativa a una raíz de la función.
 
+En concreto, buscaremos un punto fijo de la función
+\[ g(x) = x - \frac{f(x)}{f'(x)}, \]
+con lo cual la iteración de punto fijo quedará definida por
+\[ x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)}. \]
 
+Si queremos utilizar el algoritmo para encontrar una raíz $x^\ast \in ([a,b])$ de $f$, será necesario que $g$ esté bien definida en un entorno de $x^\ast$, es decir, que $f'(x^\ast) \neq 0$. En ese caso, resulta que
+\[ g(x^\ast) = x^\ast - \frac{f(x^\ast)}{f'(x^\ast)} = x^\ast, \]
+es decir, $x^\ast$ es efectivamente un punto fijo de $g$.
+
+Además, podemos notar que, en ese caso, se cumple que
+\[ g'(x^\ast) = \frac{f(x^\ast) \cdot f''(x^\ast)}{f'(x^\ast)^2} = 0. \]
+Como $g'$ es continua, existe un entorno $(x^\ast - \delta, x^\ast + \delta)$ de $x^\ast$ en el cual $\lvert g'(x) \rvert \leq c$ con $0 < c < 1$. Se puede demostrar que la restricción de $g : [x^\ast - \delta, x^\ast + \delta] \to [x^\ast - \delta, x^\ast + \delta]$ está bien definida. Teniendo en cuenta los resultados previos, esto nos permite afirmar que, en dicho entorno, el método converge a la raíz $x^\ast$ y lo hace con un orden de convergencia al menos cuadrático.
+
+Cabe destacar que la convergencia solo puede asegurarse dentro de un entorno,
+tal vez reducido, de $x^\ast$. Esto hace que el método solo funcione
+correctamente si se parte de una aproximación más o menos buena de una raíz
+de la función. Una solución común a este problema, cuando no se cuenta con
+dicha aproximación, es obtenerla en primer lugar ejecutando algunas
+iteraciones del método de la bisección.
+
+El método tiene una interpretación geométrica muy intuitiva, que 
+observarse en la Figura \ref{fig:newton}. Partiendo de un
+punto $x_0$, se considera la recta tangente a $f$ en el
+punto $(x_0, f(x_0))$. El punto $x_1$ se define como la intersección entre
+esta recta y el eje de abscisas. El proceso se repite con cada iteración,
+arrojando cada vez una aproximación más cercana a la raíz $x^{\ast}$
+buscada.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{newton.png}
+\caption{Interpretación geométrica del método de Newton.}
+\label{fig:newton}
+\end{figure}
+
+Se trata de un método que, bajo las condiciones adecuadas, converge a una
+buena velocidad. Sin embargo, tiene dos principales desventajas. Una de ellas
+ya se mencionó anteriormente, y es la necesidad de conocer de antemano una
+aproximación relativamente buena de la raíz buscada para poder asegurar la
+convergencia; más aún si se desea que la convergencia sea rápida, ya que
+el orden cuadrático puede resultar excesivamente lento si se comienza demasiado
+lejos de la raíz. La otra desventaja es la necesidad de computar, en cada
+paso, el valor de la derivada de $f$, lo cual puede ser difícil,
+computacionalmente costoso o directamente imposible.
 
 \subsection{Método de la secante}
+El \textbf{método de la secante} es otra iteración de punto fijo que es
+muy similar método de Newton, pero en lugar de considerar
+la derivada de $f$ en el punto actual, la aproxima mediante la recta secante
+que pasa por el punto actual y el punto anterior. Es decir, se considera que
+\[ f'(x_k) \approx \frac{f(x_k) - f(x_{k-1})}{x_k - x_{k-1}}. \]
+
+Como cada iteración tendrá en cuenta los dos puntos anteriores, se debe
+comenzar determinando dos puntos iniciales, $x_0$ y $x_1$. Luego, la iteración
+se define como
+\[ x_{k+1} = x_k - \frac{f(x_k)}{\frac{f(x_k) - f(x_{k-1})}{x_k - x_{k-1}}}
+           = x_k - \frac{f(x_k) \cdot (x_k - x_{k-1})}{f(x_k) - f(x_{k-1})}. \]
+
+La Figura \ref{fig:secante} ilustra la interpretación geométrica de este
+método.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=10cm]{secante.png}
+\caption{Interpretación geométrica del método de la secante.}
+\label{fig:secante}
+\end{figure}
+
+El método de la secante converge un poco más lentamente que el método de
+Newton. Sin embargo, puede demostrarse que su orden orden de convergencia es
+supralineal: más exactamente, es $\varphi = \frac{1 + \sqrt{5}}{2}$, la
+razón áurea. Además, presenta la gran ventaja de no requerir el cómputo
+de ninguna derivada.
+
+Uno de los inconvenientes que surge a la hora de utilizar este método tiene
+que ver con la pérdida de dígitos significativos (o \emph{cancelación
+catastrófica}) que se produce al tener que computar diferencias entre
+valores que, con cada iteración, se encuentran cada vez más cerca; el método
+\emph{regula falsi} presenta una alternativa que no padece de este problema.
+
 \subsection{Método \emph{regula falsi}}
+El \textbf{método \emph{regula falsi}} es una variante del método de
+la bisección, que incorpora la idea principal del método de la secante.
+Al igual que en el método de la bisección, se comienza con dos puntos
+iniciales donde $f$ tiene distinto signo;
+en cada paso se divide el intervalo en dos y se
+pasa a trabajar con la parte en cuyos extremos $f$ tiene diferente signo.
+Sin embargo, en lugar de dividir al intervalo por su punto medio, se utiliza
+la intersección entre el eje de abscisas y la recta que pasa por los dos
+puntos anteriores.
+
+Este método converge con un orden lineal, de la misma forma que el método de
+la bisección, pero resulta más rápido en términos prácticos. Comparado con
+el método de la secante, si bien es más lento, reduce la posibilidad de que
+se produzcan cancelaciones catastróficas: los valores de $f$ con los que
+se trabaja siempre tienen signos opuestos, con lo cual las operaciones que se
+realizan pueden pensarse como sumas en lugar de diferencias.
