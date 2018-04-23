@@ -1,32 +1,201 @@
 % -*- root: apunte-metodos.tex -*-
 
 \section{Factorización de matrices}
+\label{section:factorizacion-matrices}
+
+En esta sección se presentarán tres maneras distintas de factorizar matrices.
+La primera de ellas, la \textbf{factorización de Cholesky}, solo puede
+aplicarse a matrices que cumplen con determinadas características; las otras
+dos, la \textbf{factorización QR} y la \textbf{descomposición en valores
+singulares} o \textbf{SVD}, son aplicables a matrices arbitrarias.
+
+Una de las principales razones por las que estas factorizaciones resultan
+útiles es porque proporcionan formas de resolver sistemas de ecuaciones
+lineales que tienen propiedades deseables, como eficiencia, reutilizabilidad
+y estabilidad numérica. No obstante, las factorizaciones QR y SVD también
+tienen aplicaciones a la hora de resolver otros tipos de problemas numéricos,
+como el problema de cuadrados mínimos lineales, que es abordado en la
+sección \ref{section:cml}.
+
 \subsection{Factorización de Cholesky}
 
-Sea $\mat{A} \in \reals^{n \times n}$. Decimos que $\mat{A}$ es
-\textbf{simétrica} si $\mat{A} = \mat{A}\trans$. Además, si $\mat{A}$ es
-simétrica, decimos que es \textbf{definida positiva} si
-$\fall{x \in \reals^{n}} x \neq 0 \Rightarrow x\trans \cdot \mat{A} \cdot x > 0$.
+Decimos que una matriz $\mat{A} \in \reals^{n \times n}$ es
+\textbf{simétrica} si $\mat{A} = \mat{A}\trans$.
+Si una matriz simétrica $\mat{A}$ es inversible y admite factorización LU,
+entonces también admite un tipo de factorización que llamaremos LDL.
+La misma consiste en una escritura
+\[ \mat{A} = \mat{L} \cdot \mat{D} \cdot \mat{L}\trans \]
+donde $\mat{L}$ es triangular inferior con unos en la diagonal y $\mat{D}$
+es una matriz diagonal.
 
-Equivalentemente, las matrices simétricas y definidas positivas (s.d.p.)
-pueden caracterizarse como aquellas matrices cuyos \textbf{menores
+La demostración proviene de considerar la factorización LU de $\mat{A}$,
+$\mat{A} = \mat{L} \cdot \mat{U}$. Como $\mat{A}$ es simétrica, entonces
+$\mat{L} \cdot \mat{U} = (\mat{L} \cdot \mat{U})\trans =
+\mat{U}\trans \cdot \mat{L}\trans$. Como $\mat{L}$ tiene unos en la diagonal
+debe ser inversible y, como $\mat{A}$ es inversible, $\mat{U}$ tiene que
+serlo también, de donde % TODO: Terminar esta demostración.
+
+
+Por otro lado, decimos que una matriz $\mat{A} \in \reals^{n \times n}$
+es \textbf{simétrica y definida positiva} (s.d.p.) si es
+simétrica\footnote{Algunos autores definen la noción de matriz definida
+positiva independientemente de la matriz simétrica, mientras que otros
+requieren la simetría como una condición para que una matriz sea definida
+positiva; aquí se tomó el primer criterio, que es el adoptado por
+\emph{Numerical Analysis} (9th Edition) de Richard L. Burden y J. Douglas
+Faires.}
+y para todo $x \in \reals^{n}$ no nulo se cumple que
+$x\trans \cdot \mat{A} \cdot x > 0$. Las matrices definidas positivas siempre son inversibles, y tienen elementos positivos en su diagonal.
+
+Alternativamente, las matrices definidas positivas pueden caracterizarse como
+aquellas matrices simétricas cuyos \textbf{menores
 principales} son todos positivos. Los menores principales de una matriz
-$\mat{A}$ son los determinantes de las submatrices cuadradas de $\mat{A}$ que
-contienen su esquina superior izquierda.
+son los determinantes de sus submatrices principales, es decir,
+aquellas submatrices cuadradas que contienen su esquina superior izquierda.
+A partir de esta caracterización, se puede demostrar que las matrices
+definidas positivas siempre admiten factorización LU, y por lo tanto,
+al ser simétricas, poseen una factorización LDL.
 
 Dada una matriz $\mat{A}$, llamamos \textbf{factorización de Cholesky} a su
 escritura en la forma
 \[ \mat{A} = \mat{L} \cdot \mat{L}\trans \]
 donde $\mat{L}$ es una matriz triangular inferior con elementos positivos
-en la diagonal. Podemos demostrar que una matriz tiene factorización de
-Cholesky si y solo si es simétrica y definida positiva.
+en la diagonal. A continuación demostraremos que una matriz es simétrica y
+definida positiva si y solo si tiene factorización de Cholesky.
+
+\begin{itemize}
+\item[$(\Rightarrow)$] Consideremos una matriz s.d.p. $\mat{A} \in
+    \reals^{n \times n}$. Como enunciamos anteriormente, dicha matriz debe
+    admitir una factorización LDL,
+    $\mat{A} = \mat{L} \cdot \mat{D} \cdot \mat{L}\trans$.
+
+    En primer lugar, se puede verificar que los elementos de la diagonal de
+    $\mat{D}$ deben ser positivos.
+    Basta considerar $i \in \{1, \dots, n\}$ cualquiera; como
+    $\mat{L}\trans$ es inversible, se
+    puede tomar $x \in \reals^n$ tal que $\mat{L}\trans \cdot x = e_i$, donde
+    $e_i$ es un vector que tiene un uno en la posición $i$-ésima y ceros en
+    las posiciones restantes. Luego,
+    \[ \begin{aligned}
+        0 &< x\trans \cdot \mat{A} \cdot x \\
+          &= x\trans \cdot \mat{L} \cdot \mat{D} \cdot \mat{L}\trans \cdot x \\
+          &= (\mat{L}\trans \cdot x)\trans \cdot \mat{D} \cdot
+             (\mat{L}\trans \cdot x) \\
+          &= e_i\trans \cdot \mat{D} \cdot e_i \\
+          &= d_{i,i}.
+    \end{aligned} \]
+
+    Esto permite definir
+    \[ \mat{\sqrt{D}} = \begin{bmatrix}
+        \sqrt{d_{1,1}} & 0              & \cdots & 0 \\
+        0              & \sqrt{d_{2,2}} &        & 0 \\
+        \vdots         &                & \ddots & \vdots \\
+        0              & 0              & \cdots & \sqrt{d_{n,n}}
+    \end{bmatrix} \]
+    de modo que $\mat{D} = \mat{\sqrt{D}} \cdot \mat{\sqrt{D}} =
+    \mat{\sqrt{D}} \cdot \mat{\sqrt{D}}\trans$. Así, reemplazando en la
+    escritura LDL, obtenemos
+    \[ \begin{aligned} \mat{A}
+        &= \mat{L} \cdot \mat{D} \cdot \mat{L}\trans \\
+        &= \mat{L} \cdot \mat{\sqrt{D}} \cdot \mat{\sqrt{D}}\trans
+            \cdot \mat{L}\trans \\
+        &= (\mat{L} \cdot \mat{\sqrt{D}}) \cdot
+            (\mat{L} \cdot \mat{\sqrt{D}})\trans. \\
+    \end{aligned} \]
+
+    En esta última escritura, por las características de $\mat{L}$ y
+    $\mat{\sqrt{D}}$, la matriz $(\mat{L} \cdot \mat{\sqrt{D}})$ resulta
+    triangular inferior con elementos positivos en la diagonal; por lo tanto,
+    se trata de una factorización de Cholesky para $\mat{A}$.
+
+\item[$(\Leftarrow)$] Si $\mat{A} = \mat{L} \cdot \mat{L}\trans$, entonces
+    necesariamente $\mat{A}$ es simétrica. Basta ver que para todo $x \neq 0$,
+    $x\trans \cdot \mat{A} \cdot x > 0$.
+    \[ x\trans \cdot \mat{A} \cdot x
+        \ = \ x\trans \cdot \mat{L} \cdot \mat{L}\trans \cdot x
+        \ = \ \left( \mat{L}\trans \cdot x \right)\trans \cdot
+            \left( \mat{L}\trans \cdot x \right)
+        \ = \ \Vert \mat{L}\trans \cdot x \Vert_2^2, \]
+    y al ser $\mat{L}\trans$ inversible, $\mat{L}\trans \cdot x \neq 0$,
+    por lo que la norma necesariamente es positiva.  
+\end{itemize}
+
+Una forma de computar la factorización de Cholesky de una matriz $\mat{A}$
+surge de observar cómo se podría recuperar un elemento de $\mat{A}$ si ya
+se contara con dicha factorización. Sea $\mat{A} = \mat{L} \cdot
+\mat{L}\trans$ y consideremos, sin pérdida de generalidad, $i \geq j$; se puede notar que entonces
+\[ a_{i,j} = \fil_i(\mat{L}) \cdot \col_j(\mat{L}\trans)
+           = \sum_{k=1}^j l_{i,k} \cdot l_{j,k}. \]
+
+La idea es recorrer la matriz $\mat{L}$ de forma ordenada, por columnas,
+e ir utilizando la ecuación anterior para obtener, a partir de $\mat{A}$,
+los valores que corresponden en cada posición.
+\begin{itemize}
+\item Para computar la esquina superior izquierda de $\mat{L}$, tenemos en
+    cuenta que $a_{1,1} = (l_{1,1})^2$. Por lo tanto,
+        \[ l_{1,1} = \sqrt{a_{1,1}}. \]
+\item Para completar la primer columna, observamos que si $i > 1$, entonces
+    $a_{i,1} = l_{i,1} \cdot l_{1,1}$. Luego,
+    \[ l_{i,1} = \frac{a_{i,1}}{l_{1,1}}. \]
+\item Consideremos ahora una columna $j > 1$. Como $\mat{L}$ es triangular
+    inferior, el primer elemento a computar es el de la diagonal. Podemos
+    observar que $a_{j,j} = \sum_{k=1}^j (l_{j,k})^2 =
+    \sum_{k=1}^{j-1} (l_{j,k})^2 + (l_{j,j})^2$. Entonces,
+    \[ l_{j,j} = \sqrt{a_{j,j} - \sum_{k=1}^{j-1} (l_{j,k})^2}. \]
+\item Para calcular los restantes elementos, si $1 < j < i$, tenemos
+    $a_{i,j} = \sum_{k=1}^j l_{i,k} \cdot l_{j,k} =
+    \sum_{k=1}^{j-1} l_{i,k} \cdot l_{j,k} + l_{i,j} \cdot l_{j,j}$. Así,
+    obtenemos que
+    \[ l_{i,j} = \frac{1}{l_{j,j}} \cdot
+        \left( a_{i,j} - \sum_{k=1}^{j-1} l_{i,k} \cdot l_{j,k} \right). \]
+\end{itemize}
+
+Si los pasos se siguen en orden, en cada uno de ellos solo se utilizan
+elementos de $\mat{L}$ que ya fueron calculados previamente. Por lo tanto,
+tenemos un algoritmo bien definido para obtener la factorización de Cholesky
+de cualquier matriz s.d.p. Además, el algoritmo determina $\mat{L}$ de forma
+unívoca partiendo de una ecuación que debe ser satisfecha por toda
+factorización de Cholesky de $\mat{A}$; esto demuestra que la factorización
+de Cholesky es única.
+
+A continuación, se presenta el algoritmo escrito en forma de pseudocódigo.
+
+\begin{algorithm}[H]
+\caption{Factorización de Cholesky}
+\label{algo:cholesky}
+
+\Input{$\mat{A} \in \reals^{n \times n}$ simétrica y definida positiva.}
+\Output{$\mat{L}$ triangular superior, con elementos positivos en la
+    diagonal, tal que $\mat{A} = \mat{L} \cdot \mat{L}\trans$.}
+
+$\displaystyle l_{1,1} \gets \sqrt{a_{1,1}}$\;
+\For {$i=2,\dots,n$} {
+    $\displaystyle l_{i,1} \gets \frac{a_{i,1}}{l_{1,1}}$\;
+}
+\For {$j=2,\dots,n$} {
+    $\displaystyle l_{j,j} \gets \sqrt{a_{j,j} -
+        \sum_{k=1}^{j-1} (l_{j,k})^2}$\;
+    \For {$i=j+1,\dots,n$} {
+        $\displaystyle l_{i,j} \gets \frac{1}{l_{j,j}} \cdot
+        \left( a_{i,j} - \sum_{k=1}^{j-1} l_{i,k} \cdot l_{j,k} \right)$\;
+    }
+}
+\end{algorithm}
+
+Puede observarse que la complejidad del algoritmo es $\ord{n^3}$. Si bien
+se trata de la misma complejidad asintótica que la de obtener una
+factorización LU, las constantes son mejores, debido a que la cantidad de
+operaciones de punto flotante que deben efectuarse es aproximadamente la
+mitad.
+
+% TODO: ¿Cuáles son las bondades de Cholesky?
 
 \subsection{Factorización QR}
 
 Dos vectores $x, y \in \reals^{n}$ se dicen \textbf{ortogonales} ($x \bot y$)
-si su producto interno $\langle x,y \rangle = 0$. Un conjunto de vectores es
-\textbf{ortogonal} si sus elementos son ortogonales dos a dos. Un conjunto de
-vectores es \textbf{ortonormal} si es ortogonal y la norma de todos sus
+si su producto interno $\langle x,y \rangle$ es $0$. Un conjunto de vectores
+es \textbf{ortogonal} si sus elementos son ortogonales dos a dos. Un conjunto
+de vectores es \textbf{ortonormal} si es ortogonal y la norma de todos sus
 elementos es $1$. Los elementos de un conjunto ortonormal siempre son
 linealmente independientes.
 
@@ -37,7 +206,8 @@ su inversa, es decir, $\mat{Q}\trans = \mat{Q}^{-1}$. El producto de matrices
 ortogonales es también ortogonal, es decir, si $\mat{Q_1}$ y $\mat{Q_2}$ son
 ortogonales, $\mat{Q_1} \cdot \mat{Q_2}$ es ortogonal.
 
-Las matrices ortogonales poseen la importante propiedad de estar asociadas a las
+Las matrices ortogonales poseen la importante propiedad de estar asociadas a
+las
 transformaciones lineales que \emph{preservan norma 2}. En otras palabras, una
 matriz $\mat{Q} \in \reals^{n \times n}$ es ortogonal si y solo si, para todo
 $x \in \reals^n$, $\lVert \mat{Q} \cdot x \rVert_2 = \lVert x \rVert_2$.
@@ -46,12 +216,16 @@ ortogonal (con respecto a la norma 2) es $\kappa(\mat{Q}) = 1$. Todo esto nos
 indica que las matrices ortogonales son muy estables numéricamente, lo cual
 las vuelve muy atractivas a la hora de resolver problemas en forma
 computacional.
+% TODO: MUY IMPORTANTE. En algún lado hay que hablar de normas y de número
+% de condición. Por ahí el mejor lugar es acá mismo.
 
-Dada una matriz $\mat{A} \in \reals^{n \times n}$, existen $\mat{Q} \in
-\reals^{n \times n}$ ortogonal y $\mat{R} \in \reals^{n \times n}$ triangular
-superior tales que
+
+Dada una matriz $\mat{A} \in \reals^{n \times n}$, una \textbf{factorización QR} de $\mat{A}$ es una escritura
 \[ \mat{A} = \mat{Q} \cdot \mat{R} \]
-Esta forma se conoce como \textbf{factorización QR} de $\mat{A}$.
+donde $\mat{Q} \in \reals^{n \times n}$ es ortogonal y
+$\mat{R} \in \reals^{n \times n}$ es triangular superior. Toda matriz admite
+una factorización QR, como se verá más adelante al analizar los algoritmos
+que permiten obtenerla.
 
 Una de las aplicaciones clave de esta factorización es la resolución
 de sistemas de ecuaciones lineales. Si se tiene el sistema $\mat{A} \cdot x =
@@ -67,12 +241,11 @@ eficiente con sustitución hacia atrás, con la importante ventaja de que
 $\mat{Q}\trans$ es sumamente estable, evitando la introducción de errores
 numéricos al calcular el producto con $b$.
 
-Otra aplicación importante de la factorización QR es en la resolución del
-problema de cuadrados mínimos lineales, que será estudiado más adelante.
-
 \subsubsection{Método de Householder (Reflexiones)}
 \subsubsection{Método de Givens (Rotaciones)}
 \subsection{Descomposición en valores singulares}
+
+% TODO: Autovalores y autovectores va a haber que explicarlo acá.
 
 Sea $\mat{A} \in \reals^{m \times n}$ una matriz cualquiera, con $\rg(A) = r$.
 Entonces, existen
@@ -274,8 +447,6 @@ cumplen con las condiciones necesarias.
 
 \end{enumerate}
 
-
-
-
-\subsubsection{Forma de Hessenberg}
-
+% \subsubsection{Forma de Hessenberg}
+% TODO: Averiguar bien qué es esto de Hessenberg. Me da la impresión de que
+% es algo que no entra.
