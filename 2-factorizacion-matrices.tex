@@ -217,9 +217,9 @@ ortogonal (con respecto a la norma 2) es $\kappa(\mat{Q}) = 1$. Todo esto nos
 indica que las matrices ortogonales son muy estables numéricamente, lo cual
 las vuelve muy atractivas a la hora de resolver problemas en forma
 computacional.
+
 % TODO: MUY IMPORTANTE. En algún lado hay que hablar de normas y de número
 % de condición. Por ahí el mejor lugar es acá mismo.
-
 
 Dada una matriz $\mat{A} \in \reals^{n \times n}$, una \textbf{factorización QR} de $\mat{A}$ es una escritura
 \[ \mat{A} = \mat{Q} \cdot \mat{R} \]
@@ -243,7 +243,215 @@ $\mat{Q}\trans$ es sumamente estable, evitando la introducción de errores
 numéricos al calcular el producto con $b$.
 
 \subsubsection{Método de Householder (Reflexiones)}
+Las dos formas que estudiaremos para computar la factorización QR de una
+matriz se basan en el mismo principio: ir aplicando sucesivas transformaciones
+a la matriz, todas ellas definidas por matrices ortogonales, hasta llevarla
+a una forma triangular superior. La diferencia está en el tipo de estas
+transformaciones. En el caso del \textbf{método de Householder}, se trata
+de \textbf{matrices de reflexión}.
+
+Una matriz de reflexión en $\reals^{n \times n}$ envía a cualquier vector
+a su opuesto por un determinado hiperplano de $\reals^{n \times n}$, es
+decir, un subespacio de dimensión $n-1$. Intuitivamente, se trata de una
+transformación que no altera la norma 2 de los vectores y, por lo tanto,
+la matriz asociada a ella debe ser ortogonal.
+
+Cualquier hiperplano se puede determinar unívocamente mediante
+un vector no nulo $\vec{u} \in \reals^{n}$ ortogonal a él, para el cual la
+matriz de reflexión $\mat{W}$ cumplirá $\mat{W} \cdot \vec{u} = - \vec{u}$.
+Por otro lado, para cualquier $\vec{v}$ que sea ortogonal a $\vec{u}$ (o, lo
+que es lo mismo, que sea parte del hiperplano), debe suceder que
+$\mat{W} \cdot \vec{v} = \vec{v}$.
+
+Partiendo de las dos condiciones anteriores puede demostrarse que, si
+se toma $\vec{u}$ unitario (es decir, $\Vert \vec{u} \Vert_2 = 1$),
+la matriz de reflexión correspondiente al hiperplano
+ortogonal a $\vec{u}$ es
+\[ \mat{W} = \mat{I} - 2 \cdot \vec{u} \cdot \vec{u}\trans. \]
+Además, la matriz $\mat{W}$ resulta ortogonal.
+
+Un resultado que nos será útil es que, si se tienen dos vectores $\vec{v}$ y
+$\vec{w} \in \reals^n$ de igual norma 2, siempre es posible encontrar un
+hiperplano tal que la reflexión de $\vec{v}$ en el mismo sea $\vec{w}$.
+Dicho hiperplano será perpendicular a la recta que pasa por los extremos de
+$\vec{v}$ y $\vec{w}$, por lo que se lo puede describir mediante el versor
+\[ \vec{u} = \frac{\vec{v} - \vec{w}}{\Vert \vec{v} - \vec{w} \Vert_2}. \]
+
+Partiendo de esta idea, buscaremos tomar una matriz
+$\mat{A} \in \reals^{m \times n}$ y usar reflexiones sucesivas para
+triangularla, enviando cada una de sus columnas a
+un vector de igual norma, pero que tenga ceros en los lugares donde sea
+necesario.
+
+Para describir el proceso, fijamos $\mat{A}^{(0)} = \mat{A}$; luego, para
+cada $k \in \{1,\dots,n-1\}$, consideremos la matriz $\mat{A}^{(k-1)}$
+obtenida en el paso anterior.
+El objetivo del paso $k$-ésimo del algoritmo será poner ceros debajo de
+la diagonal en la $k$-ésima columna de la matriz. Podemos notar que
+\[
+\mat{A}^{(k-1)} = \left[ \hspace{.1cm} \begin{array}{ccc|ccc}
+    \ast & \cdots  & \ast   &         &            &         \\
+         & \ddots  & \vdots &         & \textbf{*} &         \\
+         &         & \ast   &         &            &         \\ \hline
+         &         &        & w_{k,k} & \cdots     & w_{k,n} \\
+         & \mat{0} &        & \vdots  & \ddots     & \vdots  \\
+         &         &        & w_{m,k} & \cdots     & w_{m,n} \\
+\end{array} \hspace{.1cm} \right]
+\]
+
+Teniendo en cuenta solamente la submatriz que todavía no fue triangulada,
+podemos lograr nuestro objetivo buscando una reflexión $\mat{\tilde W}_k
+\in \reals^{(m-k+1) \times (m-k+1)} $ tal que
+\[
+\mat{\tilde W}_k \cdot
+    \begin{bmatrix} w_{k,k} \\ w_{k+1,k} \\ \vdots \\ w_{m,k} \end{bmatrix}
+=  \begin{bmatrix} \Vert (w_{k,k}, \dots, w_{m,k}) \Vert \\ 0 \\ \vdots \\ 0 \end{bmatrix}
+\]
+Llamando $\vec{v}$ y $\vec{w}$ a los dos vectores que aparecen en la ecuación
+anterior, respectivamente, podemos definir el vector unitario
+$\vec{\tilde u}_k = \frac{\vec{v} - \vec{w}}{\Vert \vec{v} - \vec{w} \Vert_2}$
+y así la matriz de reflexión asociada $\mat{\tilde W}_k = \mat{I} - 2 \cdot
+\vec{\tilde u} \cdot \vec{\tilde u}\trans$ cumple con lo que necesitamos.
+Si ahora completamos con ceros las primeras $k-1$ posiciones de $\vec{\tilde u}_k$, definiendo $\vec{u}_k = ( \begin{array}{c|c} \vec{0} & \vec{\tilde u}_k \end{array} )$, la matriz de reflexión asociada $\mat{W}_k = \mat{I} - 2 \cdot
+\vec{u} \cdot \vec{u}\trans \in \reals^{m \times m}$ tiene la forma
+\[
+\mat{W}_k = \left[ \hspace{.1cm} \begin{array}{c|c}
+    \matbox{.6cm}{1cm}{\mat{I}_{k-1}}
+        & \matbox{.6cm}{1cm}{\mat{0}} \\ \hline
+    \matbox{.6cm}{1cm}{\mat{0}}
+        & \matbox{.6cm}{1cm}{\mat{\tilde W}_k}
+\end{array} \hspace{.1cm} \right],
+\]
+por lo que $\mat{A}^{(k)} = \mat{W}_k \cdot \mat{A}^{(k-1)}$ mantendrá sin
+cambios sus primeras $k-1$ columnas, pero también tendrá ceros debajo de la
+diagonal en la columna $k$-ésima.
+
+Podemos concluir, entonces, que la matriz $\mat{A}^{(n-1)}$ será triangular
+inferior. Resumiendo lo hecho en todos los pasos, y llamando
+$\mat{R} = \mat{A}^{(n-1)}$, tenemos que:
+\[ \begin{aligned}
+    \mat{R} = \mat{A}^{(n-1)}
+    &= \mat{W}_{n-1} \cdot \ldots \cdot \mat{W}_{1}
+        \cdot \mat{A} \\
+    &= \mat{W} \cdot \mat{A}
+\end{aligned} \]
+donde $\mat{W}$, el producto de todas las $\mat{W}_k$, es también ortogonal
+por ser el producto de matrices ortogonales.
+Finalmente, si definimos $\mat{Q} = \mat{W}^{-1} = \mat{W}\trans$, que es
+también ortogonal, resulta que
+\[ \mat{A} = \mat{Q} \cdot \mat{R}, \]
+es decir, hemos obtenido una factorización QR para $\mat{A}$.
+
+% TODO: Complejidad. Ventajas y desventajas. Comparación con Givens.
+
 \subsubsection{Método de Givens (Rotaciones)}
+El \textbf{método de Givens}, por su parte, realiza las transformaciones
+a través de un tipo de matrices ortogonales conocidas como
+\textbf{matrices de rotación}.
+
+Las matrices de rotación reciben este nombre porque la transformación
+lineal inducida por ellas hace rotar a cualquier vector, en torno al origen,
+un ángulo fijo $\theta$. Es evidente que las transformaciónes de este tipo
+preservan la longitud de los vectores, por lo que las matrices
+correspondientes son ortogonales.
+
+Por ejemplo, si se consideran vectores en $\reals^2$ y un ángulo $\theta$,
+se puede definir la matriz de rotación $\mat{W}$ correspondiente a dicho
+ángulo\footnote{Para construir las matrices de rotación, interpretaremos
+que los ángulos expresan giros en el sentido de las agujas del reloj.}
+a partir de los valores que deberá tomar la transformación en una base de
+$\reals^2$.
+Se quiere que
+\[
+\mat{W} \cdot \begin{bmatrix} 1 \\ 0 \end{bmatrix} =
+    \begin{bmatrix}\cos(\theta) \\ -\sin(\theta) \end{bmatrix}
+\qquad \text{y} \qquad
+\mat{W} \cdot \begin{bmatrix} 0 \\ 1 \end{bmatrix} =
+    \begin{bmatrix}\sin(\theta) \\ \cos(\theta) \end{bmatrix},
+\]
+por lo que
+\[
+\mat{W} = \begin{bmatrix}
+    \cos(\theta)   & \sin(\theta) \\
+    - \sin(\theta) & \cos(\theta)
+\end{bmatrix}.
+\]
+Es sencillo verificar que, para cualquier valor de $\theta$, esta matriz es
+ortogonal.
+
+Nuestro objetivo es usar sucesivas rotaciones para ir eliminando componentes
+de las columnas de una matriz, hasta lograr triangularla. En el caso de una
+matriz
+$\mat{A} \in \reals^{2 \times 2}$,
+\[
+\mat{A} = \begin{bmatrix}
+    a_{1} & b_{1} \\
+    a_{2} & b_{2}
+\end{bmatrix},
+\]
+queremos rotar la primera columna de modo tal que su segunda coordenada
+pase a tener un $0$; en otras palabras, la columna debe pasar a ser un vector
+paralelo al eje de abscisas. Adoptaremos la convención de que apuntará
+en el sentido positivo. Luego, como las rotaciones preservan la norma 2,
+buscamos una matriz de rotación que cumpla
+\[
+\mat{W} \cdot \begin{bmatrix} a_{1} \\ a_{2} \end{bmatrix} =
+    \begin{bmatrix} \Vert (a_{1}, a_{2}) \Vert_2 \\ 0 \end{bmatrix}.
+\]
+Se puede ver que el ángulo $\theta$ de la rotación deberá ser tal que
+\[ \cos(\theta) = \frac{a_1}{\Vert (a_{1}, a_{2}) \Vert_2}
+    \qquad \text{y} \qquad
+    \sin(\theta) = \frac{a_2}{\Vert (a_{1}, a_{2}) \Vert_2}. \]
+Por lo tanto,
+\[
+\mat{W} = \begin{bmatrix}
+    \vvecbox{.7cm}{\dfrac{a_1}{\Vert (a_{1}, a_{2}) \Vert_2}}
+        & \vvecbox{.7cm}{\dfrac{a_2}{\Vert (a_{1}, a_{2}) \Vert_2}} \\
+    - \vvecbox{.7cm}{\dfrac{a_2}{\Vert (a_{1}, a_{2}) \Vert_2}}
+        & \vvecbox{.7cm}{\dfrac{a_1}{\Vert (a_{1}, a_{2}) \Vert_2}}
+\end{bmatrix}.
+\]
+Aplicando esta rotación sobre $\mat{A}$, se obtiene una matriz $\mat{R}$
+triangular inferior. Como $\mat{W} \cdot \mat{A} = \mat{R}$, entonces
+$\mat{A} = \mat{W}^{-1} \cdot \mat{R} = \mat{W}\trans \cdot \mat{R}$. Dado
+que $\mat{W}\trans$ es ortogonal, llamando $\mat{Q} = \mat{W}\trans$,
+tenemos una factorización QR para $\mat{A}$.
+
+Esto se puede generalizar a matrices $\mat{A} \in \reals^{m \times n}$. La
+idea es iterar sobre las columnas de la matriz, e ir rotándolas hasta que
+contengan ceros en las posiciones deseadas. Para cada columna, se realizarán
+varias rotaciones sucesivas, tantas como ceros sea necesario colocar en ella.
+
+Más en detalle, si se está trabajando con la columna $j$-ésima, para cada
+$i>j$ se definirá $\mat{W}_{i,j} \in \reals^{m \times m}$
+de la siguiente forma:
+\[ \begin{aligned}
+    w_{i,i} &= \dfrac{a_i}{\Vert (a_{i}, a_{j}) \Vert_2}, \qquad&
+    w_{i,j} &= \dfrac{a_j}{\Vert (a_{i}, a_{j}) \Vert_2}, \\
+    w_{j,i} &= - \dfrac{a_j}{\Vert (a_{i}, a_{j}) \Vert_2}, \qquad&
+    w_{j,j} &= \dfrac{a_i}{\Vert (a_{i}, a_{j}) \Vert_2},
+\end{aligned} \]
+y el resto de las posiciones al igual que la matriz identidad. Los valores de
+las posiciones de $\mat{A}$ se van modificando a lo largo del proceso, por lo
+que siempre se consideran los obtenidos en la iteración anterior del
+algoritmo. Es sencillo verificar que cada $\mat{W}_{i,j}$ es una
+matriz ortogonal.
+
+De esta forma, construyendo iterativamente las matrices de rotación y
+multiplicando $\mat{A}$ a izquierda, se llega a una forma triangular superior
+\[ \begin{aligned}
+    \mat{R} &= (\mat{W}_{n,n-1})
+        \cdot (\mat{W}_{n,n-2} \cdot \mat{W}_{n-1,n-2})
+        \cdot \ldots
+        \cdot (\mat{W}_{n,1} \cdot \ldots \cdot \mat{W}_{2,1}) \cdot \mat{A}. \\
+    &= \mat{W} \cdot \mat{A}
+\end{aligned} \]
+donde $\mat{W}$ es el producto de todas las $\mat{W}_{i,j}$, y es por lo tanto
+una matriz ortogonal. Tomando $\mat{Q} = \mat{W}\trans$, se obtiene
+\[ \mat{A} = \mat{Q} \cdot \mat{R}, \]
+una factorización QR para $\mat{A}$.
+% TODO: Complejidad. Ventajas y desventajas. Comparación con Householder.
+
 \subsection{Descomposición en valores singulares}
 
 % TODO: Autovalores y autovectores va a haber que explicarlo acá.
