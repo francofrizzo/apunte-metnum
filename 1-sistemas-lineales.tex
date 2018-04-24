@@ -15,9 +15,9 @@ donde los $a_{i,j}$ y los $b_i$ son números reales.
 
 Los sistemas de ecuaciones lineales admiten también la representación
 matricial
-\[ \mat{A} \cdot x = b \]
-donde $\mat{A} \in \reals ^{n \times n}$, $x, b \in \reals^{n}$. Esta
-representación nos facilitará tanto su comprensión como su tratamiento
+\[ \mat{A} \cdot \vec{x} = \vec{b} \]
+donde $\mat{A} \in \reals ^{n \times n}$, $\vec{x}, \vec{b} \in \reals^{n}$.
+Esta representación nos facilitará tanto su comprensión como su tratamiento
 computacional.
 
 Las variables $x_1, \dots, x_n$ se denominan las \textbf{incógnitas} del
@@ -29,15 +29,16 @@ ecuaciones.
 Un sistema de ecuaciones lineales puede no tener solución, tener solución
 única, o tener infinitas soluciones. Si la matriz asociada al sistema es
 inversible (o, lo que es lo mismo, sus columnas son linealmente
-independientes)
-la solución será única. Si, por el contrario, la matriz es singular,
-podría pasar que el sistema no tenga solución o que tenga infinitas de ellas.
+independientes) la solución será única. Si, por el contrario, la matriz es
+singular, podría pasar que el sistema no tenga solución o que tenga infinitas
+de ellas.
 
-Un sistema de la forma $\mat{A} \cdot x = 0$ se denomina \textbf{homogéneo}.
-Las soluciones de un sistema homogéneo forman un subespacio vectorial. Además,
-el conjunto de soluciones de cualquier sistema $\mat{A} \cdot x = b$ puede
-obtenerse sumando una solución particular del mismo a las soluciones del
-sistema homogéneo asociado, $\mat{A} \cdot x = 0$.
+Un sistema de la forma $\mat{A} \cdot \vec{x} = \vec{0}$ se denomina
+\textbf{homogéneo}. Las soluciones de un sistema homogéneo forman un
+subespacio vectorial. Además, el conjunto de soluciones de cualquier sistema
+$\mat{A} \cdot \vec{x} = \vec{b}$ puede obtenerse sumando una solución
+particular del mismo a las soluciones del sistema homogéneo asociado, $\mat{A}
+\cdot \vec{x} = \vec{0}$.
 
 En esta sección, expondremos dos métodos para obtener computacionalmente la
 solucion de un sistema de ecuaciones lineales, en el caso de que esta exista y
@@ -217,13 +218,13 @@ el mismo, se puede ver que su complejidad es de orden cúbico ($\ord{n^3}$).
 \caption{Algoritmo de eliminación gaussiana}
 \label{algo:eliminacion-gauss}
 
-\Input{$\mat{A} \in \reals^{n \times n}$ (con filas $F_1,\dots,F_n$) y $b \in \reals^n$.}
-\Output{$x \in \reals^n$ tal que $\mat{A} \cdot x = b$.}
+\Input{$\mat{A} \in \reals^{n \times n}$ y $\vec{b} \in \reals^n$.}
+\Output{$\vec{x} \in \reals^n$ tal que $\mat{A} \cdot \vec{x} = \vec{b}$.}
 \For {$k = 1,\dots,n-1$} {
     \eIf {$a_{k,k} \neq 0$} {
         \For {$i = k+1,\dots,n$} {
             $m_{i,k} \gets \dfrac{a_{i,k}}{a_{k,k}}$ \;
-            $F_i \gets F_i - m_{i,k} \cdot F_k$ \;
+            $\mathrm{F}_i \gets \mathrm{F}_i - m_{i,k} \cdot \mathrm{F}_k$ \;
         }
     }
     {
@@ -233,6 +234,9 @@ el mismo, se puede ver que su complejidad es de orden cúbico ($\ord{n^3}$).
     }
 }
 \end{algorithm}
+
+La notación $\mathrm{F}_i$ representa aquí la $i$-ésima fila de la matriz ampliada del
+sistema.
 
 \subsubsection{Pivoteo}
 
@@ -293,21 +297,22 @@ donde $\mat{L} \in \reals^{n \times n}$ es triangular inferior con unos en
 la diagonal y $\mat{U} \in \reals^{n \times n}$ es triangular superior.
 
 Dada la factorización LU de una matriz $\mat{A}$, resolver un sistema de
-ecuaciones $\mat{A} \cdot x = b$ asociado resulta sencillo. En primer lugar,
-se puede notar que $\mat{L}$ es inversible, ya que es triangular inferior
-sin ceros en la diagonal. Entonces,
+ecuaciones $\mat{A} \cdot \vec{x} = b$ asociado resulta sencillo. En primer
+lugar, se puede notar que $\mat{L}$ es inversible, ya que es triangular
+inferior sin ceros en la diagonal. Entonces,
 \[ \begin{aligned}
-    \mat{A} \cdot x &= b &\text{sii} \\
-    \mat{L} \cdot \mat{U} \cdot x &= b &\text{sii} \\
-    \mat{U} \cdot x &= \mat{L}^{-1} \cdot b &\text{sii} \\
-    \mat{U} \cdot x &= y \\
+    \mat{A} \cdot \vec{x} &= \vec{b} &\text{sii} \\
+    \mat{L} \cdot \mat{U} \cdot \vec{x} &= \vec{b} &\text{sii} \\
+    \mat{U} \cdot \vec{x} &= \mat{L}^{-1} \cdot \vec{b} &\text{sii} \\
+    \mat{U} \cdot \vec{x} &= \vec{y} \\
 \end{aligned} \]
-donde $y = \mat{L}^{-1} \cdot b$ o, lo que es lo mismo, $y$ es la única
-solución del sistema de ecuaciones $\mat{L} \cdot y = b$. Por lo tanto,
-basta con resolver consecutivamente dos sistemas de ecuaciones:
+donde $\vec{y} = \mat{L}^{-1} \cdot \vec{b}$ o, lo que es lo mismo, $\vec{y}$
+es la única solución del sistema de ecuaciones $\mat{L} \cdot \vec{y} =
+\vec{b}$. Por lo tanto, basta con resolver consecutivamente dos sistemas de
+ecuaciones:
 \begin{itemize}
-\item $\mat{L} \cdot y = b$,
-\item $\mat{U} \cdot x = y$.
+\item $\mat{L} \cdot \vec{y} = \vec{b}$,
+\item $\mat{U} \cdot \vec{x} = \vec{y}$.
 \end{itemize}
 Como ambas matrices son triangulares, los sistemas se pueden resolver con
 un costo $\ord{n^2}$, usando los algoritmos de sustitución hacia adelante y
@@ -335,21 +340,22 @@ que $\mat{L}$ es el producto de las matrices elementales que representan a
 las operaciones involucradas en el proceso.
 
 Para demostrar este resultado, recordemos lo que sucede en el paso $k$-ésimo
-del algoritmo de eliminación gaussiana: para cada $i \in \{k+1,\dots,n\}$,
-se calcula un multiplicador $m_{i,k}$ y se realiza la operación de filas
-$F_i \gets F_i - m_{i,k} \cdot F_k$.\footnote{En el caso en que para cierta
-columna $k$, el elemento de la diagonal y todos los que están debajo de él
-sean nulos, el algoritmo no hace nada; en ese caso puede considerarse
-que todos los $m_{i,k}$ valen $0$.}
-Esta operación se puede representar como
-el producto a izquierda por una matriz elemental $\mat{M}_{i,k}$, que es
-similar a la identidad, pero tiene el valor $-m_{i,k}$ en la posición $i,k$.
-Por lo tanto, considerando todas las operaciones de filas, podemos sintetizar
-el $k$-ésimo paso de la siguiente manera (por simplicidad trabajaremos con la
-matriz $\mat{A}$, en lugar de usar la matriz extendida $\mat{\tilde A}$):
+del algoritmo de eliminación gaussiana: para cada $i \in \{k+1,\dots,n\}$, se
+calcula un multiplicador $m_{i,k}$ y se realiza la operación de filas
+$\mathrm{F}_i \gets \mathrm{F}_i - m_{i,k} \cdot \mathrm{F}_k$.\footnote{En el
+caso en que para cierta columna $k$, el elemento de la diagonal y todos los
+que están debajo de él sean nulos, el algoritmo no hace nada; en ese caso
+puede considerarse que todos los $m_{i,k}$ valen $0$.} Esta operación se puede
+representar como el producto a izquierda por una matriz elemental
+$\mat{M}_{i,k}$, que es similar a la identidad, pero tiene el valor $-m_{i,k}$
+en la posición $i,k$. Por lo tanto, considerando todas las operaciones de
+filas, podemos sintetizar el $k$-ésimo paso de la siguiente manera (por
+simplicidad trabajaremos con la matriz $\mat{A}$, en lugar de usar la matriz
+extendida $\mat{\tilde A}$):
 \[ \begin{aligned}
     \mat{A}^{(k)}
-    &= \mat{M}_{n,k} \cdot \, \dots \, \cdot \mat{M}_{k+1,k} \cdot \mat{A}^{(k-1)} \\
+    &= \mat{M}_{n,k} \cdot \, \dots \, \cdot \mat{M}_{k+1,k} \cdot
+        \mat{A}^{(k-1)} \\
     &= \mat{M}_{k} \cdot \mat{A}^{(k-1)}.
 \end{aligned} \]
 La matriz $\mat{M}_{k}$, que es el producto de las matrices elementales
@@ -362,7 +368,8 @@ De forma similar, podemos sintetizar todo el algoritmo de eliminación
 gaussiana como
 \[ \begin{aligned}
     \mat{A}^{(n-1)}
-    &= \mat{M}_{n-1} \cdot \, \dots \, \cdot \mat{M}_{1} \cdot \mat{A}^{(0)} \\
+    &= \mat{M}_{n-1} \cdot \, \dots \, \cdot \mat{M}_{1} \cdot
+        \mat{A}^{(0)} \\
     &= \mat{M} \cdot \mat{A}^{(0)} \\
     &= \mat{M} \cdot \mat{A}.
 \end{aligned} \]
@@ -391,7 +398,7 @@ factorización también sea de orden cúbico.
 
 No todas las matrices admiten factorización LU. A modo de ejemplo,
 consideremos una matriz $\mat{A} \in \reals^{n \times n}$. Si tiene
-factorización LU, entonces existen $a, b, c, d \in \nats$ tales que
+factorización LU, entonces existen $a, b, c, d \in \reals$ tales que
 \[ \mat{A} = \mat{L} \cdot \mat{U} = \begin{bmatrix}
         1 & 0 \\
         a & 1
@@ -433,7 +440,8 @@ de matrices:
     aquellas que cumplen que $\vert a_{i,i} \vert > \sum_{j=1, j \neq i}
     \vert a_{i,j}\vert$ para todo $i \in \{1,\dots,n\}$, siempre admiten
     factorización LU.
+% TODO: ¿qué hay para decir de las no estrictas?
 \item Las matrices inversibles admiten factorización LU si y solo si todos
     sus menores principales son no nulos.
-% TODO: Menores principales recién se define en la sección siguiente.
+% TODO: Menores principales recién se define en la sección siguiente.   
 \end{itemize}

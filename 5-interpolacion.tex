@@ -4,9 +4,9 @@
 \label{section:interpolacion}
 
 El problema de \textbf{interpolación} consiste en, dado un conjunto de puntos
-$(x_0,f(x_0)), \dots, (x_n,f(x_n))$, encontrar una función $I$ tal que
-$\fall{0 \leq i \leq n} I(x_i) = f(x_i)$. Este problema tiene múltiples
-aplicaciones; resulta útil, por ejemplo:
+$(x_0,f(x_0)), \dots, (x_n,f(x_n))$, encontrar una función $I$ tal que para
+todo $i \in \{0,\dots,n\}$ se cumpla que $I(x_i) = f(x_i)$. Este problema
+tiene múltiples aplicaciones; resulta útil, por ejemplo:
 \begin{itemize}
 \item cuando se tiene una serie de muestras discretas de alguna función y se
 busca reconstruir la función a partir de las mismas, por ejemplo, para
@@ -35,21 +35,18 @@ ejemplo, son sencillos de evaluar, derivar e integrar.
 Dado un conjunto de puntos $(x_0,f(x_0)), \dots, (x_n,f(x_n))$, el
 \textbf{polinomio interpolador de Lagrange} en $x_0, \dots, x_n$ se define
 como
-
 \[ P(X) := \sum_{k=0}^n f(x_k) \cdot L_{k}(X)
     \qquad \text{donde} \qquad
     L_{k}(X) := \prod_{\substack{j=0 \\ j \neq k}}^n
-    \frac{(X-x_j)}{(x_k-x_j)} \]
+    \frac{(X-x_j)}{(x_k-x_j)}. \]
 
 Podemos observar que el polinomio de Lagrange interpola correctamente los
-puntos, dado que
-
-\[ \fall{0 \leq k,i \leq n} L_k(x_i) = \begin{cases}
+puntos, dado que para todos $k,i \in \{0,\dots,n\}$,
+\[ L_k(x_i) = \begin{cases}
     1 & \text{si } k = i \\
     0 & \text{si } k \neq i
     \end{cases} \]
-
-de donde $\displaystyle \fall{0 \leq i \leq n} P(x_i) =
+de donde, para todo $i \in \{0,\dots,n\}$, $\displaystyle P(x_i) =
     \sum_{\substack{k=0 \\ k \neq i}}^n f(x_k) \cdot L_{k}(x_i) +
     f(x_i) \cdot L_i(x_i) = f(x_i)$.
 
@@ -60,23 +57,22 @@ una aproximación del \textbf{error} cometido en la interpolación (es decir, de
 la diferencia entre el resultado de evaluar en dicho punto el polinomio
 obtenido y el valor correspondiente a la función $f$ que produjo los valores
 a interpolar) en términos de la $n+1$-ésima derivada de $f$. En particular,
-
-\[ \fall{x \in [a,b]} \exst{\xi_x \in [a,b]} \text{ tal que }
-    f(x) = P(x) + \frac{f^{(n+1)}(\xi_x)}{(n+1)!} \cdot \prod_{i=0}^{n}(x-x_i) \]
+para todo $x \in [a,b]$ existe $\xi_x \in [a,b]$ tal que  
+\[ f(x)
+    = P(x) + \frac{f^{(n+1)}(\xi_x)}{(n+1)!} \cdot \prod_{i=0}^{n}(x-x_i) \]
 
 Otra propiedad destacada del polinomio de Lagrange es su \textbf{unicidad}: es
-el único polinomio de grado menor o igual que $n$ que interpola un
-conjunto de puntos $(x_0, f(x_0)), \dots, (x_n, f(x_n))$. En efecto, sea $P$ el
-polinomio interpolador de Lagrange en los puntos $x_0, \dots, x_n$, y
-supongamos que existe otro polinomio $Q$, de grado menor o igual que $n$, tal
-que $\fall{0 \leq i \leq n} Q(x_i) = f(x_i)$. Ahora bien, la función $Q(x) \in
+el único polinomio de grado menor o igual que $n$ que interpola un conjunto de
+puntos $(x_0, f(x_0)), \dots, (x_n, f(x_n))$. En efecto, sea $P$ el polinomio
+interpolador de Lagrange en los puntos $x_0, \dots, x_n$, y supongamos que
+existe otro polinomio $Q$, de grado menor o igual que $n$, tal que, para todo
+$i \in \{0,\dots,n\}$, $Q(x_i) = f(x_i)$. Ahora bien, la función $Q(x) \in
 \mathcal{C}^{n+1}([x_0,x_n])$, con $Q^{(n+1)}(x) \equiv 0$, y su polinomio
 interpolador de Lagrange en los los puntos $x_0, \dots, x_n$ es precisamente
-$P$. Así, podemos aplicar la fórmula del error, de donde
-
-\[ \fall{x \in [x_0,x_n]}
-    Q(x) = P(x) + \frac{Q^{(n+1)}(\xi_x)}{(n+1)!} \cdot \prod_{i=0}^{n}(x-x_i)
-    = P(x),\quad \text{para algún } \xi_x \in [x_0,x_n] \]
+$P$. Así, podemos aplicar la fórmula del error, de donde, para todo
+$x \in [x_0,x_n]$,
+\[ Q(x) = P(x) + \frac{Q^{(n+1)}(\xi_x)}{(n+1)!} \cdot \prod_{i=0}^{n}(x-x_i)
+    = P(x),\quad \text{para algún } \xi_x \in [x_0,x_n]. \]
 
 \subsubsection{Diferencias divididas}
 La forma de \textbf{diferencias divididas} es una manera alternativa de
@@ -90,34 +86,30 @@ Partimos de la siguiente definición recursiva:
 \begin{itemize}
 \item La \textbf{diferencia dividida de orden 0} en $x_j$ es, para $j = 0,
     \dots, n$:
-    \[f[x_j] := f(x_j)\]
+    \[f[x_j] := f(x_j).\]
 \item La \textbf{diferencia dividida de orden 1} en $x_j$ es, para $j = 0,
     \dots, n-1$:
     \[f[x_j,x_{j+1}]
         := \frac{f(x_{j+1}) - f(x_j)}{x_{j+1} - x_j}
-        = \frac{f[x_{j+1}] - f[x_j]}{x_{j+1} - x_j}\]
+        = \frac{f[x_{j+1}] - f[x_j]}{x_{j+1} - x_j}.\]
 \item La \textbf{diferencia dividida de orden 2} en $x_j$ es, para $j = 0,
     \dots, n-2$:
     \[f[x_j,x_{j+1},x_{j+2}]
-        := \frac{f[x_{j+1},x_{j+2}] - f[x_j,x_{j+1}]}{x_{j+2} - x_j}\]
+        := \frac{f[x_{j+1},x_{j+2}] - f[x_j,x_{j+1}]}{x_{j+2} - x_j}.\]
 \item En general, la \textbf{diferencia dividida de orden $\bm{k}$} en $x_j$
     es, para $j = 0, \dots, n-k$:
     \[f[x_j,\dots,x_{j+k}]
-        := \frac{f[x_{j+1},\dots,x_{j+k}] - f[x_j,\dots,x_{j+k-1}]}{x_{j+k} - x_j}\]
+        := \frac{f[x_{j+1},\dots,x_{j+k}] - f[x_j,\dots,x_{j+k-1}]}{x_{j+k} - x_j}.\]
 \end{itemize}
 
-Afirmamos que, si $P$ es el polinomio interpolador para los puntos $x_0, \dots,
-x_n$, entonces
-
-\[ \begin{aligned}
-P(X) = \sum_{i=0}^n f[x_0,\dots,x_i] \left( \prod_{j=0}^{i-1} (X - x_j) \right)
-\end{aligned} \]
-
+Afirmamos que, si $P$ es el polinomio interpolador para los puntos $x_0,
+\dots, x_n$, entonces
+\[ P(X) = \sum_{i=0}^n f[x_0,\dots,x_i]
+    \left( \prod_{j=0}^{i-1} (X - x_j) \right) \]
 es decir,
-
 \[ \begin{aligned}
 P(X) = f[x_0] &+ f[x_0,x_1] (X - x_0) + f[x_0,x_1,x_2] (X - x_0) (X - x_1) \\
-       &+ \dots + f[x_0,x_1,\dots,x_n] (X - x_0) (X - x_1) \dots (X - x_n)
+       &+ \dots + f[x_0,x_1,\dots,x_n] (X - x_0) (X - x_1) \dots (X - x_n).
 \end{aligned} \]
 
 Este resultado, que se conoce a veces como \textbf{forma de Newton} del
@@ -175,7 +167,8 @@ El polinomio interpolador para los puntos $x_1, \dots, x_n$ admite
 también una formulación recursiva, en términos de dos polinomios que
 interpolan, cada uno, $n-1$ puntos. Más específicamente, para cualesquiera
 $0 \leq i,j \leq n$, con $i \neq j$, se tiene que
-\[ P(X) = \frac{(X - x_j) \cdot P_j(X) - (X - x_i) \cdot P_i(X)}{x_i - x_j} \]
+\[ P(X) = \frac{(X - x_j) \cdot P_j(X)
+    - (X - x_i) \cdot P_i(X)}{x_i - x_j}, \]
 donde $P_i$ denota al polinomio interpolador para los puntos
 $x_0,\dots,x_{i-1},x_{i+1},\dots,x_n$, y $P_j$ al polinomio interpolador para
 $x_0,\dots,x_{j-1},x_{j+1},\dots,x_n$.
@@ -274,7 +267,7 @@ idea es que estos polinomios cumplan $S_i(x_{i-1}) = f(x_{i-1})$ y $S_i(x_i)
     S_1(x) & \text{si } x \in [x_0,x_1) \\
     S_2(x) & \text{si } x \in [x_1,x_2) \\
     \quad \vdots \\
-    S_n(x) & \text{si } x \in [x_{n-1}, x_n]
+    S_n(x) & \text{si } x \in [x_{n-1}, x_n].
 \end{cases} \]
 
 \subsubsection{Interpolación fragmentaria lineal}
@@ -286,7 +279,7 @@ y $x_i$\footnote{Cada $S_i$ es, así, el polinomio interpolador de Lagrange
 para los puntos $x_{i-1}, x_i$.}. Los $S_i$ se definen, para $i = 1, \dots,
 n$, como
 \[ S_i(X) := f(x_{i-1})
-    + \frac{f(x_i) - f(x_{i-1})}{x_i-x_{x-1}} \cdot (X - x_{i-1}) \]
+    + \frac{f(x_i) - f(x_{i-1})}{x_i-x_{x-1}} \cdot (X - x_{i-1}). \]
 
 % \begin{center}
 % \begin{tikzpicture}
