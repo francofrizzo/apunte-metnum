@@ -35,7 +35,6 @@ $\mat{L} \cdot \mat{U} = (\mat{L} \cdot \mat{U})\trans =
 debe ser inversible y, como $\mat{A}$ es inversible, $\mat{U}$ tiene que
 serlo también, de donde % TODO: Terminar esta demostración.
 
-
 Por otro lado, decimos que una matriz $\mat{A} \in \reals^{n \times n}$
 es (simétrica y) \textbf{definida positiva} (s.d.p.) si es
 simétrica\footnote{Algunos autores definen la noción de matriz definida
@@ -44,8 +43,8 @@ requieren la simetría como una condición para que una matriz sea definida
 positiva; aquí se tomó el primer criterio, que es el adoptado por
 \emph{Numerical Analysis} (9th Edition) de Richard L. Burden y J. Douglas
 Faires.}
-y para todo $x \in \reals^{n}$ no nulo se cumple que
-$x\trans \cdot \mat{A} \cdot x > 0$. Las matrices definidas positivas siempre son inversibles, y tienen elementos positivos en su diagonal.
+y para todo $\vec{x} \in \reals^{n}$ no nulo se cumple que
+$\vec{x}\trans \cdot \mat{A} \cdot \vec{x} > 0$. Las matrices definidas positivas siempre son inversibles, y tienen elementos positivos en su diagonal.
 
 Alternativamente, las matrices definidas positivas pueden caracterizarse como
 aquellas matrices simétricas cuyos \textbf{menores
@@ -72,16 +71,17 @@ definida positiva si y solo si tiene factorización de Cholesky.
     En primer lugar, se puede verificar que los elementos de la diagonal de
     $\mat{D}$ deben ser positivos.
     Basta considerar $i \in \{1, \dots, n\}$ cualquiera; como
-    $\mat{L}\trans$ es inversible, se
-    puede tomar $x \in \reals^n$ tal que $\mat{L}\trans \cdot x = e_i$, donde
-    $e_i$ es un vector que tiene un uno en la posición $i$-ésima y ceros en
+    $\mat{L}\trans$ es inversible, se puede tomar $\vec{x} \in \reals^n$ tal
+    que $\mat{L}\trans \cdot \vec{x} = \vec{e}_i$, donde $\vec{e}_i$ es un
+    vector que tiene un uno en la posición $i$-ésima y ceros en
     las posiciones restantes. Luego,
     \[ \begin{aligned}
-        0 &< x\trans \cdot \mat{A} \cdot x \\
-          &= x\trans \cdot \mat{L} \cdot \mat{D} \cdot \mat{L}\trans \cdot x \\
-          &= (\mat{L}\trans \cdot x)\trans \cdot \mat{D} \cdot
-             (\mat{L}\trans \cdot x) \\
-          &= e_i\trans \cdot \mat{D} \cdot e_i \\
+        0 &< \vec{x}\trans \cdot \mat{A} \cdot \vec{x} \\
+          &= \vec{x}\trans \cdot \mat{L} \cdot \mat{D} \cdot \mat{L}\trans
+            \cdot \vec{x} \\
+          &= (\mat{L}\trans \cdot \vec{x})\trans \cdot \mat{D} \cdot
+             (\mat{L}\trans \cdot \vec{x}) \\
+          &= \vec{e}_i\trans \cdot \mat{D} \cdot \vec{e}_i \\
           &= d_{i,i}.
     \end{aligned} \]
 
@@ -104,19 +104,20 @@ definida positiva si y solo si tiene factorización de Cholesky.
     \end{aligned} \]
 
     En esta última escritura, por las características de $\mat{L}$ y
-    $\mat{\sqrt{D}}$, la matriz $(\mat{L} \cdot \mat{\sqrt{D}})$ resulta
+    $\mat{\sqrt{D}}$, la matriz $\mat{L} \cdot \mat{\sqrt{D}}$ resulta
     triangular inferior con elementos positivos en la diagonal; por lo tanto,
     se trata de una factorización de Cholesky para $\mat{A}$.
 
 \item[$(\Leftarrow)$] Si $\mat{A} = \mat{L} \cdot \mat{L}\trans$, entonces
-    necesariamente $\mat{A}$ es simétrica. Basta ver que para todo $x \neq 0$,
-    $x\trans \cdot \mat{A} \cdot x > 0$.
-    \[ x\trans \cdot \mat{A} \cdot x
-        \ = \ x\trans \cdot \mat{L} \cdot \mat{L}\trans \cdot x
-        \ = \ \left( \mat{L}\trans \cdot x \right)\trans \cdot
-            \left( \mat{L}\trans \cdot x \right)
-        \ = \ \Vert \mat{L}\trans \cdot x \Vert_2^2, \]
-    y al ser $\mat{L}\trans$ inversible, $\mat{L}\trans \cdot x \neq 0$,
+    necesariamente $\mat{A}$ es simétrica. Basta ver que para todo $\vec{x}
+    \neq \vec{0}$, $\vec{x}\trans \cdot \mat{A} \cdot \vec{x} > 0$.
+    \[ \vec{x}\trans \cdot \mat{A} \cdot \vec{x}
+        \ = \ \vec{x}\trans \cdot \mat{L} \cdot \mat{L}\trans \cdot \vec{x}
+        \ = \ \left( \mat{L}\trans \cdot \vec{x} \right)\trans \cdot
+            \left( \mat{L}\trans \cdot \vec{x} \right)
+        \ = \ \Vert \mat{L}\trans \cdot \vec{x} \Vert_2^2, \]
+    y al ser $\mat{L}\trans$ inversible,
+    $\mat{L}\trans \cdot \vec{x} \neq \vec{0}$,
     por lo que la norma necesariamente es positiva.  
 \end{itemize}
 
@@ -193,8 +194,9 @@ mitad.
 
 \subsection{Factorización QR}
 
-Dos vectores $x, y \in \reals^{n}$ se dicen \textbf{ortogonales} ($x \bot y$)
-si su producto interno $\langle x,y \rangle$ es $0$. Un conjunto de vectores
+Dos vectores $\vec{x}, \vec{y} \in \reals^{n}$ se dicen \textbf{ortogonales}
+($\vec{x} \bot \vec{y}$) si su producto interno
+$\langle \vec{x},\vec{y} \rangle$ es $0$. Un conjunto de vectores
 es \textbf{ortogonal} si sus elementos son ortogonales dos a dos. Un conjunto
 de vectores es \textbf{ortonormal} si es ortogonal y la norma de todos sus
 elementos es $1$. Los elementos de un conjunto ortonormal siempre son
@@ -211,7 +213,8 @@ Las matrices ortogonales poseen la importante propiedad de estar asociadas a
 las
 transformaciones lineales que \emph{preservan norma 2}. En otras palabras, una
 matriz $\mat{Q} \in \reals^{n \times n}$ es ortogonal si y solo si, para todo
-$x \in \reals^n$, $\lVert \mat{Q} \cdot x \rVert_2 = \lVert x \rVert_2$.
+$x \in \reals^n$, $\lVert \mat{Q} \cdot \vec{x} \rVert_2 =
+\lVert \vec{x} \rVert_2$.
 De esto se desprende también que el número de condición de una matriz
 ortogonal (con respecto a la norma 2) es $\kappa(\mat{Q}) = 1$. Todo esto nos
 indica que las matrices ortogonales son muy estables numéricamente, lo cual
@@ -221,26 +224,30 @@ computacional.
 % TODO: MUY IMPORTANTE. En algún lado hay que hablar de normas y de número
 % de condición. Por ahí el mejor lugar es acá mismo.
 
-Dada una matriz $\mat{A} \in \reals^{n \times n}$, una \textbf{factorización QR} de $\mat{A}$ es una escritura
+Dada una matriz $\mat{A} \in \reals^{m \times n}$, una
+\textbf{factorización QR} de $\mat{A}$ es una escritura
 \[ \mat{A} = \mat{Q} \cdot \mat{R} \]
-donde $\mat{Q} \in \reals^{n \times n}$ es ortogonal y
-$\mat{R} \in \reals^{n \times n}$ es triangular superior. Toda matriz admite
+donde $\mat{Q} \in \reals^{m \times m}$ es ortogonal y
+$\mat{R} \in \reals^{m \times n}$ es triangular superior. Toda matriz admite
 una factorización QR, como se verá más adelante al analizar los algoritmos
 que permiten obtenerla.
+% TODO: Siempre existe. ¿Pero y la unicidad?
 
 Una de las aplicaciones clave de esta factorización es la resolución
-de sistemas de ecuaciones lineales. Si se tiene el sistema $\mat{A} \cdot x =
-b$, utilizando la factorización QR, se lo puede reescribir como
-\[\mat{Q} \cdot \mat{R} \cdot x = b\]
+de sistemas de ecuaciones lineales. Si se tiene el sistema
+$\mat{A} \cdot \vec{x} = \vec{b}$,
+utilizando la factorización QR, se lo puede reescribir como
+\[\mat{Q} \cdot \mat{R} \cdot \vec{x} = \vec{b}\]
 Al ser $\mat{Q}$ ortogonal, se puede multiplicar
 a ambos lados por $\mat{Q}\trans$ y se tiene
-\[\mat{Q}\trans \mat{Q} \cdot \mat{R} \cdot x = \mat{Q}\trans b\]
+\[\mat{Q} \cdot \trans \mat{Q} \cdot \mat{R} \cdot \vec{x}
+    = \mat{Q}\trans \vec{b}\]
 o lo que es lo mismo,
-\[\mat{R} \cdot x = \mat{Q}\trans \cdot b\]
+\[\mat{R} \cdot \vec{x} = \mat{Q}\trans \cdot \vec{b}\]
 Como $\mat{R}$ es triangular superior, este sistema se puede resolver de forma
 eficiente con sustitución hacia atrás, con la importante ventaja de que
 $\mat{Q}\trans$ es sumamente estable, evitando la introducción de errores
-numéricos al calcular el producto con $b$.
+numéricos al calcular el producto con $\vec{b}$.
 
 \subsubsection{Método de Householder (Reflexiones)}
 Las dos formas que estudiaremos para computar la factorización QR de una
@@ -454,16 +461,34 @@ una factorización QR para $\mat{A}$.
 
 \subsection{Descomposición en valores singulares}
 
-% TODO: Autovalores y autovectores va a haber que explicarlo acá.
+A partir de esta sección, se hace necesario presentar dos nociones importantes
+que continuarán apareciendo más adelante.
+Dada una matriz $\mat{A} \in \reals^{n \times n}$, decimos que $\lambda \in
+\reals$ es un \textbf{autovalor} de $\mat{A}$ si existe algún vector no nulo
+$\vec{v} \in \reals^n$ tal que $\mat{A} \cdot \vec{v} = \lambda \cdot \vec{v}$.
+En ese caso, a $\vec{v}$ se lo conoce como un \textbf{autovector} de $\mat{A}$
+asociado al autovalor $\lambda$. Cabe destacar que, si $\lambda$ es un
+autovalor de una matriz, entonces existen infinitos autovectores asociados al
+mismo; los autovectores asociados a un autovalor $\lambda$ dado conforman un
+subespacio vectorial de $\reals^{n \times n}$.
 
+% TODO: Reformular la expresión
 Sea $\mat{A} \in \reals^{m \times n}$ una matriz cualquiera, con $\rg(A) = r$.
-Entonces, existen
-\begin{itemize}
-\item una base ortonormal $\lbrace v_1, v_2, \dots, v_n \rbrace$ de $\reals^n$, y
-\item una base ortonormal $\lbrace u_1, u_2, \dots, u_m \rbrace$ de $\reals^m$
-\end{itemize}
-tales que
-\[ \mat{U}\trans \cdot \mat{A} \cdot \mat{V} = \mat{\Sigma} = \begin{bmatrix}
+Una \textbf{descomposición en valores singulares} de $\mat{A}$ es una escritura
+\[ \mat{A} = \mat{U} \cdot \mat{\Sigma} \cdot \mat{V}\trans, \]
+donde
+\begin{itemize} \vspace{.6em}
+\item $\mat{U} = \begin{bmatrix}
+                  &           &        &           \\
+        \vec{u}_1 & \vec{u}_2 & \dots  & \vec{u}_m \\
+                  &           &        &           \\
+    \end{bmatrix} \in \reals^{m \times m}$ y
+    $\mat{V} = \begin{bmatrix}
+                  &           &        &           \\
+        \vec{v}_1 & \vec{v}_2 & \dots  & \vec{v}_n \\
+                  &           &        &           \\
+    \end{bmatrix} \in \reals^{n \times n}$ son ortogonales, y \vspace{.6em}
+\item $\mat{\Sigma} = \begin{bmatrix}
 \sigma_1 & 0        & \cdots   &    &          &          &          \\
 0        & \sigma_2 &          &          &          &          &          \\
 \vdots   &          & \ddots   &          &          &          &          \\
@@ -471,50 +496,42 @@ tales que
          &          &          &          & 0        &          &          \\
          &          &          &          &          & \ddots   &          \\
          &          &          &          &          &          & 0
-\end{bmatrix} \]
-donde
-\begin{itemize}
-\item $\mat{V} = \begin{bmatrix}
-            &     &        &     \\
-        v_1 & v_2 & \dots  & v_n \\
-            &     &        &     \\
-    \end{bmatrix} \in \reals^{n \times n}$ y
-    $\mat{U} = \begin{bmatrix}
-            &     &        &     \\
-        u_1 & u_2 & \dots  & u_m \\
-            &     &        &     \\
-    \end{bmatrix} \in \reals^{m \times m}$ son ortogonales, y
-\item $\mat{\Sigma} \in \reals^{m \times n}$ es una matriz diagonal,
-    con $\sigma_i > 0 \fall{i = 1, \dots, r}$.
-\end{itemize}
+\end{bmatrix} \in \reals^{m \times n}$ es diagonal,
+    con $\sigma_i > 0$ para todo $i \in \{ 1, \dots, r \}$.
+\end{itemize} \vspace{.6em}
 
 Los valores $\sigma_i$ se denominan los \textbf{valores singulares} de \mat{A}.
+Por su parte, $\lbrace \vec{u}_1, \vec{u}_2, \dots, \vec{u}_m \rbrace$ y
+$\lbrace \vec{v}_1, \vec{v}_2, \dots, \vec{v}_n \rbrace$
+son bases ortonormales de $\reals^m$ y $\reals^n$, respectivamente.
 
-\subsubsection{Demostración de la existencia}
-
-Queremos hallar $\mat{U}$, $\mat{V}$, $\mat{\Sigma}$ que cumplan la igualdad
-enunciada:
-\[ \mat{U}\trans \cdot \mat{A} \cdot \mat{V} = \mat{\Sigma} \]
-o, equivalentemente (usando la ortogonalidad de $\mat{U}$ y $\mat{V}$),
+Es posible demostrar que toda matriz admite una descomposición en valores
+singulares. Para demostrarlo, comenzamos por observar que la igualdad
+enunciada,
+\[ \mat{A} = \mat{U} \cdot \mat{\Sigma} \cdot \mat{V}\trans, \]
+puede expresarse de forma equivalente mediante las siguientes ecuaciones,
+usando la ortogonalidad de $\mat{U}$ y $\mat{V}$:
 \begin{multicols}{2}\noindent
 \[ \begin{aligned} \mat{A} \cdot \mat{V} &= \mat{U} \cdot \mat{\Sigma} \\
     & \Updownarrow \\
     \mat{A} \cdot \begin{bmatrix}
-            &     &        &     \\
-        v_1 & v_2 & \dots  & v_n \\
-            &     &        &     \\
+                  &        &           \\
+        \vec{v}_1 & \dots  & \vec{v}_n \\
+                  &        &           \\
     \end{bmatrix} &= \begin{bmatrix}
-            &     &        &     \\
-        u_1 & u_2 & \dots  & u_m \\
-            &     &        &     \\
+                  &        &           \\
+        \vec{u}_1 & \dots  & \vec{u}_m \\
+                  &        &           \\
     \end{bmatrix} \cdot \mat{\Sigma} \\
     & \Updownarrow
 \end{aligned}
 \]
 \begin{numcases}{}
-    \mat{A} \cdot v_i = \sigma_i \cdot u_i & para $i = 1,\dots,r$
+    \mat{A} \cdot \vec{v}_i = \sigma_i \cdot \vec{u}_i
+        & para $i = 1,\dots,r$
         \label{eq:svd:caso1} \\
-    \mat{A} \cdot v_i = 0                  & para $i = r+1,\dots,n$
+    \mat{A} \cdot \vec{v}_i = \vec{0}
+        & para $i = r+1,\dots,n$
         \label{eq:svd:caso2}
 \end{numcases}
 
@@ -522,30 +539,32 @@ o, equivalentemente (usando la ortogonalidad de $\mat{U}$ y $\mat{V}$),
 \[\begin{aligned} \mat{A}\trans \cdot \mat{U} &= \mat{V} \cdot \mat{\Sigma} \\
     & \Updownarrow \\
     \mat{A}\trans \cdot \begin{bmatrix}
-            &     &        &     \\
-        u_1 & u_2 & \dots  & u_m \\
-            &     &        &     \\
+                  &        &           \\
+        \vec{u}_1 & \dots  & \vec{u}_m \\
+                  &        &           \\
     \end{bmatrix} &= \begin{bmatrix}
-            &     &        &     \\
-        v_1 & v_2 & \dots  & v_n \\
-            &     &        &     \\
+                  &        &           \\
+        \vec{v}_1 & \dots  & \vec{v}_n \\
+                  &        &           \\
     \end{bmatrix} \cdot \mat{\Sigma} \\
     & \Updownarrow
 \end{aligned}
 \]
 \begin{numcases}{}
-    \mat{A}\trans \cdot u_i = \sigma_i \cdot v_i & para $i = 1,\dots,r$
+    \mat{A}\trans \cdot \vec{u}_i = \sigma_i \cdot \vec{v}_i
+        & para $i = 1,\dots,r$
         \label{eq:svd:caso3} \\
-    \mat{A}\trans \cdot u_i = 0                  & para $i = r+1,\dots,m$
+    \mat{A}\trans \cdot \vec{u}_i = \vec{0}
+        & para $i = r+1,\dots,m$
         \label{eq:svd:caso4}
 \end{numcases}
 
 \end{multicols}
 
-Buscaremos definir
+En otras palabras, queremos probar la existencia de
 \begin{itemize}
-\item $v_1, \dots, v_n \in \reals^n$ ortonormales,
-\item $u_1, \dots, u_m \in \reals^m$ ortonormales, y
+\item $\vec{v}_1, \dots, \vec{v}_n \in \reals^n$ ortonormales,
+\item $\vec{u}_1, \dots, \vec{u}_m \in \reals^m$ ortonormales, y
 \item $\sigma_1, \dots, \sigma_r > 0$
 \end{itemize}
 que cumplan las ecuaciones (\ref{eq:svd:caso1}), (\ref{eq:svd:caso2}),
@@ -555,106 +574,122 @@ En primer lugar, vemos que:
 \begin{enumerate}[label=(\roman*)]
 \item Para $i = 1, \dots, r$,
 \[ \begin{aligned}
-    \mat{A}\trans \cdot \mat{A} \cdot v_i &= \sigma_i \cdot \mat{A}\trans \cdot u_i \\
-    \mat{A}\trans \cdot \mat{A} \cdot v_i &= \sigma_i^2 \cdot v_i \\
-    \end{aligned} \]
-es decir, los $v_i$ deberán ser autovectores de $\mat{A}\trans \cdot \mat{A}$,
-con autovalor $\sigma_i^2$.
+    \mat{A}\trans \cdot \mat{A} \cdot \vec{v}_i
+        &= \sigma_i \cdot \mat{A}\trans \cdot \vec{u}_i \\
+        &= \sigma_i^2 \cdot \vec{v}_i
+\end{aligned} \]
+es decir, los $\vec{v}_1,\dots,\vec{v}_r$ deberán ser autovectores de
+$\mat{A}\trans \cdot \mat{A}$, con autovalor $\sigma_i^2$.
 \item Para $i = r+1, \dots, n$,
-\[ \mat{A}\trans \cdot \mat{A} \cdot v_i = \mat{A}\trans \cdot 0 = 0 \]
-es decir, los $v_i$ deberán ser autovectores de $\mat{A}\trans \cdot \mat{A}$,
-con autovalor $0$.
+\[ \mat{A}\trans \cdot \mat{A} \cdot \vec{v}_i = \mat{A}\trans \cdot 0 = 0 \]
+es decir, los $\vec{v}_{r+1},\dots,\vec{v}_n$ deberán ser autovectores de
+$\mat{A}\trans \cdot \mat{A}$, con autovalor $0$.
 \end{enumerate}
 
 Como $\mat{A}\trans \cdot \mat{A}$ es simétrica, existe una base ortonormal de
-$\reals^n$ compuesta por autovectores de $\mat{A}\trans \cdot \mat{A}$.
-Además, por ser semidefinida positiva, todos sus autovalores son no negativos.
+$\reals^n$ compuesta por autovectores de $\mat{A}\trans \cdot \mat{A}$,
+propiedad que utilizaremos sin demostración.
+Además, tendremos en cuenta el siguiente lema, que demostraremos luego:
+como $\mat{A}$ es semidefinida positiva,
+todos sus autovalores son reales no negativos.
+% TODO: Demostrar este lema
 
-Por otra parte, tenemos que
-\[ \fall{x \in \reals^n} \mat{A} \cdot x = 0 \Leftrightarrow
-    \mat{A}\trans \cdot \mat{A} \cdot x \]
-dado que, trivialmente, $\mat{A} \cdot x = 0 \Rightarrow
-\mat{A}\trans \cdot \mat{A} \cdot x = 0$, mientras que
-$ \mat{A}\trans \cdot \mat{A} \cdot x = 0
-    \Rightarrow x\trans \cdot \mat{A}\trans \cdot \mat{A} \cdot x = 0
-    \Rightarrow \lVert \mat{A} \cdot x \rVert = 0
-    \Rightarrow \mat{A} \cdot x = 0$.
-Así, $\rg(\mat{A}\trans \cdot \mat{A}) = \rg(\mat{A}) = 0$, lo cual significa
-que $\mat{A}\trans \cdot \mat{A}$ tiene exactamente $n - r$ autovectores
-asociados al autovalor $0$.
+Por otra parte, tenemos que para todo $\vec{x} \in \reals^n$
+\[ \mat{A} \cdot \vec{x} = \vec{0} \quad \Leftrightarrow \quad
+    \mat{A}\trans \cdot \mat{A} \cdot \vec{x} = \vec{0} \]
+dado que, trivialmente, si $\mat{A} \cdot \vec{x} = \vec{0}$ entonces
+$\mat{A}\trans \cdot \mat{A} \cdot \vec{x} = \vec{0}$, mientras que si
+$\mat{A}\trans \cdot \mat{A} \cdot \vec{x} = \vec{0}$ entonces
+$\vec{x}\trans \cdot \mat{A}\trans \cdot \mat{A} \cdot \vec{x}
+    = \lVert \mat{A} \cdot \vec{x} \rVert_2^2 = 0$, lo cual solo sucede si
+$\mat{A} \cdot \vec{x} = \vec{0}$.
+Así, $\rg(\mat{A}\trans \cdot \mat{A}) = \rg(\mat{A}) = r$, lo cual significa
+que $\nul(\mat{A}\trans \cdot \mat{A})$ tiene dimensión $n-r$; en otras
+palabras $\mat{A}\trans \cdot \mat{A}$ tiene exactamente $n - r$ autovectores
+linealmente independientes asociados al autovalor $0$.
 
-Definimos entonces $\lbrace v_1, \dots, v_n \rbrace$ como una base ortonormal
-de autovectores de $\mat{A}\trans \cdot \mat{A}$, ordenados de modo que los
-últimos $n-r$ son los asociados al autovalor $0$. Veamos que estos $v_i$
-cumplen con las condiciones necesarias.
+Definimos entonces $\lbrace \vec{v}_1, \dots, \vec{v}_n \rbrace$ como una base
+ortonormal de autovectores de $\mat{A}\trans \cdot \mat{A}$, ordenados de modo
+que los últimos $n-r$ son los asociados al autovalor $0$.
+Veamos que estos $\vec{v}_i$ cumplen con las condiciones necesarias.
 
 \begin{enumerate}[label=(\roman*)]
-\item Para $i = 1, \dots, r$, sea $\lambda_i$ el autovalor de $\mat{A}\trans
-    \cdot \mat{A}$ asociado al autovector $v_i$. Sabemos que $\lambda_i > 0$.
+\item Para $i = 1, \dots, r$, sea $\lambda_i \in \reals$
+    el autovalor de $\mat{A}\trans \cdot \mat{A}$
+    asociado al autovector $\vec{v}_i$.
+    Sabemos que $\lambda_i > 0$.
     Definimos entonces:
     \begin{itemize}
     \item $\sigma_i = \sqrt{\lambda_i} > 0$.
-    \item $\displaystyle u_i = \frac{\mat{A} \cdot v_i}{\sigma_i}$.
-        Trivialmente, puede verse que satisfacen la ecuación
+    \item $\displaystyle \vec{u}_i = \frac{\mat{A} \cdot \vec{v}_i}{\sigma_i}$.
+        Trivialmente, puede verse que se satisface la ecuación
         (\ref{eq:svd:caso1}).
     \end{itemize}
 
-    Veamos que $u_1, \dots, u_r$ son ortonormales:
+    Veamos que $\vec{u}_1, \dots, \vec{u}_r$ son ortonormales:
     \begin{itemize}
-    \item $\displaystyle \lVert u_i \rVert_2^2
-        = \left( \frac{\mat{A} \cdot v_i}{\sigma_i} \right)\trans \cdot
-          \left( \frac{\mat{A} \cdot v_i}{\sigma_i} \right)
-        = \frac{1}{\sigma_i^2} (v_i\trans \cdot \mat{A}\trans
-          \cdot \mat{A} \cdot v_i)
-        = \frac{1}{\sigma_i^2} (v_i\trans \cdot \sigma_i^2 \cdot v_i)
-        = v_i\trans \cdot v_i
-        = \lVert v_i \rVert_2^2
+    \item $\displaystyle \lVert \vec{u}_i \rVert_2^2
+        = \left( \frac{\mat{A} \cdot \vec{v}_i}{\sigma_i} \right)\trans \cdot
+          \left( \frac{\mat{A} \cdot \vec{v}_i}{\sigma_i} \right)
+        = \frac{1}{\sigma_i^2} (\vec{v}_i\trans \cdot \mat{A}\trans
+          \cdot \mat{A} \cdot \vec{v}_i)
+        = \frac{1}{\sigma_i^2} (\vec{v}_i\trans \cdot \sigma_i^2
+          \cdot \vec{v}_i)
+        = \vec{v}_i\trans \cdot \vec{v}_i
+        = \lVert \vec{v}_i \rVert_2^2
         = 1$.
-    \item $\displaystyle i \neq j \Rightarrow u_i\trans \cdot u_j
-        = \left( \frac{\mat{A} \cdot v_i}{\sigma_i} \right)\trans \cdot
-          \left( \frac{\mat{A} \cdot v_j}{\sigma_j} \right)
-        = \frac{v_i\trans \cdot \mat{A}\trans \cdot \mat{A} \cdot v_j}
+    \item Si $i \neq j$, entonces $\begin{aligned}[t]
+        \displaystyle \vec{u}_i\trans \cdot \vec{u}_j
+        = \left( \frac{\mat{A} \cdot \vec{v}_i}{\sigma_i} \right)\trans \cdot
+          \left( \frac{\mat{A} \cdot \vec{v}_j}{\sigma_j} \right)
+        &= \frac{\vec{v}_i\trans \cdot \mat{A}\trans \cdot \mat{A}
+          \cdot \vec{v}_j}{\sigma_i \cdot \sigma_j} \\
+        &= \frac{\vec{v}_i\trans \cdot \sigma_j^2 \cdot \vec{v}_j}
           {\sigma_i \cdot \sigma_j}
-        = \frac{v_i\trans \cdot \sigma_j^2 \cdot v_j}
-          {\sigma_i \cdot \sigma_j}
-        = \frac{\sigma_j}{\sigma_i} \cdot v_i\trans \cdot v_j
-        = 0$.
+        = \frac{\sigma_j}{\sigma_i} \cdot \vec{v}_i\trans \cdot \vec{v}_j
+        = 0. \end{aligned}$
     \end{itemize}
 
-    Verifiquemos, también, que cumplan la ecuación (\ref{eq:svd:caso3}):
-    \[ \mat{A}\trans \cdot u_i
-        = \frac{\mat{A}\trans \cdot \mat{A} \cdot v_i}{\sigma_i}
-        = \frac{\sigma_i^2 \cdot v_i}{\sigma_i}
-        = \sigma_i \cdot v_i \]
+    Resta verificar que se cumple la ecuación (\ref{eq:svd:caso3}):
+    \[ \mat{A}\trans \cdot \vec{u}_i
+        = \frac{\mat{A}\trans \cdot \mat{A} \cdot \vec{v}_i}{\sigma_i}
+        = \frac{\sigma_i^2 \cdot \vec{v}_i}{\sigma_i}
+        = \sigma_i \cdot \vec{v}_i \]
 
 \item Para $i = r+1, \dots, n$, ya vimos que, como $\mat{A}\trans \cdot
-    \mat{A} \cdot v_i = 0$, también $\mat{A} \cdot v_i = 0$, por lo que
-    se satisface la ecuación (\ref{eq:svd:caso2}).
+    \mat{A} \cdot \vec{v}_i = \vec{0}$, también $\mat{A} \cdot \vec{v}_i
+    = \vec{0}$, por lo que se satisface la ecuación (\ref{eq:svd:caso2}).
 
-    Aún no definimos $u_{r+1}, \dots, u_m$. Lo hacemos de modo que sean una
-    base ortonormal de $\nul(\mat{A}\trans)$. Así, satisfacen la ecuación
-    (\ref{eq:svd:caso4}): $\mat{A}\trans \cdot u_i = 0$.
+    Aún no definimos $\vec{u}_{r+1}, \dots, \vec{u}_m$.
+    Lo hacemos de modo que sean una base ortonormal de $\nul(\mat{A}\trans)$.
+    Así, se satisface la ecuación
+    (\ref{eq:svd:caso4}): $\mat{A}\trans \cdot \vec{u}_i = \vec{0}$.
 
-    Solo falta ver que $\lbrace u_1, \dots, u_m \rbrace$ es una base
-    ortonormal de $\reals^m$. Ahora bien:
+    Solo falta ver que $\lbrace \vec{u}_1, \dots, \vec{u}_m \rbrace$ es una
+    base ortonormal de $\reals^m$. Ahora bien:
     \begin{itemize}
-    \item es una base, dado que $\lbrace u_1, \dots, u_r \rbrace$ es una base de
-        $\im(\mat{A})$, $\lbrace u_{r+1},\dots,u_m \rbrace$ es una base de
+    \item es una base, dado que $\lbrace \vec{u}_1, \dots, \vec{u}_r \rbrace$
+        es una base de $\im(\mat{A})$,
+        $\lbrace \vec{u}_{r+1},\dots,\vec{u}_m \rbrace$ es una base de
         $\nul(\mat{A}\trans)$, y $\im(\mat{A}) \oplus \nul(\mat{A}\trans) =
         \reals^m$.
-    \item ya vimos que tanto $\lbrace u_1, \dots, u_r \rbrace$ como
-        $\im(\mat{A})$, $\lbrace u_{r+1},\dots,u_m \rbrace$ son conjuntos
-        ortonormales. Basta ver, entonces, que tomando $i = 1,\dots,r$ y
-        $j = r+1,\dots,m$, se cumple $u_i\trans \cdot u_j = 0$. En efecto,
-        $\displaystyle u_i\trans \cdot u_j
-            = \left( \frac{\mat{A} \cdot v_i}{\sigma_i} \right)\trans \cdot u_j
-            = \frac{1}{\sigma_i} \cdot v_i\trans \cdot \mat{A}\trans \cdot u_j
-            = \frac{1}{\sigma_i} \cdot v_i\trans \cdot 0
-            = 0$.
-
+    \item ya vimos que tanto $\lbrace \vec{u}_1, \dots, \vec{u}_r \rbrace$
+        como $\im(\mat{A})$, $\lbrace \vec{u}_{r+1},\dots,\vec{u}_m \rbrace$
+        son conjuntos ortonormales. Basta ver, entonces, que tomando
+        $i \in \{1,\dots,r\}$ y $j \in \{r+1,\dots,m\}$,
+        se cumple que $\vec{u}_i \bot \vec{u}_j$, es decir, que
+        $\vec{u}_i\trans \cdot \vec{u}_j = 0$. En efecto,
+        \[ \vec{u}_i\trans \cdot \vec{u}_j
+            = \left( \frac{\mat{A} \cdot \vec{v}_i}{\sigma_i} \right)\trans
+                \cdot \vec{u}_j
+            = \frac{1}{\sigma_i} \cdot \vec{v}_i\trans \cdot \mat{A}\trans
+                \cdot \vec{u}_j
+            = \frac{1}{\sigma_i} \cdot \vec{v}_i\trans \cdot \vec{0}
+            = 0. \]
     \end{itemize}
-
 \end{enumerate}
+
+% TODO: Aplicaciones y otras yerbas
 
 % \subsubsection{Forma de Hessenberg}
 % TODO: Averiguar bien qué es esto de Hessenberg. Me da la impresión de que
