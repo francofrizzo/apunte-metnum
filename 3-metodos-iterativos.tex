@@ -6,21 +6,176 @@
 \subsection{Métodos iterativos}
 Un \textbf{método iterativo} es un procedimiento para la resolución de un
 problema que se basa en construir una sucesión de elementos $\lbrace x_k
-\rbrace_{k \in \nats}$ tal que $\lim_{k\to\infty} x_k = x^\ast$, donde $x^\ast$
-es una solución del problema que se quiere resolver.
-Esto permite construir un algoritmo que se aproxime progresivamente a una
-solución calculando, en cada paso, el $k+1$-ésimo término de la sucesión a
-partir del $k$-ésimo. De esta forma, mediante sucesivas iteraciones, puede
-obtenerse una aproximación cada vez mejor a una solución del problema.
+\rbrace_{k \in \nats}$ tal que $\lim_{k\to\infty} x_k = x^\ast$,
+donde $x^\ast$ es una solución del problema que se quiere resolver. Esto
+permite obtener un algoritmo que se aproxime progresivamente a una solución
+calculando, en cada paso, el $k+1$-ésimo término de la sucesión a partir del
+$k$-ésimo. De esta forma, mediante sucesivas iteraciones, puede lograrse una
+aproximación cada vez mejor a una solución del problema.
 
 En el caso de la resolución de un sistema de ecuaciones lineales $\mat{A}
-\cdot x = b$, se busca una sucesión de vectores $\lbrace x_k \rbrace_{k \in
-\nats}$ que converja a una solución del sistema, es decir, a un valor $x^\ast$
-tal que $\mat{A} \cdot x^\ast = b$.
+\cdot \vec{x} = \vec{b}$ ($\mat{A} \in \reals^{n \times n}$,
+$\vec{b} \in \reals^n$), se busca una sucesión de vectores
+$\lbrace \vec{x}^{(k)}\rbrace_{k \in \nats}$ que converja a una solución del
+sistema, es decir, a un valor $\vec{x}^\ast$ tal que
+$\mat{A} \cdot \vec{x^\ast} = \vec{b}$.
+
+En particular, los métodos con los que trabajaremos consisten en reescribir el
+sistema como
+\[ \vec{x} = \vec{c} + \mat{T} \cdot \vec{x} \]
+para ciertos $\mat{T} \in \reals^{n \times n}$ y $\vec{c} \in \reals^{n}$,
+y definir la iteración
+\[ \vec{x}^{(k)} = \vec{c} + \mat{T} \cdot \vec{x}^{(k-1)} \]
+partiendo de algún $\vec{x}^{(0)}$ arbitrario. Es claro que
+si una iteración de este tipo converge a algún vector $\vec{x^\ast}$,
+dicho vector deberá ser solución del sistema.
 
 \subsection{Análisis de convergencia}
-% radio espectral
+Llamamos \textbf{radio espectral} de una matriz a su autovalor de módulo
+máximo, es decir
+\[ \rho(\mat{A}) = \max \{ \vert \lambda \vert :
+     \lambda \text{ es un autovalor de } \mat{A} \}. \]
+El radio espectral de una matriz es una cota inferior para cualquier norma
+matricial inducida $\lVert \bullet \rVert$:
+\[ \lVert \mat{A} \rVert \geq \rho(\mat{A}), \]
+dado que siempre es posible tomar un autovector unitario $\vec{v}$ asociado al
+autovalor $\lambda$ tal que $\rho(\mat{A}) = \lvert \lambda \rvert$, en cuyo
+caso $\lVert \mat{A} \rVert
+    \geq \lVert \mat{A} \cdot \vec{v} \rVert
+    = \lVert \lambda \cdot \vec{v} \rVert
+    =  \lvert \lambda \rvert \cdot \lVert \vec{v} \rVert
+    = \rho(\mat{A}) \cdot 1$.
+
+Una matriz es \textbf{convergente} si $\lim_{k \to \infty} \mat{A}^k
+= \mat{0}$. Las matrices convergentes se pueden caracterizar exactamente como
+aquellas matrices cuyo número de condición es menor que $1$.
+
+% TODO: Demostrar la propiedad de convergencia. Usar la diferencia entre
+% iteración y la siguiente.
+% Si consideramos un sistema de ecuaciones de la forma
+% $\vec{x} = \vec{c} + \mat{T} \cdot \vec{x}$,
+% con alguna solución $\vec{x^\ast}$,
+%  método iterativo de la forma
+% $\vec{x}^{(k)} = \vec{c} + \mat{T} \cdot \vec{x}^{(k-1)}$,
+% el mismo converge a un vector $\vec{x^\ast}$, para
+% cualquier $\vec{x}^{(0)}$, si y solo si $\mat{T}$ es convergente.
+% Para demostrarlo, basta considerar la diferencia entre una iteración
+% determinada y la siguiente.
 
 \subsection{Método de Jacobi}
+El \textbf{método de Jacobi} es un método que busca resolver un sistema de
+ecuaciones $\mat{A} \cdot \vec{x} = \vec{b}$ de forma iterativa, es decir
+partiendo de un vector inicial $\vec{x}^{(0)} = (x^{(0)}_0, \dots, x^{(0)}_n)$
+e iterando sobre él de modo de obtener aproximaciones cada vez mejores de una
+solución al sistema.
+
+La idea es proceder, para cada $k = 1, 2, \dots$, de la siguiente forma.
+Se considera como input de la $k$-ésima iteración la aproximación
+$\vec{x}^{(k-1)} = (x^{(k-1)}_0, \dots, x^{(k-1)}_n)$ producida en la
+iteración anterior. Luego, se recorren en orden las ecuaciones del sistema
+\[ a_{i,1} \cdot x_1 + \dots + a_{i,i} \cdot x_i + \dots
+    + a_{i,n} \cdot x_n = b_i \]
+y, para cada una de ellas, se despeja $x^{(k)}_i$ reemplazando las demás
+variables por los valores correspondientes de $\vec{x}^{(k-1)}$; es decir,
+se define $x^{(k)}_i$ de modo que
+\[ a_{i,1} \cdot x^{(k-1)}_1 + \dots + a_{i,i} \cdot x^{(k)}_i + \dots
+    + a_{i,n} \cdot x^{(k-1)}_n = b_i \]
+o, lo que es lo mismo, despejando $x^{(k)}_i$:
+\[ x^{(k)}_i = \frac{1}{a_{i,i}} \cdot \left( b_i -
+    \sum_{\substack{j=1 \\ j \neq i}}^{n} \left( a_{i,j}
+    \cdot x^{(k-1)}_j \right) \right). \]
+
+Notar que para que la iteración esté bien definida, $\mat{A}$ no debe tener
+ceros en la diagonal.
+
+Escribiendo el algoritmo en forma de pseudocódigo, se tiene
+
+\begin{algorithm}[H]
+\caption{Método de Jacobi}
+\label{algo:jacobi}
+
+\Input{$\mat{A} \in \reals^{n \times n}$ sin ceros en la diagonal,
+    $\vec{b}$, $\vec{x}^{(0)} \in \reals^{n}$ arbitrarios.}
+\Output{$\vec{x^\ast}$ solución del sistema $\mat{A} \cdot \vec{x}
+    = \vec{b}$.}
+
+\For {$k=1,2,\dots$} {
+    \For {$i=1,\dots,n$} {
+        $\displaystyle x^{(k)}_i \gets \frac{1}{a_{i,i}} \cdot \left( b_i -
+            \sum_{\substack{j=1 \\ j \neq i}}^{n} \left( a_{i,j}
+            \cdot x^{(k-1)}_j \right) \right)$\;
+    }
+}
+\end{algorithm}
+
+Resulta evidente que la complejidad de cada iteración es $\ord{n^2}$.
+
+El mismo algoritmo puede ser escrito en forma matricial, si se parte de una
+descomposición $\mat{A} = \mat{D} - \mat{L} - \mat{U}$, donde
+\[ \mat{D} = \begin{bmatrix}
+    a_{1,1} &         &         & \mat{0} \\
+            & a_{2,2} &         &         \\
+            &         & \ddots  &         \\
+    \mat{0} &         &         & a_{n,n} \\
+\end{bmatrix}, \hspace{.7cm}
+\mat{L} = \begin{bmatrix}
+             &         &            &         \\
+    -a_{2,1} &         & \mat{0}    &         \\
+    \vdots   & \ddots  &            &         \\
+    -a_{n,1} & \cdots  & -a_{n,n-1} &         \\
+\end{bmatrix}, \hspace{.7cm}
+\mat{U} = \begin{bmatrix}
+            & -a_{1,2} & \cdots  & -a_{1,n}   \\
+            &          & \ddots  & \vdots     \\
+            & \mat{0}  &         & -a_{n-1,n} \\
+            &          &         &            \\
+\end{bmatrix}. \]
+
+Reescribiendo el sistema, y aprovechando que $\mat{D}$ es inversible, tenemos
+que
+\[ \begin{aligned}
+    \mat{A} \cdot \vec{x} &= \vec{b}
+        & \text{sii} \\
+    (\mat{D} - \mat{L} - \mat{U}) \cdot \vec{x} &= \vec{b}
+        & \text{sii} \\
+    \mat{D} \cdot \vec{x} - (\mat{L} + \mat{U}) \cdot \vec{x} &= \vec{b}
+        & \text{sii} \\
+    \mat{D} \cdot \vec{x} &= \vec{b} + (\mat{L} + \mat{U}) \cdot \vec{x}
+        & \text{sii} \\
+    \vec{x} &= \mat{D}^{-1} \cdot \vec{b}
+        + \mat{D}^{-1} \cdot (\mat{L} + \mat{U}) \cdot \vec{x}
+\end{aligned} \]
+
+Podemos observar que
+\[ \vec{x}^{(k)} = \mat{D}^{-1} \cdot \vec{b}
+    + \mat{D}^{-1} \cdot (\mat{L} + \mat{U}) \cdot \vec{x}^{(k-1)}\]
+corresponde exactamente a la formulación matricial de la iteración planteada
+antes, y que de converger, lo hará a una solución de $\mat{A} \cdot \vec{x}
+= \vec{b}$.
+
+% TODO: Converge para e.d.d.f. Se puede usar norma infinito.
 
 \subsection{Método de Gauss-Seidel}
+El método de \textbf{Gauss-Seidel} es similar al de Jacobi, pero plantea
+que en cada iteración del método, al computar el $i$-ésimo elemento de
+la nueva solución, se aprovechen los $i-1$ elementos calculados de la misma,
+en lugar de usar los de la iteración anterior. Como estos elementos
+representan una mejor aproximación de una solución del sistema, el método
+de Gauss-Seidel converge de manera más rápida que el de Jacobi.
+
+La iteración queda planteada como
+\[ x^{(k)}_i = \frac{1}{a_{i,i}} \cdot \left( b_i
+    - \sum_{j=1}^{i-1}
+        \left( a_{i,j} \cdot x^{(k)}_j \right)
+    - \sum_{j=i+1}^{n}
+        \left( a_{i,j} \cdot x^{(k-1)}_j \right) \right), \]
+
+y en forma matricial, aprovechando que $\mat{D} - \mat{L}$ es inversible,
+\[ \vec{x}^{(k)} = (\mat{D} - \mat{L})^{-1} \cdot \vec{b}
+    + (\mat{D} - \mat{L})^{-1} \cdot \mat{U} \cdot \vec{x}^{(k-1)}. \]
+
+% TODO: Converge para e.d.d.f. Mostrar que los autovalores tienen módulo
+% menor que 1. No haría la cuenta, solo lo diría.
+% TODO: Converge para definidas positivas. No hay demo en Tagliavini.
+% TODO: Ventajas de Gauss-Seidel sobre Jacobi. Converge más rápido. Mitad de
+% espacio. Converge para más matrices.
