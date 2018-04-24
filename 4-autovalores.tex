@@ -3,17 +3,131 @@
 \section{Cálculo de autovalores}
 \label{section:autovalores}
 
+El problema de hallar los autovalores de una matriz es recurrente, y tiene
+múltiples aplicaciones. Una de ellas ya se presentó anteriormente: computar
+la descomposición en valores singulares de una matriz.
+% TODO: ¿Posta hace falta?
+% TODO: Chamuyar con algunas otras aplicaciones: análisis estadístico,
+% exponenciación de matrices, etc.
+
 \subsection{Método de la potencia}
 
-Del TP:
-\emph{método de la potencia}. Este método se basa en el siguiente resultado:
-si $x$ es el autovector principal de una matriz $\mat{A}$, y $v$ es un vector
-inicial cualquiera, entonces $\lim_{k\to\infty}\mat{A}^k v = x$. Es decir,
-partiendo de un vector inicial y multiplicando repetidas veces por la matriz
-$\mat{A}$, el resultado eventualmente convergerá al autovector buscado. Para
-una demostración de este hecho, como así también una exposición más detallada
-del proceso, puede consultarse: Kamvar, Sepandar D. and Haveliwala, Taher H.
-and Manning, Christopher D. and Golub, Gene H.: \emph{Extrapolation
-methods for accelerating PageRank computations}.
+Supongamos que tenemos una matriz $\mat{A} \in \reals^{n \times n}$
+diagonalizable; es decir, $\mat{A}$ posee $n$ autovalores reales. Podemos
+numerar estos autovalores de forma tal que
+\[ \Vert \lambda_1 \Vert \geq \Vert \lambda_2 \Vert \geq \dots
+    \geq \Vert \lambda_n \Vert. \]
+Si la primera desigualdad es estricta, es decir, si $\mat{A}$ tiene un
+autovalor simple $\lambda_1$ cuyo valor absoluto es mayor que el de todos los
+demás, decimos que $\lambda_1$ es el \textbf{autovalor principal} de
+$\mat{A}$. En ese caso, podemos aplicar el \textbf{método de la potencia} para
+obtener su valor.
+
+El método de la potencia se basa en una idea sumamente sencilla. Consideremos
+una base de autovectores de $\mat{A}$, $\{\vec{v}_1, \cdots, \vec{v}_n\}$,
+ordenados de forma tal que cada $\vec{v}_i$ está asociado al autovalor
+$\lambda_i$.
+Como punto de inicio de la iteración, tomaremos \emph{a priori} un vector
+$\vec{x}^{(0)} \in \reals^n$ arbitrario. Podemos escribir
+\[ \vec{x}^{(0)} = \alpha_1 \cdot \vec{v}_1
+    + \cdots + \alpha_n \cdot \vec{v}_n. \]
+
+En cada iteración, simplemente multiplicaremos a izquierda por $\mat{A}$.
+Es decir,
+\[ \begin{aligned}
+    \vec{x}^{(k)} = \mat{A} \cdot \vec{x}^{(k-1)}
+        &= \mat{A}^k \cdot \vec{x}^{(0)} \\
+        &= \mat{A}^k \cdot \left( \alpha_1 \cdot \vec{v}_1
+            + \cdots + \alpha_n \cdot \vec{v}_n \right) \\
+        &= \alpha_1 \cdot \mat{A}^k \cdot \vec{v}_1
+            + \cdots + \alpha_n \cdot \mat{A}^k \cdot \vec{v}_n \\
+        &= \alpha_1 \cdot \lambda_1^k \cdot \vec{v}_1
+            + \cdots + \alpha_n \cdot \lambda_n^k \cdot \vec{v}_n \\
+        &= \lambda_1^k \cdot \left( \alpha_1 \cdot \vec{v}_1
+            + \alpha_2 \cdot
+                \left(\frac{\lambda_2}{\lambda_1}\right)^k \cdot \vec{v}_2
+            + \cdots + \alpha_n \cdot
+                \left(\frac{\lambda_n}{\lambda_1}\right)^k \cdot \vec{v}_n
+            \right).
+\end{aligned} \]
+
+Ahora bien, como para todo $i \in \{1,\dots,n\}$ se cumple que
+$\lvert \lambda_1 \rvert > \lvert \lambda_i \rvert$, entonces
+\[ \lim_{k\to\infty} \left(\frac{\lambda_i}{\lambda_1}\right)^k = 0. \]
+Si llamamos $\vec{r}^{(k)} = \dfrac{\vec{x}^{(k)}}{\lambda_1^k}$,
+tenemos que
+\[ \lim_{k\to\infty} \vec{r}^{(k)} =
+    \lim_{k\to\infty} \left( \alpha_1 \cdot \vec{v}_1
+        + \alpha_2 \cdot
+            \left(\frac{\lambda_2}{\lambda_1}\right)^k \cdot \vec{v}_2
+        + \cdots + \alpha_n \cdot
+            \left(\frac{\lambda_n}{\lambda_1}\right)^k \cdot \vec{v}_n
+        \right) = \alpha_1 \cdot \vec{v}_1. \]
+
+De aquí podemos extraer dos conclusiones, siempre y cuando $\alpha_1 \neq 0$:
+\begin{itemize}
+\item $\displaystyle \lim_{k\to\infty}
+        \frac{\lVert \vec{x}^{(k)} \rVert}
+             {\lVert \vec{x}^{(k-1)} \rVert}
+    = \lim_{k\to\infty}
+        \frac{\lvert \lambda_1^k\rvert}{\lvert \lambda_1^{k-1}\rvert} \cdot
+        \frac{\lVert \vec{r}^{(k)} \rVert}{\lVert \vec{r}^{(k-1)} \rVert}
+    = \lvert \lambda_1 \rvert$.
+
+    Aquí $\lVert \bullet \lVert$ puede ser cualquier norma inducida; más aún,
+    se puede considerar cualquier función que respete el producto por un
+    escalar, tome siempre valores no negativos y se anule solo en el cero;
+    una elección sencilla, por ejemplo, es la norma infinito.
+
+    Por lo tanto, el cociente entre las normas de dos iteraciones sucesivas
+    del método de las potencias converge al valor absoluto del autovalor
+    principal de $\mat{A}$.
+\item Para $k$ lo suficientemente grande, $\vec{x}^{(k)} \approx \lambda_1^k
+    \cdot \alpha_1 \cdot \vec{v}_1$, que es múltiplo de $\vec{v}_1$ y, por
+    lo tanto, es un autovector principal de $\mat{A}$.
+\end{itemize}
+
+En general, al aplicar el método de las potencias, puede resultar convienente
+ir normalizando $\vec{x}^{(k)}$ en cada paso para evitar que sus componentes
+alcancen valores extremos, lo cual provocaría que se pierda precisión.
+
+La única hipótesis que el método requiere sobre $\vec{x}^{(0)}$ es que
+$\alpha_1$, su componente en la dirección del autovector principal, no sea
+nula. Esto suele ser difícil de garantizar, justamente porque no se conoce
+dicho autovector. La solución suele ser elegir $\vec{x}^{(0)}$ de manera
+arbitraria y modificar esta elección en caso de que el método no converja.
+
+El método se puede completar con una técnica conocida como \textbf{deflación},
+que permite, una vez conocido $\lambda_1$, seguir obteniendo autovalores de
+$\mat{A}$ en orden de valor absoluto decreciente. Consiste en definir
+\[\mat{A'} = \mat{A} - \lambda_1 \cdot \vec{u}_1 \cdot \vec{u}_1\trans, \]
+donde $\vec{u}_1$ es un autovector unitario asociado a $\lambda_1$.
+La matriz $\mat{A'}$ tiene autovalores $0, \lambda_2, \dots, \lambda_n$,
+por lo que si $\lambda_2 > \lambda_3$, puede volver a aplicarse el método de
+la potencia.
+
+% Power iteration is a very simple algorithm, but it may converge slowly. It does not compute a matrix decomposition, and hence it can be used when A is a very large sparse matrix
 
 \subsection{Método de la potencia inversa}
+El \textbf{método de la potencia inversa} es una variante del método de la
+potencia que permite, dada una matriz inversible $\mat{A}$, encontrar su
+autovalor (y autovector asociado) de módulo mínimo, si el mismo existe y
+tiene multiplicidad simple.
+Se basa en el hecho de que, si los autovalores de $\mat{A}$ son 
+\[ \lambda_1, \dots, \lambda_n, \]
+con $\lvert \lambda_1 \rvert < \lvert \lambda_i \rvert$ para todo $i \in
+\{2,\dots,n\}$, entonces los autovalores de $\mat{A}^{-1}$ son
+\[ \lambda_1^{-1}, \dots, \lambda_n^{-1}, \]
+con $\lvert \lambda_1^{-1} \rvert > \lvert \lambda_i^{-1} \rvert$
+para todo $i \in \{2,\dots,n\}$.
+Por lo tanto, basta con aplicar el método de las potencias sobre
+$\mat{A}^{-1}$ para obtener $\lvert \lambda_1^{-1} \rvert$.
+
+Una variante interesante del método de la potencia inversa permite, dado un
+valor $\mu \in \reals$, encontrar el autovalor de $\mat{A}$ más cercano a
+$\mu$. Consiste en aplicar el método de la potencia sobre la matriz $(\mat{A}
+- \mu \cdot \mat{I})^{-1}$, que tiene como autovalores a
+\[ (\lambda_1 - \mu)^{-1}, \dots, (\lambda_n - \mu)^{-1}; \]
+el autovalor $\lambda_i$ de $\mat{A}$ que minimiza la distancia con $\mu$ es
+también el que maximiza el valor de $(\lambda_i - \mu)^{-1}$.
+
