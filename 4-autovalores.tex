@@ -5,10 +5,11 @@
 
 El problema de hallar los autovalores de una matriz es recurrente, y tiene
 múltiples aplicaciones. Una de ellas ya se presentó anteriormente: computar
-la descomposición en valores singulares de una matriz.
-% TODO: ¿Posta hace falta?
-% TODO: Chamuyar con algunas otras aplicaciones: análisis estadístico,
-% exponenciación de matrices, etc.
+la descomposición en valores singulares de una matriz. También se los
+utiliza en estadística para realizar análisis de componentes principales
+sobre conjuntos de datos; permiten diagonalizar matrices, lo cual facilita
+su exponenciación; y un variado etcétera que convierte su búsqueda
+en un problema significativo para resolver.
 
 \subsection{Método de la potencia}
 
@@ -23,12 +24,12 @@ demás, decimos que $\lambda_1$ es el \textbf{autovalor principal} de
 $\mat{A}$. En ese caso, podemos aplicar el \textbf{método de la potencia} para
 obtener su valor.
 
-El método de la potencia se basa en una idea sumamente sencilla. Consideremos
-una base de autovectores de $\mat{A}$, $\{\vec{v}_1, \cdots, \vec{v}_n\}$,
-ordenados de forma tal que cada $\vec{v}_i$ está asociado al autovalor
-$\lambda_i$.
-Como punto de inicio de la iteración, tomaremos \emph{a priori} un vector
-$\vec{x}^{(0)} \in \reals^n$ arbitrario. Podemos escribir
+El método de la potencia es iterativo, y se basa en una idea sumamente
+sencilla. Consideremos una base de autovectores de $\mat{A}$, $\{\vec{v}_1,
+\cdots, \vec{v}_n\}$, ordenados de forma tal que cada $\vec{v}_i$ está
+asociado al autovalor $\lambda_i$. Como punto de inicio de la iteración,
+tomaremos \emph{a priori} un vector $\vec{x}^{(0)} \in \reals^n$ arbitrario.
+Podemos escribir
 \[ \vec{x}^{(0)} = \alpha_1 \cdot \vec{v}_1
     + \cdots + \alpha_n \cdot \vec{v}_n. \]
 
@@ -105,8 +106,6 @@ donde $\vec{u}_1$ es un autovector unitario asociado a $\lambda_1$.
 La matriz $\mat{A'}$ tiene autovalores $0, \lambda_2, \dots, \lambda_n$,
 por lo que si $\lambda_2 > \lambda_3$, puede volver a aplicarse el método de
 la potencia.
-
-% Power iteration is a very simple algorithm, but it may converge slowly. It does not compute a matrix decomposition, and hence it can be used when A is a very large sparse matrix
 
 \subsection{Método de la potencia inversa}
 El \textbf{método de la potencia inversa} es una variante del método de la

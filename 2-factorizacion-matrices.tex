@@ -29,11 +29,26 @@ donde $\mat{L}$ es triangular inferior con unos en la diagonal y $\mat{D}$
 es una matriz diagonal.
 
 La demostración proviene de considerar la factorización LU de $\mat{A}$,
-$\mat{A} = \mat{L} \cdot \mat{U}$. Como $\mat{A}$ es simétrica, entonces
-$\mat{L} \cdot \mat{U} = (\mat{L} \cdot \mat{U})\trans =
-\mat{U}\trans \cdot \mat{L}\trans$. Como $\mat{L}$ tiene unos en la diagonal
+$\mat{A} = \mat{L} \cdot \mat{U}$. Como $\mat{L}$ tiene unos en la diagonal
 debe ser inversible y, como $\mat{A}$ es inversible, $\mat{U}$ tiene que
-serlo también, de donde % TODO: Terminar esta demostración.
+serlo también; lo mismo vale para sus respectivas matrices traspuestas.
+Es claro que 
+\[ \mat{A} \ =\  \mat{L} \cdot \mat{U} \ =\ 
+    \mat{L} \cdot \mat{U} \cdot (\mat{L}\trans)^{-1} \cdot \mat{L}\trans. \]
+Definimos $\mat{D} = \mat{U} \cdot (\mat{L}\trans)^{-1}$, con lo que
+$\mat{A} = \mat{L} \cdot \mat{D} \cdot \mat{L}\trans$. Resta ver que $\mat{D}$
+es diagonal. Como $\mat{A}$ es simétrica, tenemos que
+\[ \mat{L} \cdot \mat{U} = (\mat{L} \cdot \mat{U})\trans =
+    \mat{U}\trans \cdot \mat{L}\trans. \]
+Si multiplicamos a izquierda por $\mat{L}^{-1}$ y a derecha por
+$(\mat{L}\trans)^{-1}$, obtenemos que
+\[ \mat{U} \cdot (\mat{L}\trans)^{-1} = \mat{L}^{-1} \cdot \mat{U}\trans. \]
+Ambos lados de la ecuación son iguales a $\mat{D}$. Del lado izquierdo de la
+igualdad aparece un producto entre dos matrices triangulares superiores, que
+es otra matriz triangular superior. Análogamente, del lado derecho se tiene
+una matriz triangular inferior. Es decir, $\mat{D}$ es simultáneamente una
+matriz triangular superior y triangular inferior, lo cual significa que es
+una matriz diagonal.
 
 Por otro lado, decimos que una matriz $\mat{A} \in \reals^{n \times n}$
 es (simétrica y) \textbf{definida positiva} (s.d.p.) si es
@@ -48,9 +63,7 @@ $\vec{x}\trans \cdot \mat{A} \cdot \vec{x} > 0$. Las matrices definidas positiva
 
 Alternativamente, las matrices definidas positivas pueden caracterizarse como
 aquellas matrices simétricas cuyos \textbf{menores
-principales} son todos positivos. Los menores principales de una matriz
-son los determinantes de sus submatrices principales, es decir,
-aquellas submatrices cuadradas que contienen su esquina superior izquierda.
+principales} son todos positivos. 
 A partir de esta caracterización, se puede demostrar que las matrices
 definidas positivas siempre admiten factorización LU, y por lo tanto,
 al ser simétricas, poseen una factorización LDL.
@@ -186,12 +199,11 @@ $\displaystyle l_{1,1} \gets \sqrt{a_{1,1}}$\;
 
 Puede observarse que la complejidad del algoritmo es $\ord{n^3}$. Si bien
 se trata de la misma complejidad asintótica que la de obtener una
-factorización LU, las constantes son mejores, debido a que la cantidad de
-operaciones de punto flotante que deben efectuarse es aproximadamente la
-mitad.
+factorización LU, las constantes son mejores; en la práctica, computar
+una factorización de Cholesky es aproximadamente el doble de rápido que
+obtener una factorización LU.
 
-% TODO: ¿Cuáles son las bondades de Cholesky?
-
+\newpage
 \subsection{Factorización QR}
 
 Dos vectores $\vec{x}, \vec{y} \in \reals^{n}$ se dicen \textbf{ortogonales}
@@ -221,17 +233,17 @@ indica que las matrices ortogonales son muy estables numéricamente, lo cual
 las vuelve muy atractivas a la hora de resolver problemas en forma
 computacional.
 
-% TODO: MUY IMPORTANTE. En algún lado hay que hablar de normas y de número
-% de condición. Por ahí el mejor lugar es acá mismo.
-
 Dada una matriz $\mat{A} \in \reals^{m \times n}$, una
 \textbf{factorización QR} de $\mat{A}$ es una escritura
 \[ \mat{A} = \mat{Q} \cdot \mat{R} \]
-donde $\mat{Q} \in \reals^{m \times m}$ es ortogonal y
-$\mat{R} \in \reals^{m \times n}$ es triangular superior. Toda matriz admite
-una factorización QR, como se verá más adelante al analizar los algoritmos
-que permiten obtenerla.
-% TODO: Siempre existe. ¿Pero y la unicidad?
+donde $\mat{Q} \in \reals^{m \times m}$ es ortogonal y $\mat{R} \in \reals^{m
+\times n}$ es triangular superior. Toda matriz admite una factorización QR,
+incluso aquellas que no son cuadradas, como se verá más adelante al analizar
+los algoritmos que permiten obtenerla.
+
+Con respecto a la unicidad de la factorización QR, puede asegurarse para
+matrices inversibles si se agrega la restricción de que los elementos
+en la diagonal de $\mat{R}$ sean positivos.
 
 Una de las aplicaciones clave de esta factorización es la resolución
 de sistemas de ecuaciones lineales. Si se tiene el sistema
@@ -349,7 +361,10 @@ también ortogonal, resulta que
 \[ \mat{A} = \mat{Q} \cdot \mat{R}, \]
 es decir, hemos obtenido una factorización QR para $\mat{A}$.
 
-% TODO: Complejidad. Ventajas y desventajas. Comparación con Givens.
+La complejidad del método de Householder es cúbica en el tamaño de la
+matriz ($\ord{n^3}$); si se realiza un análisis más fino, se puede verificar
+que la cantidad de operaciones de punto flotante necesarias es de alrededor
+de $\frac{2}{3} \cdot n^3$.
 
 \subsubsection{Método de Givens (Rotaciones)}
 El \textbf{método de Givens}, por su parte, realiza las transformaciones
@@ -457,24 +472,35 @@ donde $\mat{W}$ es el producto de todas las $\mat{W}_{i,j}$, y es por lo tanto
 una matriz ortogonal. Tomando $\mat{Q} = \mat{W}\trans$, se obtiene
 \[ \mat{A} = \mat{Q} \cdot \mat{R}, \]
 una factorización QR para $\mat{A}$.
-% TODO: Complejidad. Ventajas y desventajas. Comparación con Householder.
 
+En comparación con el método de Householder, el método de Givens, si bien
+tiene la misma complejidad asintótica ($\ord{n^3}$), debe realizar
+aproximadamente el doble de operaciones de punto flotante: alrededor de
+$\frac{4}{3} \cdot n^3$. No obstante, presenta una gran ventaja si se está
+trabajando con matrices ralas (donde una gran cantidad de las posiciones está
+ocupada por ceros), ya que cada paso del algoritmo pone un cero en una
+posición de la matriz, por lo que se puede realizar una optimización colocando
+ceros solo en las posiciones donde es necesario. En contraste, al usar el
+método de Householder, cada iteración pone ceros en una columna completa.
+
+\newpage
 \subsection{Descomposición en valores singulares}
 
 A partir de esta sección, se hace necesario presentar dos nociones importantes
 que continuarán apareciendo más adelante.
 Dada una matriz $\mat{A} \in \reals^{n \times n}$, decimos que $\lambda \in
 \reals$ es un \textbf{autovalor} de $\mat{A}$ si existe algún vector no nulo
-$\vec{v} \in \reals^n$ tal que $\mat{A} \cdot \vec{v} = \lambda \cdot \vec{v}$.
+$\vec{v} \in \reals^n$ tal que $\mat{A} \cdot \vec{v} =
+\lambda \cdot \vec{v}$.
 En ese caso, a $\vec{v}$ se lo conoce como un \textbf{autovector} de $\mat{A}$
 asociado al autovalor $\lambda$. Cabe destacar que, si $\lambda$ es un
 autovalor de una matriz, entonces existen infinitos autovectores asociados al
 mismo; los autovectores asociados a un autovalor $\lambda$ dado conforman un
 subespacio vectorial de $\reals^{n \times n}$.
 
-% TODO: Reformular la expresión
 Sea $\mat{A} \in \reals^{m \times n}$ una matriz cualquiera, con $\rg(A) = r$.
-Una \textbf{descomposición en valores singulares} de $\mat{A}$ es una escritura
+Una \textbf{descomposición en valores singulares} de $\mat{A}$
+es una escritura
 \[ \mat{A} = \mat{U} \cdot \mat{\Sigma} \cdot \mat{V}\trans, \]
 donde
 \begin{itemize} \vspace{.6em}
@@ -500,10 +526,33 @@ donde
     con $\sigma_i > 0$ para todo $i \in \{ 1, \dots, r \}$.
 \end{itemize} \vspace{.6em}
 
-Los valores $\sigma_i$ se denominan los \textbf{valores singulares} de \mat{A}.
-Por su parte, $\lbrace \vec{u}_1, \vec{u}_2, \dots, \vec{u}_m \rbrace$ y
-$\lbrace \vec{v}_1, \vec{v}_2, \dots, \vec{v}_n \rbrace$
-son bases ortonormales de $\reals^m$ y $\reals^n$, respectivamente.
+Los valores $\sigma_i$ se denominan los \textbf{valores singulares} de
+\mat{A}. Por su parte, $\lbrace \vec{u}_1, \vec{u}_2, \dots, \vec{u}_m
+\rbrace$ y $\lbrace \vec{v}_1, \vec{v}_2, \dots, \vec{v}_n \rbrace$ son bases
+ortonormales de $\reals^m$ y $\reals^n$, respectivamente.
+
+Como se verá en la demostración de existencia que se presenta a continuación,
+se cumple que:
+\begin{itemize}
+\item $\sigma_1^2, \dots, \sigma_r^2$ son los autovalores no nulos tanto de
+    $\mat{A} \cdot \mat{A}\trans$ como de $\mat{A}\trans \cdot \mat{A}$.
+\item Para cada $i \in \{1, \dots, r\}$, $\vec{u}_i$ es un autovector unitario
+    de $\mat{A} \cdot \mat{A}\trans$ asociado al autovalor $\sigma_i^2$,
+    mientras que $\vec{v}_i$ es un autovector unitario de $\mat{A}\trans \cdot
+    \mat{A}$ asociado al mismo autovalor.
+\item Los $\vec{u}_i$ y $\vec{v}_i$ con $i > r$ forman parte del núcleo de
+    $\mat{A} \cdot \mat{A}\trans$ y de $\mat{A}\trans \cdot \mat{A}$,
+    respectivamente.
+\end{itemize}
+
+La descomposición en valores singulares tiene un interés muy particular en
+diversas aplicaciones específicas, ya que logra condensar en pocos valores
+(los valores singulares) información muy relevante acerca de la matriz con la que se está trabajando. Un campo en el que suele tener aplicación es el de la
+estadística. Por otro lado, es una factorización útil a la hora de resolver
+el problema de cuadrados mínimos lineales, que será abordado en la sección
+\ref{section:cml}.
+
+\subsubsection{Demostración de la existencia}
 
 Es posible demostrar que toda matriz admite una descomposición en valores
 singulares. Para demostrarlo, comenzamos por observar que la igualdad
@@ -588,11 +637,17 @@ $\mat{A}\trans \cdot \mat{A}$, con autovalor $0$.
 
 Como $\mat{A}\trans \cdot \mat{A}$ es simétrica, existe una base ortonormal de
 $\reals^n$ compuesta por autovectores de $\mat{A}\trans \cdot \mat{A}$,
-propiedad que utilizaremos sin demostración.
-Además, tendremos en cuenta el siguiente lema, que demostraremos luego:
-como $\mat{A}$ es semidefinida positiva,
-todos sus autovalores son reales no negativos.
-% TODO: Demostrar este lema
+propiedad que utilizaremos sin demostración. Esto implica que todos los
+autovalores de $\mat{A}$ son reales.
+
+Además, como $\mat{A}$ es semidefinida positiva, todos sus autovalores deben
+ser no negativos: si $\lambda$ es un autovector de $\mat{A}$, entonces existe
+un vector no nulo $\vec{v}$ tal que $\mat{A} \cdot \vec{v} = \lambda \cdot
+\vec{v}$. Entonces $\vec{v}\trans \cdot \mat{A} \cdot \vec{v} = \lambda \cdot
+\vec{v}\trans \cdot \vec{v}$. Por ser $\mat{A}$ semidefinida positiva,
+$\vec{v}\trans \cdot \mat{A} \cdot \vec{v} \geq 0$, mientras que
+$\vec{v}\trans \cdot \vec{v} = \lVert \vec{v} \rVert_2^2 > 0$, de forma que
+necesariamente $\lambda \geq 0$.
 
 Por otra parte, tenemos que para todo $\vec{x} \in \reals^n$
 \[ \mat{A} \cdot \vec{x} = \vec{0} \quad \Leftrightarrow \quad
@@ -690,7 +745,3 @@ Veamos que estos $\vec{v}_i$ cumplen con las condiciones necesarias.
 \end{enumerate}
 
 % TODO: Aplicaciones y otras yerbas
-
-% \subsubsection{Forma de Hessenberg}
-% TODO: Averiguar bien qué es esto de Hessenberg. Me da la impresión de que
-% es algo que no entra.

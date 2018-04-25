@@ -2,7 +2,6 @@
 
 \section{Cuadrados mínimos lineales}
 \label{section:cml}
-% TODO: ¿lineales vs. no lineales?
 
 Un problema muy frecuente en distintos ámbitos consiste en, dados
 un conjunto de puntos del plano $(x_1,y_1), \dots, (x_m,y_m)$ y una familia
@@ -63,9 +62,9 @@ buscamos hallar $\vec{x} \in \reals^m$ que realice el mínimo
 \[ \min_{\vec{x}} \left\Vert \mat{A} \cdot \vec{x} - \vec{b} \right\Vert_2^2. \]
 
 A este último problema se lo conoce como el problema de \textbf{cuadrados
-mínimos}: hallar, dadas $\mat{A} \in \reals^{m \times n}$ y $\vec{b} \in \reals^m$,
-un vector $\vec{x} \in \reals^n$ que minimice la distancia entre $\mat{A}
-\cdot \vec{x}$ y $\vec{b}$.
+mínimos lineales}: hallar, dadas $\mat{A} \in \reals^{m \times n}$ y $\vec{b}
+\in \reals^m$, un vector $\vec{x} \in \reals^n$ que minimice la distancia
+entre $\mat{A} \cdot \vec{x}$ y $\vec{b}$.
 
 Desde el punto de vista geométrico, existe una interpretación intuitiva para
 este problema. Para todo $\vec{x} \in \reals^n$, el producto $\mat{A}
@@ -84,14 +83,14 @@ $\vec{b} = \vec{b_1} + \vec{b_2}$, con
     \im(\mat{A})^{\bot}$, el complemento ortogonal de la imagen de $\mat{A}$.
 \end{itemize}
 Entonces, es posible demostrar que $\vec{x}$ realiza el mínimo buscado,
-y por lo tanto es solución del problema de cuadrados mínimos,
+y por lo tanto es solución del problema de cuadrados mínimos lineales,
 si y solo si $\mat{A} \cdot \vec{x} = \vec{b_1}$.
 
 Del razonamiento anterior pueden extraerse tres conclusiones:
 \begin{enumerate}[label=(\roman*)]
 \item Dado que $\vec{b_1} \in \im(\mat{A})$, seguro existe $\vec{x}$ tal que
     $\mat{A} \cdot \vec{x} = \vec{b_1}$. Por lo tanto, el problema de
-    cuadrados mínimos siempre tiene solución.
+    cuadrados mínimos lineales siempre tiene solución.
 \item Como $\vec{b_1}$ es único, la solución es única si y solo si hay
     una única forma de escribir a $\vec{b_1}$ como combinación lineal de las
     columnas de $\mat{A}$. Esto equivale a pedir que las columnas de $\mat{A}$
@@ -100,7 +99,8 @@ Del razonamiento anterior pueden extraerse tres conclusiones:
 \item Si el sistema $\mat{A} \cdot \vec{x} = \vec{b}$ tiene alguna solución
     $\vec{x^\ast}$, entonces $\vec{b} \in \im(\mat{A})$, por lo que
     $\vec{b_1} = \vec{b}$, y por lo tanto
-    $\vec{x^\ast}$ también será solución del problema de cuadrados mínimos.
+    $\vec{x^\ast}$ también será solución del problema de cuadrados mínimos
+    lineales.
     Sin embargo, lo interesante de este problema es que tiene solución
     \emph{incluso} cuando el sistema $\mat{A} \cdot \vec{x} = \vec{b}$ no
     la tiene, es decir, cuando está \emph{sobredeterminado} (tiene ecuaciones
@@ -161,12 +161,10 @@ El sistema de ecuaciones que se obtiene al formular las ecuaciones normales
 tiene la buena propiedad de que su matriz, $\mat{A}\trans \cdot \mat{A}$,
 es semi-definida positiva, con lo cual puede usarse la factorización de
 Cholesky para resolverlo de forma eficiente.
-% TODO: Ver lo de semi-definida positiva. ¿Por qué es bueno usar Cholesky?
 
 No obstante, las ecuaciones normales también presentan un inconveniente: no garantizan la estabilidad numérica.
 El número de condición de la matriz $\mat{A}$, que ya de por sí puede no ser
 bueno, se eleva al cuadrado al computar $\mat{A}\trans \cdot \mat{A}$.
-% TODO: ¿Es realmente así?
 Esto motiva la utilización de otros métodos más estables, que aprovechan
 algunas de las factorizaciones matriciales estudiadas anteriormente.
 
@@ -281,14 +279,21 @@ entonces $\rg(\mat{R}) = \rg(\mat{A}) = k$.
             + \mat{R_2} \cdot \vec{x_2}
             - \vec{c} \right\Vert_2^2 + \left\Vert \vec{d} \right\Vert_2^2
     \end{aligned} \]
-    \end{enumerate}
 
     De nuevo, esta expresión alcanza el mínimo cuando el primer término es
     nulo. Las soluciones son infinitas: $\vec{x_2}$ puede fijarse libremente
     en cualquier $\vec{x_2^\ast}$, y luego se determina $\vec{x_1}$ como la
     única solución del sistema
     \[ \mat{R_1} \cdot \vec{x_1} = \vec{c} - \mat{R_2} \cdot \vec{x_2^\ast}. \]
-% TODO: Hablar de ventajas y desventajas.
+    \end{enumerate}
+
+Como ya se mencionó cuando se habló de la factorización QR como método
+para resolver sistemas de ecuaciones lineales, se trata de un método
+numéricamente muy estable, debido a que la matriz $\mat{Q}$ es ortogonal.
+Sin embargo, al utilizarlo con matrices de rango incompleto, se vuelve
+necesario incorporar el pivoteo; esto complejiza el algoritmo y
+lo vuelve poco estable. Además, hallar el rango de $\mat{A}$ puede resultar
+difícil debido a errores de redondeo.
 
 \subsection{Resolución con descomposición en valores singulares}
 
@@ -387,7 +392,17 @@ Volvemos a separar en dos casos según $k = \rg(\mat{A}) = \rg(\mat{\Sigma})$.
     Existen infinitas soluciones, las cuales se logran tomando $\vec{y}
     = \left( \frac{c_1}{\sigma_1}, \dots, \frac{c_k}{\sigma_k},
         y_{k+1}, \dots, y_{n} \right)$, con
-    $y_{k+1}, \dots, y_{n} \in \reals$ cualesquiera.
-% TODO: Aclarar que ahora se resuelve el sistema Vtx=y
-% TODO: Comparar estabilidad numérica y eficiencia con QR.
+    $y_{k+1}, \dots, y_{n} \in \reals$ cualesquiera. Una posibilidad es
+    tomarlos a todos iguales a 0, lo cual minimiza la norma de la solución
+    $\vec{x}$ que se encontrará luego.
 \end{enumerate}
+
+En ambos casos, una vez hallado $\vec{y}$, resta resolver el sistema
+$\mat{V}\trans \vec{x} = \vec{y}$ para hallar la solución $\vec{x}$
+al problema de cuadrados mínimos.
+
+Utilizar SVD para resolver el problema es más costoso que hacerlo mediante QR,
+si bien existen optimizaciones posibles, como no computar la matriz $\mat{U}$
+de forma explícita. Más allá de las consideraciones de eficiencia, en casos de
+matrices de rango incompleto, su estabilidad numérica hace claramente
+preferible emplear SVD por encima de QR.

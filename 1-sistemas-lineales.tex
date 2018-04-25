@@ -318,19 +318,18 @@ Como ambas matrices son triangulares, los sistemas se pueden resolver con
 un costo $\ord{n^2}$, usando los algoritmos de sustitución hacia adelante y
 hacia atrás, respectivamente.
 
-Hallar la factorización LU, por su parte, tiene una complejidad de
-$\ord{n^3}$ (como se verá luego con más detalle).
-Por lo tanto, si se la quiere utilizar para resolver un sistema
-desde cero, el costo es el mismo que el de aplicar eliminación gaussiana.
-La ventaja de la factorización LU aparece si se quieren resolver varios
-sistemas de ecuaciones que comparten la matriz asociada; es decir, si se
-tiene una matriz $\mat{A}$ y una familia de vectores $b_1, \dots, b_k$, y se
-quieren hallar soluciones para todos los sistemas $\mat{A} \cdot x = b_i$ con
-$i \in \{1, \dots, k\}$.
-En este caso, usando eliminación gaussiana, habría que pagar un costo
-$\ord{n^3}$ para resolver cada sistema. Es mucho más eficiente calcular
-primero la factorización LU de $\mat{A}$, pagando el costo $\ord{n^3}$
-solo una vez, y luego resolver cada sistema con un costo $\ord{n^2}$.
+Hallar la factorización LU, por su parte, tiene una complejidad de $\ord{n^3}$
+(como se verá luego con más detalle). Por lo tanto, si se la quiere utilizar
+para resolver un sistema desde cero, el costo es el mismo que el de aplicar
+eliminación gaussiana. La ventaja de la factorización LU aparece si se quieren
+resolver varios sistemas de ecuaciones que comparten la matriz asociada; es
+decir, si se tiene una matriz $\mat{A}$ y una familia de vectores $\vec{b}_1,
+\dots, \vec{b}_k$, y se quieren hallar soluciones para todos los sistemas
+$\mat{A} \cdot \vec{x} = \vec{b}_i$ con $i \in \{1, \dots, k\}$. En este caso,
+usando eliminación gaussiana, habría que pagar un costo $\ord{n^3}$ para
+resolver cada sistema. Es mucho más eficiente calcular primero la
+factorización LU de $\mat{A}$, pagando el costo $\ord{n^3}$ solo una vez, y
+luego resolver cada sistema con un costo $\ord{n^2}$.
 
 La factorización LU está intrínsecamente relacionada al algoritmo de
 eliminación gaussiana.
@@ -339,7 +338,7 @@ de aplicar eliminación gaussiana (sin pivoteo) sobre $\mat{A}$, mientras
 que $\mat{L}$ es el producto de las matrices elementales que representan a
 las operaciones involucradas en el proceso.
 
-Para demostrar este resultado, recordemos lo que sucede en el paso $k$-ésimo
+Recordemos lo que sucede en el paso $k$-ésimo
 del algoritmo de eliminación gaussiana: para cada $i \in \{k+1,\dots,n\}$, se
 calcula un multiplicador $m_{i,k}$ y se realiza la operación de filas
 $\mathrm{F}_i \gets \mathrm{F}_i - m_{i,k} \cdot \mathrm{F}_k$.\footnote{En el
@@ -387,14 +386,15 @@ con $\mat{L}$ triangular inferior con unos en la diagonal. Se trata, por lo
 tanto, de una factorización LU para $\mat{A}$.
 
 De lo anterior se puede concluir que si una matriz admite el algoritmo de
-eliminación gaussiana sin pivoteo, entonces tiene factorización LU:
-si se puede ejecutar el algoritmo,
-la factorización se obtiene considerando como $\mat{U}$ a la matriz
-triangulada y construyendo $\mat{L}$ a partir de los multiplicadores
-calculados en el proceso. De allí que la complejidad de obtener la
-factorización también sea de orden cúbico.
-
-% TODO: ¡NO ME QUEDA CLARO QUE VALGA LA VUELTA!
+eliminación gaussiana sin pivoteo, entonces tiene factorización LU: si se
+puede ejecutar el algoritmo, la factorización se obtiene considerando como
+$\mat{U}$ a la matriz triangulada y construyendo $\mat{L}$ a partir de los
+multiplicadores calculados en el proceso. De allí que la complejidad de
+obtener la factorización también sea de orden cúbico. Por otro lado, si una
+matriz posee factorización LU, entonces admite el algoritmo de eliminación
+gaussiana sin pivoteo; a partir de la matriz $\mat{L}$ pueden recuperarse los
+multiplicadores de cada paso del algoritmo, mientras que $\mat{U}$ es la
+matriz triangulada que se obtiene como resultado final.
 
 No todas las matrices admiten factorización LU. A modo de ejemplo,
 consideremos una matriz $\mat{A} \in \reals^{n \times n}$. Si tiene
@@ -430,7 +430,7 @@ de $\mat{A}$.
 Con respecto a la unicidad de la factorización LU, no siempre es posible
 garantizarla (por ejemplo, la matriz nula tiene infinitas factorizaciones
 LU distintas). Sin embargo, si $\mat{A}$ es inversible y tiene factorización
-LU, entonces esta es única. % TODO: Demostrar esto.
+LU, entonces se puede demostrar que esta es única.
 
 Los siguientes dos resultados, que se enuncian sin demostración, hacen
 referencia a la existencia de factorización LU para ciertos tipos particulares
@@ -440,8 +440,9 @@ de matrices:
     aquellas que cumplen que $\vert a_{i,i} \vert > \sum_{j=1, j \neq i}
     \vert a_{i,j}\vert$ para todo $i \in \{1,\dots,n\}$, siempre admiten
     factorización LU.
-% TODO: ¿qué hay para decir de las no estrictas?
 \item Las matrices inversibles admiten factorización LU si y solo si todos
-    sus menores principales son no nulos.
-% TODO: Menores principales recién se define en la sección siguiente.   
+    sus menores principales son no nulos. Los menores principales de una
+    matriz son los determinantes de sus submatrices principales, es decir,
+    aquellas submatrices cuadradas que contienen su esquina superior
+    izquierda.  
 \end{itemize}

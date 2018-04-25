@@ -52,15 +52,34 @@ aquellas matrices cuyo número de condición es menor que $1$.
 
 % TODO: Demostrar la propiedad de convergencia. Usar la diferencia entre
 % iteración y la siguiente.
-% Si consideramos un sistema de ecuaciones de la forma
-% $\vec{x} = \vec{c} + \mat{T} \cdot \vec{x}$,
-% con alguna solución $\vec{x^\ast}$,
-%  método iterativo de la forma
-% $\vec{x}^{(k)} = \vec{c} + \mat{T} \cdot \vec{x}^{(k-1)}$,
-% el mismo converge a un vector $\vec{x^\ast}$, para
-% cualquier $\vec{x}^{(0)}$, si y solo si $\mat{T}$ es convergente.
-% Para demostrarlo, basta considerar la diferencia entre una iteración
-% determinada y la siguiente.
+Si consideramos un sistema de ecuaciones de la forma $\vec{x} = \vec{c} +
+\mat{T} \cdot \vec{x}$ y una solución $\vec{x^\ast}$, entonces el método
+iterativo de la forma $\vec{x}^{(k)} = \vec{c} + \mat{T} \cdot
+\vec{x}^{(k-1)}$ converge a $\vec{x^\ast}$, para cualquier $\vec{x}^{(0)}$,
+si y solo si $\mat{T}$ es convergente.
+Para demostrarlo, consideremos $\vec{r}^{(k)} = \vec{x^\ast} - \vec{x}^{(k)}$;
+queremos ver que $\vec{r}^{(k)} \xrightarrow{k\to\infty} \vec{0}$ si y solo
+si $\mat{T}$ es convergente.
+
+Vale que
+$\vec{r}^{(k)}
+    = \vec{x^\ast} - \vec{x}^{(k)}
+    = \big( \vec{c} + \mat{T} \cdot \vec{x^\ast} \big)
+        - \big( \vec{c} + \mat{T} \cdot \vec{x}^{(k-1)} \big)
+    = \mat{T} \cdot \big( \vec{x^\ast} - \vec{x}^{(k-1)} \big)
+    = \mat{T} \cdot \vec{r}^{(k-1)} $
+y, por lo tanto,
+\[ \vec{r}^{(k)} = \mat{T}^k \cdot \vec{r}^{(0)}
+    = \mat{T}^k \cdot \Big( \vec{x^\ast} - \vec{x}^{(0)} \Big). \]
+
+Es claro que si $\mat{T}$ converge, entonces también lo hace $\vec{r}^{(k)}$,
+independientemente del valor de $\vec{x}^{(0)}$.
+Para ver la vuelta, basta notar que si $\vec{r}^{(k)}$ converge para todo 
+$\vec{x}^{(0)}$, se puede elegir este último vector de modo que
+$\vec{r}^{(0)}$ sea cualquiera de los vectores canónicos. De esta forma
+$\vec{r}^{(k)} = \mat{T}^k \cdot \vec{e}_i = \col_i(\mat{T})^k
+\xrightarrow{k\to\infty} \vec{0}$, verificando que todos los elementos de
+$\mat{T}$ convergen a 0.
 
 \subsection{Método de Jacobi}
 El \textbf{método de Jacobi} es un método que busca resolver un sistema de
@@ -153,7 +172,10 @@ corresponde exactamente a la formulación matricial de la iteración planteada
 antes, y que de converger, lo hará a una solución de $\mat{A} \cdot \vec{x}
 = \vec{b}$.
 
-% TODO: Converge para e.d.d.f. Se puede usar norma infinito.
+Una familia de matrices para la que es posible garantizar la convergencia del
+método de Jacobi es la de matrices estrictamente diagonal-dominantes por
+filas. Para verificarlo, se puede ver que la norma infinito de la matriz de la
+iteración, que acota a su radio espectral, es siempre menor que $1$.
 
 \subsection{Método de Gauss-Seidel}
 El método de \textbf{Gauss-Seidel} es similar al de Jacobi, pero plantea
@@ -174,8 +196,13 @@ y en forma matricial, aprovechando que $\mat{D} - \mat{L}$ es inversible,
 \[ \vec{x}^{(k)} = (\mat{D} - \mat{L})^{-1} \cdot \vec{b}
     + (\mat{D} - \mat{L})^{-1} \cdot \mat{U} \cdot \vec{x}^{(k-1)}. \]
 
-% TODO: Converge para e.d.d.f. Mostrar que los autovalores tienen módulo
-% menor que 1. No haría la cuenta, solo lo diría.
-% TODO: Converge para definidas positivas. No hay demo en Tagliavini.
-% TODO: Ventajas de Gauss-Seidel sobre Jacobi. Converge más rápido. Mitad de
-% espacio. Converge para más matrices.
+La convergencia del método de Gauss-Seidel está garantizada para matrices
+estrictamente diagonal-dominantes por filas, al igual que con el método de
+Jacobi. Además, también se puede asegurar su convergencia para matrices
+simétricas definidas positivas; esto último no es cierto para el método de
+Jacobi.
+
+Por último, se puede mencionar otra ventaja que presenta el método de Gauss-Seidel sobre el de Jacobi: como solo es necesario tener al mismo tiempo
+parte de la iteración actual y parte de la anterior, el algoritmo puede
+realizarse utilizando un único arreglo, es decir, requiere la mitad del
+espacio.
