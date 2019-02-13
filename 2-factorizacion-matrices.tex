@@ -638,14 +638,14 @@ $\mat{A}\trans \cdot \mat{A}$, con autovalor $0$.
 Como $\mat{A}\trans \cdot \mat{A}$ es simétrica, existe una base ortonormal de
 $\reals^n$ compuesta por autovectores de $\mat{A}\trans \cdot \mat{A}$,
 propiedad que utilizaremos sin demostración. Esto implica que todos los
-autovalores de $\mat{A}$ son reales.
+autovalores de $\mat{A}\trans \cdot \mat{A}$ son reales.
 
-Además, como $\mat{A}$ es semidefinida positiva, todos sus autovalores deben
-ser no negativos: si $\lambda$ es un autovector de $\mat{A}$, entonces existe
-un vector no nulo $\vec{v}$ tal que $\mat{A} \cdot \vec{v} = \lambda \cdot
-\vec{v}$. Entonces $\vec{v}\trans \cdot \mat{A} \cdot \vec{v} = \lambda \cdot
-\vec{v}\trans \cdot \vec{v}$. Por ser $\mat{A}$ semidefinida positiva,
-$\vec{v}\trans \cdot \mat{A} \cdot \vec{v} \geq 0$, mientras que
+Además, como $\mat{A}\trans \cdot \mat{A}$ es semidefinida positiva, todos sus autovalores deben
+ser no negativos: si $\lambda$ es un autovalor de $\mat{A}\trans \cdot \mat{A}$, entonces existe
+un vector no nulo $\vec{v}$ tal que $\mat{A}\trans \cdot \mat{A} \cdot \vec{v} = \lambda \cdot
+\vec{v}$. Entonces $\vec{v}\trans \cdot \mat{A}\trans \cdot \mat{A} \cdot \vec{v} = \lambda \cdot
+\vec{v}\trans \cdot \vec{v}$. Por ser $\mat{A}\trans \cdot \mat{A}$ semidefinida positiva,
+$\vec{v}\trans \cdot \mat{A}\trans \cdot \mat{A} \cdot \vec{v} \geq 0$, mientras que
 $\vec{v}\trans \cdot \vec{v} = \lVert \vec{v} \rVert_2^2 > 0$, de forma que
 necesariamente $\lambda \geq 0$.
 
