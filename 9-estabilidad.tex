@@ -7,7 +7,7 @@ A la hora de resolver problemas que involucran números reales utilizando la
 computadora, siempre debe tenerse en cuenta que el abordaje de los mismos es
 \textbf{numérico}, es decir, opera tan solo con aproximaciones de los números
 reales, dentro de lo permitido por la aritmética finita de la computadora.
-Esto produce, inevitablemente, errores de redondeo que pueden producir pérdida
+Esto produce, inevitablemente, errores de redondeo que pueden ocasionar pérdida
 de exactitud en los resultados; por lo tanto, es importante tener cuidado en
 evitar que dichos errores se propaguen de formas no deseadas.
 En esta breve sección presentaremos algunos conceptos que serán útiles más
@@ -90,7 +90,7 @@ Si consideramos la formulación matricial del sistema $\mat{A} \cdot \vec{x} =
 Es decir, un pequeño error en $\vec{b}$ se tradujo en un error
 considerablemente más grande al obtener la solución $\vec{x^\ast}$.
 
-Supongamos que tenemos una matriz $\mat{A}$ inversible. Si consideramos una
+Supongamos que tenemos una matriz $\mat{A}$ inversible. Considerando una norma
 vectorial $\lVert \bullet \rVert$ cualquiera y su norma matricial inducida,
 podemos demostrar las siguientes dos propiedades, que establecen una cota para
 el error que puede generarse en la solución $\vec{x^\ast}$ (o error hacia
@@ -111,7 +111,7 @@ en la entrada $\vec{b}$ (o error hacia atrás):
 En la segunda propiedad se observa que el factor según el cual un error
 relativo en las entradas puede magnificarse al producir un error relativo en
 las soluciones es
-x\[ \kappa(\mat{A}) = \lVert \mat{A} \rVert \cdot \lVert \mat{A}^{-1} \rVert.
+\[ \kappa(\mat{A}) = \lVert \mat{A} \rVert \cdot \lVert \mat{A}^{-1} \rVert.
 \]
 A este valor se lo conoce como el \textbf{número de condición} de $\mat{A}$.
 Para cualquier matriz, se cumple que $\kappa(\mat{A}) \geq \kappa(\mat{I})
